@@ -1,0 +1,1660 @@
+vertice(0).
+edge(0, 1).
+edge(0, 46).
+vertice(1).
+edge(1, 0).
+edge(1, 2).
+edge(1, 47).
+vertice(2).
+edge(2, 1).
+edge(2, 3).
+edge(2, 48).
+vertice(3).
+edge(3, 2).
+edge(3, 4).
+edge(3, 49).
+vertice(4).
+edge(4, 3).
+edge(4, 5).
+edge(4, 50).
+vertice(5).
+edge(5, 4).
+edge(5, 6).
+edge(5, 51).
+vertice(6).
+edge(6, 5).
+edge(6, 7).
+edge(6, 52).
+vertice(7).
+edge(7, 6).
+edge(7, 8).
+edge(7, 53).
+vertice(8).
+edge(8, 7).
+edge(8, 9).
+edge(8, 54).
+vertice(9).
+edge(9, 8).
+edge(9, 10).
+edge(9, 55).
+vertice(10).
+edge(10, 9).
+edge(10, 11).
+edge(10, 56).
+vertice(11).
+edge(11, 10).
+edge(11, 12).
+edge(11, 57).
+vertice(12).
+edge(12, 11).
+edge(12, 13).
+edge(12, 58).
+vertice(13).
+edge(13, 12).
+edge(13, 14).
+edge(13, 59).
+vertice(14).
+edge(14, 13).
+edge(14, 15).
+edge(14, 60).
+vertice(15).
+edge(15, 14).
+edge(15, 16).
+edge(15, 61).
+vertice(16).
+edge(16, 15).
+edge(16, 17).
+edge(16, 62).
+vertice(17).
+edge(17, 16).
+edge(17, 18).
+edge(17, 63).
+vertice(18).
+edge(18, 17).
+edge(18, 19).
+edge(18, 64).
+vertice(19).
+edge(19, 18).
+edge(19, 20).
+edge(19, 65).
+vertice(20).
+edge(20, 19).
+edge(20, 21).
+edge(20, 66).
+vertice(21).
+edge(21, 20).
+edge(21, 22).
+edge(21, 67).
+vertice(22).
+edge(22, 21).
+edge(22, 23).
+edge(22, 68).
+vertice(23).
+edge(23, 22).
+edge(23, 24).
+edge(23, 69).
+vertice(24).
+edge(24, 23).
+edge(24, 25).
+edge(24, 70).
+vertice(25).
+edge(25, 24).
+edge(25, 26).
+edge(25, 71).
+vertice(26).
+edge(26, 25).
+edge(26, 27).
+edge(26, 72).
+vertice(27).
+edge(27, 26).
+edge(27, 28).
+edge(27, 73).
+vertice(28).
+edge(28, 27).
+edge(28, 29).
+edge(28, 74).
+vertice(29).
+edge(29, 28).
+edge(29, 30).
+edge(29, 75).
+vertice(30).
+edge(30, 29).
+edge(30, 31).
+edge(30, 76).
+vertice(31).
+edge(31, 30).
+edge(31, 32).
+edge(31, 77).
+vertice(32).
+edge(32, 31).
+edge(32, 33).
+edge(32, 78).
+vertice(33).
+edge(33, 32).
+edge(33, 34).
+edge(33, 79).
+vertice(34).
+edge(34, 33).
+edge(34, 35).
+edge(34, 80).
+vertice(35).
+edge(35, 34).
+edge(35, 36).
+edge(35, 81).
+vertice(36).
+edge(36, 35).
+edge(36, 37).
+edge(36, 82).
+vertice(37).
+edge(37, 36).
+edge(37, 38).
+edge(37, 83).
+vertice(38).
+edge(38, 37).
+edge(38, 39).
+edge(38, 84).
+vertice(39).
+edge(39, 38).
+edge(39, 40).
+edge(39, 85).
+vertice(40).
+edge(40, 39).
+edge(40, 41).
+edge(40, 86).
+vertice(41).
+edge(41, 40).
+edge(41, 42).
+edge(41, 87).
+vertice(42).
+edge(42, 41).
+edge(42, 43).
+edge(42, 88).
+vertice(43).
+edge(43, 42).
+edge(43, 44).
+edge(43, 89).
+vertice(44).
+edge(44, 43).
+edge(44, 45).
+edge(44, 90).
+vertice(45).
+edge(45, 44).
+edge(45, 91).
+vertice(46).
+edge(46, 47).
+edge(46, 0).
+edge(46, 92).
+vertice(47).
+edge(47, 46).
+edge(47, 1).
+edge(47, 93).
+vertice(48).
+pods(48).
+edge(48, 2).
+vertice(49).
+pods(49).
+edge(49, 3).
+vertice(50).
+pods(50).
+edge(50, 4).
+vertice(51).
+pods(51).
+edge(51, 5).
+vertice(52).
+pods(52).
+edge(52, 6).
+vertice(53).
+pods(53).
+edge(53, 7).
+vertice(54).
+pods(54).
+edge(54, 8).
+vertice(55).
+pods(55).
+edge(55, 9).
+vertice(56).
+pods(56).
+edge(56, 10).
+vertice(57).
+pods(57).
+edge(57, 11).
+vertice(58).
+edge(58, 12).
+edge(58, 104).
+vertice(59).
+pods(59).
+edge(59, 13).
+vertice(60).
+pods(60).
+edge(60, 14).
+vertice(61).
+pods(61).
+edge(61, 15).
+vertice(62).
+pods(62).
+edge(62, 16).
+vertice(63).
+pods(63).
+edge(63, 17).
+vertice(64).
+pods(64).
+edge(64, 18).
+vertice(65).
+pods(65).
+edge(65, 19).
+vertice(66).
+pods(66).
+edge(66, 20).
+vertice(67).
+pods(67).
+edge(67, 21).
+vertice(68).
+pods(68).
+edge(68, 22).
+vertice(69).
+edge(69, 23).
+edge(69, 115).
+vertice(70).
+pods(70).
+edge(70, 24).
+vertice(71).
+pods(71).
+edge(71, 25).
+vertice(72).
+pods(72).
+edge(72, 26).
+vertice(73).
+pods(73).
+edge(73, 27).
+vertice(74).
+pods(74).
+edge(74, 28).
+vertice(75).
+pods(75).
+edge(75, 29).
+vertice(76).
+pods(76).
+edge(76, 30).
+vertice(77).
+pods(77).
+edge(77, 31).
+vertice(78).
+pods(78).
+edge(78, 32).
+vertice(79).
+pods(79).
+edge(79, 33).
+vertice(80).
+edge(80, 34).
+edge(80, 126).
+vertice(81).
+pods(81).
+edge(81, 35).
+vertice(82).
+pods(82).
+edge(82, 36).
+vertice(83).
+pods(83).
+edge(83, 37).
+vertice(84).
+pods(84).
+edge(84, 38).
+vertice(85).
+pods(85).
+edge(85, 39).
+vertice(86).
+pods(86).
+edge(86, 40).
+vertice(87).
+pods(87).
+edge(87, 41).
+vertice(88).
+pods(88).
+edge(88, 42).
+vertice(89).
+pods(89).
+edge(89, 43).
+vertice(90).
+pods(90).
+edge(90, 44).
+vertice(91).
+edge(91, 45).
+edge(91, 137).
+vertice(92).
+edge(92, 93).
+edge(92, 46).
+edge(92, 138).
+vertice(93).
+edge(93, 92).
+edge(93, 47).
+edge(93, 139).
+vertice(94).
+pods(94).
+edge(94, 140).
+vertice(95).
+pods(95).
+edge(95, 141).
+vertice(96).
+pods(96).
+edge(96, 142).
+vertice(97).
+pods(97).
+edge(97, 143).
+vertice(98).
+pods(98).
+edge(98, 144).
+vertice(99).
+pods(99).
+edge(99, 145).
+vertice(100).
+pods(100).
+edge(100, 146).
+vertice(101).
+pods(101).
+edge(101, 147).
+vertice(102).
+pods(102).
+edge(102, 148).
+vertice(103).
+pods(103).
+edge(103, 149).
+vertice(104).
+edge(104, 58).
+edge(104, 150).
+vertice(105).
+pods(105).
+edge(105, 151).
+vertice(106).
+pods(106).
+edge(106, 152).
+vertice(107).
+pods(107).
+edge(107, 153).
+vertice(108).
+pods(108).
+edge(108, 154).
+vertice(109).
+pods(109).
+edge(109, 155).
+vertice(110).
+pods(110).
+edge(110, 156).
+vertice(111).
+pods(111).
+edge(111, 157).
+vertice(112).
+pods(112).
+edge(112, 158).
+vertice(113).
+pods(113).
+edge(113, 159).
+vertice(114).
+pods(114).
+edge(114, 160).
+vertice(115).
+edge(115, 69).
+edge(115, 161).
+vertice(116).
+pods(116).
+edge(116, 162).
+vertice(117).
+pods(117).
+edge(117, 163).
+vertice(118).
+pods(118).
+edge(118, 164).
+vertice(119).
+pods(119).
+edge(119, 165).
+vertice(120).
+pods(120).
+edge(120, 166).
+vertice(121).
+pods(121).
+edge(121, 167).
+vertice(122).
+pods(122).
+edge(122, 168).
+vertice(123).
+pods(123).
+edge(123, 169).
+vertice(124).
+pods(124).
+edge(124, 170).
+vertice(125).
+pods(125).
+edge(125, 171).
+vertice(126).
+edge(126, 80).
+edge(126, 172).
+vertice(127).
+pods(127).
+edge(127, 173).
+vertice(128).
+pods(128).
+edge(128, 174).
+vertice(129).
+pods(129).
+edge(129, 175).
+vertice(130).
+pods(130).
+edge(130, 176).
+vertice(131).
+pods(131).
+edge(131, 177).
+vertice(132).
+pods(132).
+edge(132, 178).
+vertice(133).
+pods(133).
+edge(133, 179).
+vertice(134).
+pods(134).
+edge(134, 180).
+vertice(135).
+pods(135).
+edge(135, 181).
+vertice(136).
+pods(136).
+edge(136, 182).
+vertice(137).
+edge(137, 91).
+edge(137, 183).
+vertice(138).
+edge(138, 139).
+edge(138, 92).
+edge(138, 184).
+vertice(139).
+edge(139, 138).
+edge(139, 140).
+edge(139, 93).
+edge(139, 185).
+vertice(140).
+edge(140, 139).
+edge(140, 141).
+edge(140, 94).
+edge(140, 186).
+vertice(141).
+edge(141, 140).
+edge(141, 142).
+edge(141, 95).
+edge(141, 187).
+vertice(142).
+edge(142, 141).
+edge(142, 143).
+edge(142, 96).
+edge(142, 188).
+vertice(143).
+edge(143, 142).
+edge(143, 144).
+edge(143, 97).
+edge(143, 189).
+vertice(144).
+edge(144, 143).
+edge(144, 145).
+edge(144, 98).
+edge(144, 190).
+vertice(145).
+edge(145, 144).
+edge(145, 146).
+edge(145, 99).
+edge(145, 191).
+vertice(146).
+edge(146, 145).
+edge(146, 147).
+edge(146, 100).
+edge(146, 192).
+vertice(147).
+edge(147, 146).
+edge(147, 148).
+edge(147, 101).
+edge(147, 193).
+vertice(148).
+edge(148, 147).
+edge(148, 149).
+edge(148, 102).
+edge(148, 194).
+vertice(149).
+edge(149, 148).
+edge(149, 150).
+edge(149, 103).
+edge(149, 195).
+vertice(150).
+edge(150, 149).
+edge(150, 151).
+edge(150, 104).
+edge(150, 196).
+vertice(151).
+edge(151, 150).
+edge(151, 152).
+edge(151, 105).
+edge(151, 197).
+vertice(152).
+edge(152, 151).
+edge(152, 153).
+edge(152, 106).
+edge(152, 198).
+vertice(153).
+edge(153, 152).
+edge(153, 154).
+edge(153, 107).
+edge(153, 199).
+vertice(154).
+edge(154, 153).
+edge(154, 155).
+edge(154, 108).
+edge(154, 200).
+vertice(155).
+edge(155, 154).
+edge(155, 156).
+edge(155, 109).
+edge(155, 201).
+vertice(156).
+edge(156, 155).
+edge(156, 157).
+edge(156, 110).
+edge(156, 202).
+vertice(157).
+edge(157, 156).
+edge(157, 158).
+edge(157, 111).
+edge(157, 203).
+vertice(158).
+edge(158, 157).
+edge(158, 159).
+edge(158, 112).
+edge(158, 204).
+vertice(159).
+edge(159, 158).
+edge(159, 160).
+edge(159, 113).
+edge(159, 205).
+vertice(160).
+edge(160, 159).
+edge(160, 161).
+edge(160, 114).
+edge(160, 206).
+vertice(161).
+edge(161, 160).
+edge(161, 162).
+edge(161, 115).
+edge(161, 207).
+vertice(162).
+edge(162, 161).
+edge(162, 163).
+edge(162, 116).
+edge(162, 208).
+vertice(163).
+edge(163, 162).
+edge(163, 164).
+edge(163, 117).
+edge(163, 209).
+vertice(164).
+edge(164, 163).
+edge(164, 165).
+edge(164, 118).
+edge(164, 210).
+vertice(165).
+edge(165, 164).
+edge(165, 166).
+edge(165, 119).
+edge(165, 211).
+vertice(166).
+edge(166, 165).
+edge(166, 167).
+edge(166, 120).
+edge(166, 212).
+vertice(167).
+edge(167, 166).
+edge(167, 168).
+edge(167, 121).
+edge(167, 213).
+vertice(168).
+edge(168, 167).
+edge(168, 169).
+edge(168, 122).
+edge(168, 214).
+vertice(169).
+edge(169, 168).
+edge(169, 170).
+edge(169, 123).
+edge(169, 215).
+vertice(170).
+edge(170, 169).
+edge(170, 171).
+edge(170, 124).
+edge(170, 216).
+vertice(171).
+edge(171, 170).
+edge(171, 172).
+edge(171, 125).
+edge(171, 217).
+vertice(172).
+edge(172, 171).
+edge(172, 173).
+edge(172, 126).
+edge(172, 218).
+vertice(173).
+edge(173, 172).
+edge(173, 174).
+edge(173, 127).
+edge(173, 219).
+vertice(174).
+edge(174, 173).
+edge(174, 175).
+edge(174, 128).
+edge(174, 220).
+vertice(175).
+edge(175, 174).
+edge(175, 176).
+edge(175, 129).
+edge(175, 221).
+vertice(176).
+edge(176, 175).
+edge(176, 177).
+edge(176, 130).
+edge(176, 222).
+vertice(177).
+edge(177, 176).
+edge(177, 178).
+edge(177, 131).
+edge(177, 223).
+vertice(178).
+edge(178, 177).
+edge(178, 179).
+edge(178, 132).
+edge(178, 224).
+vertice(179).
+edge(179, 178).
+edge(179, 180).
+edge(179, 133).
+edge(179, 225).
+vertice(180).
+edge(180, 179).
+edge(180, 181).
+edge(180, 134).
+edge(180, 226).
+vertice(181).
+edge(181, 180).
+edge(181, 182).
+edge(181, 135).
+edge(181, 227).
+vertice(182).
+edge(182, 181).
+edge(182, 183).
+edge(182, 136).
+edge(182, 228).
+vertice(183).
+edge(183, 182).
+edge(183, 137).
+edge(183, 229).
+vertice(184).
+edge(184, 185).
+edge(184, 138).
+edge(184, 230).
+vertice(185).
+edge(185, 184).
+edge(185, 139).
+edge(185, 231).
+vertice(186).
+pods(186).
+edge(186, 140).
+vertice(187).
+pods(187).
+edge(187, 141).
+vertice(188).
+pods(188).
+edge(188, 142).
+vertice(189).
+pods(189).
+edge(189, 143).
+vertice(190).
+pods(190).
+edge(190, 144).
+vertice(191).
+pods(191).
+edge(191, 145).
+vertice(192).
+pods(192).
+edge(192, 146).
+vertice(193).
+pods(193).
+edge(193, 147).
+vertice(194).
+pods(194).
+edge(194, 148).
+vertice(195).
+pods(195).
+edge(195, 149).
+vertice(196).
+edge(196, 150).
+edge(196, 242).
+vertice(197).
+pods(197).
+edge(197, 151).
+vertice(198).
+pods(198).
+edge(198, 152).
+vertice(199).
+pods(199).
+edge(199, 153).
+vertice(200).
+pods(200).
+edge(200, 154).
+vertice(201).
+pods(201).
+edge(201, 155).
+vertice(202).
+pods(202).
+edge(202, 156).
+vertice(203).
+pods(203).
+edge(203, 157).
+vertice(204).
+pods(204).
+edge(204, 158).
+vertice(205).
+pods(205).
+edge(205, 159).
+vertice(206).
+pods(206).
+edge(206, 160).
+vertice(207).
+edge(207, 161).
+edge(207, 253).
+vertice(208).
+pods(208).
+edge(208, 162).
+vertice(209).
+pods(209).
+edge(209, 163).
+vertice(210).
+pods(210).
+edge(210, 164).
+vertice(211).
+pods(211).
+edge(211, 165).
+vertice(212).
+pods(212).
+edge(212, 166).
+vertice(213).
+pods(213).
+edge(213, 167).
+vertice(214).
+pods(214).
+edge(214, 168).
+vertice(215).
+pods(215).
+edge(215, 169).
+vertice(216).
+pods(216).
+edge(216, 170).
+vertice(217).
+pods(217).
+edge(217, 171).
+vertice(218).
+edge(218, 172).
+edge(218, 264).
+vertice(219).
+pods(219).
+edge(219, 173).
+vertice(220).
+pods(220).
+edge(220, 174).
+vertice(221).
+pods(221).
+edge(221, 175).
+vertice(222).
+pods(222).
+edge(222, 176).
+vertice(223).
+pods(223).
+edge(223, 177).
+vertice(224).
+pods(224).
+edge(224, 178).
+vertice(225).
+pods(225).
+edge(225, 179).
+vertice(226).
+pods(226).
+edge(226, 180).
+vertice(227).
+pods(227).
+edge(227, 181).
+vertice(228).
+pods(228).
+edge(228, 182).
+vertice(229).
+edge(229, 183).
+edge(229, 275).
+vertice(230).
+edge(230, 231).
+edge(230, 184).
+edge(230, 276).
+vertice(231).
+edge(231, 230).
+edge(231, 185).
+edge(231, 277).
+vertice(232).
+pods(232).
+edge(232, 278).
+vertice(233).
+pods(233).
+edge(233, 279).
+vertice(234).
+pods(234).
+edge(234, 280).
+vertice(235).
+pods(235).
+edge(235, 281).
+vertice(236).
+pods(236).
+edge(236, 282).
+vertice(237).
+pods(237).
+edge(237, 283).
+vertice(238).
+pods(238).
+edge(238, 284).
+vertice(239).
+pods(239).
+edge(239, 285).
+vertice(240).
+pods(240).
+edge(240, 286).
+vertice(241).
+pods(241).
+edge(241, 287).
+vertice(242).
+edge(242, 196).
+edge(242, 288).
+vertice(243).
+pods(243).
+edge(243, 289).
+vertice(244).
+pods(244).
+edge(244, 290).
+vertice(245).
+pods(245).
+edge(245, 291).
+vertice(246).
+pods(246).
+edge(246, 292).
+vertice(247).
+pods(247).
+edge(247, 293).
+vertice(248).
+pods(248).
+edge(248, 294).
+vertice(249).
+pods(249).
+edge(249, 295).
+vertice(250).
+pods(250).
+edge(250, 296).
+vertice(251).
+pods(251).
+edge(251, 297).
+vertice(252).
+pods(252).
+edge(252, 298).
+vertice(253).
+edge(253, 207).
+edge(253, 299).
+vertice(254).
+pods(254).
+edge(254, 300).
+vertice(255).
+pods(255).
+edge(255, 301).
+vertice(256).
+pods(256).
+edge(256, 302).
+vertice(257).
+pods(257).
+edge(257, 303).
+vertice(258).
+pods(258).
+edge(258, 304).
+vertice(259).
+pods(259).
+edge(259, 305).
+vertice(260).
+pods(260).
+edge(260, 306).
+vertice(261).
+pods(261).
+edge(261, 307).
+vertice(262).
+pods(262).
+edge(262, 308).
+vertice(263).
+pods(263).
+edge(263, 309).
+vertice(264).
+edge(264, 218).
+edge(264, 310).
+vertice(265).
+pods(265).
+edge(265, 311).
+vertice(266).
+pods(266).
+edge(266, 312).
+vertice(267).
+pods(267).
+edge(267, 313).
+vertice(268).
+pods(268).
+edge(268, 314).
+vertice(269).
+pods(269).
+edge(269, 315).
+vertice(270).
+pods(270).
+edge(270, 316).
+vertice(271).
+pods(271).
+edge(271, 317).
+vertice(272).
+pods(272).
+edge(272, 318).
+vertice(273).
+pods(273).
+edge(273, 319).
+vertice(274).
+pods(274).
+edge(274, 320).
+vertice(275).
+edge(275, 229).
+edge(275, 321).
+vertice(276).
+edge(276, 277).
+edge(276, 230).
+edge(276, 322).
+vertice(277).
+edge(277, 276).
+edge(277, 278).
+edge(277, 231).
+edge(277, 323).
+vertice(278).
+edge(278, 277).
+edge(278, 279).
+edge(278, 232).
+edge(278, 324).
+vertice(279).
+edge(279, 278).
+edge(279, 280).
+edge(279, 233).
+edge(279, 325).
+vertice(280).
+edge(280, 279).
+edge(280, 281).
+edge(280, 234).
+edge(280, 326).
+vertice(281).
+edge(281, 280).
+edge(281, 282).
+edge(281, 235).
+edge(281, 327).
+vertice(282).
+edge(282, 281).
+edge(282, 283).
+edge(282, 236).
+edge(282, 328).
+vertice(283).
+edge(283, 282).
+edge(283, 284).
+edge(283, 237).
+edge(283, 329).
+vertice(284).
+edge(284, 283).
+edge(284, 285).
+edge(284, 238).
+edge(284, 330).
+vertice(285).
+edge(285, 284).
+edge(285, 286).
+edge(285, 239).
+edge(285, 331).
+vertice(286).
+edge(286, 285).
+edge(286, 287).
+edge(286, 240).
+edge(286, 332).
+vertice(287).
+edge(287, 286).
+edge(287, 288).
+edge(287, 241).
+edge(287, 333).
+vertice(288).
+edge(288, 287).
+edge(288, 289).
+edge(288, 242).
+edge(288, 334).
+vertice(289).
+edge(289, 288).
+edge(289, 290).
+edge(289, 243).
+edge(289, 335).
+vertice(290).
+edge(290, 289).
+edge(290, 291).
+edge(290, 244).
+edge(290, 336).
+vertice(291).
+edge(291, 290).
+edge(291, 292).
+edge(291, 245).
+edge(291, 337).
+vertice(292).
+edge(292, 291).
+edge(292, 293).
+edge(292, 246).
+edge(292, 338).
+vertice(293).
+edge(293, 292).
+edge(293, 294).
+edge(293, 247).
+edge(293, 339).
+vertice(294).
+edge(294, 293).
+edge(294, 295).
+edge(294, 248).
+edge(294, 340).
+vertice(295).
+edge(295, 294).
+edge(295, 296).
+edge(295, 249).
+edge(295, 341).
+vertice(296).
+edge(296, 295).
+edge(296, 297).
+edge(296, 250).
+edge(296, 342).
+vertice(297).
+edge(297, 296).
+edge(297, 298).
+edge(297, 251).
+edge(297, 343).
+vertice(298).
+edge(298, 297).
+edge(298, 299).
+edge(298, 252).
+edge(298, 344).
+vertice(299).
+edge(299, 298).
+edge(299, 300).
+edge(299, 253).
+edge(299, 345).
+vertice(300).
+edge(300, 299).
+edge(300, 301).
+edge(300, 254).
+edge(300, 346).
+vertice(301).
+edge(301, 300).
+edge(301, 302).
+edge(301, 255).
+edge(301, 347).
+vertice(302).
+edge(302, 301).
+edge(302, 303).
+edge(302, 256).
+edge(302, 348).
+vertice(303).
+edge(303, 302).
+edge(303, 304).
+edge(303, 257).
+edge(303, 349).
+vertice(304).
+edge(304, 303).
+edge(304, 305).
+edge(304, 258).
+edge(304, 350).
+vertice(305).
+edge(305, 304).
+edge(305, 306).
+edge(305, 259).
+edge(305, 351).
+vertice(306).
+edge(306, 305).
+edge(306, 307).
+edge(306, 260).
+edge(306, 352).
+vertice(307).
+edge(307, 306).
+edge(307, 308).
+edge(307, 261).
+edge(307, 353).
+vertice(308).
+edge(308, 307).
+edge(308, 309).
+edge(308, 262).
+edge(308, 354).
+vertice(309).
+edge(309, 308).
+edge(309, 310).
+edge(309, 263).
+edge(309, 355).
+vertice(310).
+edge(310, 309).
+edge(310, 311).
+edge(310, 264).
+edge(310, 356).
+vertice(311).
+edge(311, 310).
+edge(311, 312).
+edge(311, 265).
+edge(311, 357).
+vertice(312).
+edge(312, 311).
+edge(312, 313).
+edge(312, 266).
+edge(312, 358).
+vertice(313).
+edge(313, 312).
+edge(313, 314).
+edge(313, 267).
+edge(313, 359).
+vertice(314).
+edge(314, 313).
+edge(314, 315).
+edge(314, 268).
+edge(314, 360).
+vertice(315).
+edge(315, 314).
+edge(315, 316).
+edge(315, 269).
+edge(315, 361).
+vertice(316).
+edge(316, 315).
+edge(316, 317).
+edge(316, 270).
+edge(316, 362).
+vertice(317).
+edge(317, 316).
+edge(317, 318).
+edge(317, 271).
+edge(317, 363).
+vertice(318).
+edge(318, 317).
+edge(318, 319).
+edge(318, 272).
+edge(318, 364).
+vertice(319).
+edge(319, 318).
+edge(319, 320).
+edge(319, 273).
+edge(319, 365).
+vertice(320).
+edge(320, 319).
+edge(320, 321).
+edge(320, 274).
+edge(320, 366).
+vertice(321).
+edge(321, 320).
+edge(321, 275).
+edge(321, 367).
+vertice(322).
+edge(322, 323).
+edge(322, 276).
+edge(322, 368).
+vertice(323).
+edge(323, 322).
+edge(323, 277).
+edge(323, 369).
+vertice(324).
+pods(324).
+edge(324, 278).
+vertice(325).
+pods(325).
+edge(325, 279).
+vertice(326).
+pods(326).
+edge(326, 280).
+vertice(327).
+pods(327).
+edge(327, 281).
+vertice(328).
+pods(328).
+edge(328, 282).
+vertice(329).
+pods(329).
+edge(329, 283).
+vertice(330).
+pods(330).
+edge(330, 284).
+vertice(331).
+pods(331).
+edge(331, 285).
+vertice(332).
+pods(332).
+edge(332, 286).
+vertice(333).
+pods(333).
+edge(333, 287).
+vertice(334).
+edge(334, 288).
+edge(334, 380).
+vertice(335).
+pods(335).
+edge(335, 289).
+vertice(336).
+pods(336).
+edge(336, 290).
+vertice(337).
+pods(337).
+edge(337, 291).
+vertice(338).
+pods(338).
+edge(338, 292).
+vertice(339).
+pods(339).
+edge(339, 293).
+vertice(340).
+pods(340).
+edge(340, 294).
+vertice(341).
+pods(341).
+edge(341, 295).
+vertice(342).
+pods(342).
+edge(342, 296).
+vertice(343).
+pods(343).
+edge(343, 297).
+vertice(344).
+pods(344).
+edge(344, 298).
+vertice(345).
+edge(345, 299).
+edge(345, 391).
+vertice(346).
+pods(346).
+edge(346, 300).
+vertice(347).
+pods(347).
+edge(347, 301).
+vertice(348).
+pods(348).
+edge(348, 302).
+vertice(349).
+pods(349).
+edge(349, 303).
+vertice(350).
+pods(350).
+edge(350, 304).
+vertice(351).
+pods(351).
+edge(351, 305).
+vertice(352).
+pods(352).
+edge(352, 306).
+vertice(353).
+pods(353).
+edge(353, 307).
+vertice(354).
+pods(354).
+edge(354, 308).
+vertice(355).
+pods(355).
+edge(355, 309).
+vertice(356).
+edge(356, 310).
+edge(356, 402).
+vertice(357).
+pods(357).
+edge(357, 311).
+vertice(358).
+pods(358).
+edge(358, 312).
+vertice(359).
+pods(359).
+edge(359, 313).
+vertice(360).
+pods(360).
+edge(360, 314).
+vertice(361).
+pods(361).
+edge(361, 315).
+vertice(362).
+pods(362).
+edge(362, 316).
+vertice(363).
+pods(363).
+edge(363, 317).
+vertice(364).
+pods(364).
+edge(364, 318).
+vertice(365).
+pods(365).
+edge(365, 319).
+vertice(366).
+pods(366).
+edge(366, 320).
+vertice(367).
+edge(367, 321).
+edge(367, 413).
+vertice(368).
+edge(368, 369).
+edge(368, 322).
+edge(368, 414).
+vertice(369).
+edge(369, 368).
+edge(369, 323).
+edge(369, 415).
+vertice(370).
+pods(370).
+edge(370, 416).
+vertice(371).
+pods(371).
+edge(371, 417).
+vertice(372).
+pods(372).
+edge(372, 418).
+vertice(373).
+pods(373).
+edge(373, 419).
+vertice(374).
+pods(374).
+edge(374, 420).
+vertice(375).
+pods(375).
+edge(375, 421).
+vertice(376).
+pods(376).
+edge(376, 422).
+vertice(377).
+pods(377).
+edge(377, 423).
+vertice(378).
+pods(378).
+edge(378, 424).
+vertice(379).
+pods(379).
+edge(379, 425).
+vertice(380).
+edge(380, 334).
+edge(380, 426).
+vertice(381).
+pods(381).
+edge(381, 427).
+vertice(382).
+pods(382).
+edge(382, 428).
+vertice(383).
+pods(383).
+edge(383, 429).
+vertice(384).
+pods(384).
+edge(384, 430).
+vertice(385).
+pods(385).
+edge(385, 431).
+vertice(386).
+pods(386).
+edge(386, 432).
+vertice(387).
+pods(387).
+edge(387, 433).
+vertice(388).
+pods(388).
+edge(388, 434).
+vertice(389).
+pods(389).
+edge(389, 435).
+vertice(390).
+pods(390).
+edge(390, 436).
+vertice(391).
+edge(391, 345).
+edge(391, 437).
+vertice(392).
+pods(392).
+edge(392, 438).
+vertice(393).
+pods(393).
+edge(393, 439).
+vertice(394).
+pods(394).
+edge(394, 440).
+vertice(395).
+pods(395).
+edge(395, 441).
+vertice(396).
+pods(396).
+edge(396, 442).
+vertice(397).
+pods(397).
+edge(397, 443).
+vertice(398).
+pods(398).
+edge(398, 444).
+vertice(399).
+pods(399).
+edge(399, 445).
+vertice(400).
+pods(400).
+edge(400, 446).
+vertice(401).
+pods(401).
+edge(401, 447).
+vertice(402).
+edge(402, 356).
+edge(402, 448).
+vertice(403).
+pods(403).
+edge(403, 449).
+vertice(404).
+pods(404).
+edge(404, 450).
+vertice(405).
+pods(405).
+edge(405, 451).
+vertice(406).
+pods(406).
+edge(406, 452).
+vertice(407).
+pods(407).
+edge(407, 453).
+vertice(408).
+pods(408).
+edge(408, 454).
+vertice(409).
+pods(409).
+edge(409, 455).
+vertice(410).
+pods(410).
+edge(410, 456).
+vertice(411).
+pods(411).
+edge(411, 457).
+vertice(412).
+pods(412).
+edge(412, 458).
+vertice(413).
+edge(413, 367).
+edge(413, 459).
+vertice(414).
+edge(414, 415).
+edge(414, 368).
+vertice(415).
+edge(415, 414).
+edge(415, 416).
+edge(415, 369).
+vertice(416).
+edge(416, 415).
+edge(416, 417).
+edge(416, 370).
+vertice(417).
+edge(417, 416).
+edge(417, 418).
+edge(417, 371).
+vertice(418).
+edge(418, 417).
+edge(418, 419).
+edge(418, 372).
+vertice(419).
+edge(419, 418).
+edge(419, 420).
+edge(419, 373).
+vertice(420).
+edge(420, 419).
+edge(420, 421).
+edge(420, 374).
+vertice(421).
+edge(421, 420).
+edge(421, 422).
+edge(421, 375).
+vertice(422).
+edge(422, 421).
+edge(422, 423).
+edge(422, 376).
+vertice(423).
+edge(423, 422).
+edge(423, 424).
+edge(423, 377).
+vertice(424).
+edge(424, 423).
+edge(424, 425).
+edge(424, 378).
+vertice(425).
+edge(425, 424).
+edge(425, 426).
+edge(425, 379).
+vertice(426).
+edge(426, 425).
+edge(426, 427).
+edge(426, 380).
+vertice(427).
+edge(427, 426).
+edge(427, 428).
+edge(427, 381).
+vertice(428).
+edge(428, 427).
+edge(428, 429).
+edge(428, 382).
+vertice(429).
+edge(429, 428).
+edge(429, 430).
+edge(429, 383).
+vertice(430).
+edge(430, 429).
+edge(430, 431).
+edge(430, 384).
+vertice(431).
+edge(431, 430).
+edge(431, 432).
+edge(431, 385).
+vertice(432).
+edge(432, 431).
+edge(432, 433).
+edge(432, 386).
+vertice(433).
+edge(433, 432).
+edge(433, 434).
+edge(433, 387).
+vertice(434).
+edge(434, 433).
+edge(434, 435).
+edge(434, 388).
+vertice(435).
+edge(435, 434).
+edge(435, 436).
+edge(435, 389).
+vertice(436).
+edge(436, 435).
+edge(436, 437).
+edge(436, 390).
+vertice(437).
+edge(437, 436).
+edge(437, 438).
+edge(437, 391).
+vertice(438).
+edge(438, 437).
+edge(438, 439).
+edge(438, 392).
+vertice(439).
+edge(439, 438).
+edge(439, 440).
+edge(439, 393).
+vertice(440).
+edge(440, 439).
+edge(440, 441).
+edge(440, 394).
+vertice(441).
+edge(441, 440).
+edge(441, 442).
+edge(441, 395).
+vertice(442).
+edge(442, 441).
+edge(442, 443).
+edge(442, 396).
+vertice(443).
+edge(443, 442).
+edge(443, 444).
+edge(443, 397).
+vertice(444).
+edge(444, 443).
+edge(444, 445).
+edge(444, 398).
+vertice(445).
+edge(445, 444).
+edge(445, 446).
+edge(445, 399).
+vertice(446).
+edge(446, 445).
+edge(446, 447).
+edge(446, 400).
+vertice(447).
+edge(447, 446).
+edge(447, 448).
+edge(447, 401).
+vertice(448).
+edge(448, 447).
+edge(448, 449).
+edge(448, 402).
+vertice(449).
+edge(449, 448).
+edge(449, 450).
+edge(449, 403).
+vertice(450).
+edge(450, 449).
+edge(450, 451).
+edge(450, 404).
+vertice(451).
+edge(451, 450).
+edge(451, 452).
+edge(451, 405).
+vertice(452).
+edge(452, 451).
+edge(452, 453).
+edge(452, 406).
+vertice(453).
+edge(453, 452).
+edge(453, 454).
+edge(453, 407).
+vertice(454).
+edge(454, 453).
+edge(454, 455).
+edge(454, 408).
+vertice(455).
+edge(455, 454).
+edge(455, 456).
+edge(455, 409).
+vertice(456).
+edge(456, 455).
+edge(456, 457).
+edge(456, 410).
+vertice(457).
+edge(457, 456).
+edge(457, 458).
+edge(457, 411).
+vertice(458).
+edge(458, 457).
+edge(458, 459).
+edge(458, 412).
+vertice(459).
+edge(459, 458).
+edge(459, 413).

@@ -1,0 +1,53 @@
+#!/bin/bash
+
+PROBS="0 1 2"
+# PROBS="2"
+DDIR="22" 
+PDIR="../../"
+
+for domain in $PROBS; do 
+
+   before="$(date +%s)"
+   if [ -f loc.tmp ] ; then 
+       rm loc.tmp
+   fi 
+   if [ -e __t* ] ; then     
+       rm __*
+   fi     
+
+   cd ${domain} 
+
+   clingo ${PDIR}simplify2.lp ${domain}.map -q2
+   clingo ${PDIR}drive.lp ${domain}.agents __tmp.map  -q2
+   
+   while IFS='' read -r line || [[ -n "$line" ]]; do
+       echo "Text read from file: $line"
+       if [ -f loc.tmp ] ; then 
+           clingo ${PDIR}inc2g_kiva.lp $line __tmp.map loc.tmp -q2
+           mv __tmp.out "$line.out"
+           cp loc.tmp "$line.loc.tmp"
+           clingo ${PDIR}adjust.lp "$line.out" ${domain}.agents ${domain}.map -c first=0 -q2
+       else 
+           clingo ${PDIR}inc2g_kiva.lp $line __tmp.map  -q2
+           mv __tmp.out "$line.out"
+           cp loc.tmp "$line.loc.tmp"
+           clingo ${PDIR}adjust.lp "$line.out" ${domain}.agents ${domain}.map -c first=1 -q2
+       fi         
+       cp "$line.out" "$line.result"
+       while IFSZ='' read -r lineinsert || [[ -n "$lineinsert" ]]; do
+           echo "Text read from file: $lineinsert"
+           clingo ${PDIR}insert.lp $lineinsert ${domain}.map -q2 
+           cat __out.result  "$line.result" > __tmp
+           mv __tmp  "$line.result"
+       done < "__list_init"
+   done < "outs.txt"
+   after="$(date +%s)"
+   echo "Time: $after and $before"
+   total_time="$(expr $after - $before)"
+   echo "Time: $total_time" 
+   echo "Time: $total_time" > time_${domain}.txt 
+   cd .. 
+   
+done 
+
+ 
