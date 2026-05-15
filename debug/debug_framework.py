@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Generate and run controlled GTAPF debug experiments.
 
-The normal benchmark cases mix many effects together.  These synthetic cases
-hold the map shape simple so we can compare corridor length and agent density
-more directly.
+The normal benchmark cases mix many effects together.  These controlled cases
+reuse warehouse-style maps and vary corridor length and agent density directly.
 """
 
 from __future__ import annotations
@@ -12,7 +11,9 @@ import argparse
 import csv
 import json
 import os
+import random
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -32,12 +33,18 @@ CSV_PATH = RESULTS_ROOT / "debug_results.csv"
 
 FACT_RE = re.compile(r"^\s*([A-Za-z_][A-Za-z0-9_]*)\((.*)\)\.\s*$")
 DETAIL_SEPARATOR = "\n"
+DEFAULT_SWEEP_AGENT_COUNTS = [2, 10, 20, 25, 30, 35]
+DEFAULT_SWEEP_RATIOS = [0.50, 0.60, 0.70, 0.80]
+DEFAULT_SWEEP_SEED = 7
 
 
 @dataclass(frozen=True)
 class ScenarioSpec:
     name: str
-    corridor_length: int
+    grid_width: int
+    grid_height: int
+    tunnel_length: int
+    tunnel_target_ratio: float
     agent_count: int
     corridor_case: str
     agent_case: str
@@ -47,35 +54,47 @@ class ScenarioSpec:
 SCENARIOS: Dict[str, ScenarioSpec] = {
     "short_low": ScenarioSpec(
         name="short_low",
-        corridor_length=8,
+        grid_width=100,
+        grid_height=15,
+        tunnel_length=20,
+        tunnel_target_ratio=0.20,
         agent_count=2,
         corridor_case="short",
         agent_case="low",
-        description="Short corridor with low traffic; baseline case.",
+        description="Short tunnel with low traffic; baseline case.",
     ),
     "long_low": ScenarioSpec(
         name="long_low",
-        corridor_length=36,
+        grid_width=100,
+        grid_height=15,
+        tunnel_length=70,
+        tunnel_target_ratio=0.70,
         agent_count=2,
         corridor_case="long",
         agent_case="low",
-        description="Long corridor with low traffic; isolates long abstraction repair.",
+        description="Long tunnel is 70 percent of grid width with low traffic.",
     ),
     "short_high": ScenarioSpec(
         name="short_high",
-        corridor_length=8,
+        grid_width=100,
+        grid_height=15,
+        tunnel_length=20,
+        tunnel_target_ratio=0.20,
         agent_count=12,
         corridor_case="short",
         agent_case="high",
-        description="Short corridor with high traffic; isolates agent conflict density.",
+        description="Short tunnel with high traffic; isolates agent conflict density.",
     ),
     "long_high": ScenarioSpec(
         name="long_high",
-        corridor_length=36,
+        grid_width=100,
+        grid_height=15,
+        tunnel_length=70,
+        tunnel_target_ratio=0.70,
         agent_count=12,
         corridor_case="long",
         agent_case="high",
-        description="Long corridor with high traffic; combined stress case.",
+        description="Long tunnel is 70 percent of grid width with high traffic.",
     ),
 }
 
@@ -112,87 +131,324 @@ def write_lines(path: Path, lines: Iterable[str]) -> None:
                 handle.write("\n")
 
 
+def scenario_dir(spec: ScenarioSpec) -> Path:
+    return SCENARIOS_ROOT / spec.name
+
+
+def corridor_case_for_ratio(ratio: float) -> str:
+    if ratio >= 0.80:
+        return "very_long"
+    if ratio >= 0.70:
+        return "long"
+    if ratio >= 0.60:
+        return "medium"
+    return "short"
+
+
+def agent_case_for_count(agent_count: int) -> str:
+    if agent_count <= 0:
+        return "zero"
+    if agent_count <= 2:
+        return "low"
+    if agent_count < 20:
+        return "medium"
+    if agent_count < 35:
+        return "high"
+    return "very_high"
+
+
+def normalize_ratio(value: float) -> float:
+    ratio = float(value)
+    if ratio > 1:
+        ratio = ratio / 100.0
+    if ratio <= 0 or ratio >= 1:
+        raise SystemExit(f"Tunnel ratio must be between 0 and 1, got {value}.")
+    return ratio
+
+
+def odd_between(rng: random.Random, minimum: int, maximum: int) -> int:
+    choices = [value for value in range(minimum, maximum + 1) if value % 2 == 1]
+    if not choices:
+        raise SystemExit("Grid height range must contain at least one odd value.")
+    return rng.choice(choices)
+
+
+def random_width(rng: random.Random, minimum: int, maximum: int) -> int:
+    low = ((minimum + 9) // 10) * 10
+    high = (maximum // 10) * 10
+    if low > high:
+        raise SystemExit("Grid width range must contain at least one multiple of 10.")
+    return rng.choice(list(range(low, high + 1, 10)))
+
+
+def build_sweep_specs(
+    agent_counts: Sequence[int],
+    ratios: Sequence[float],
+    samples: int,
+    min_width: int,
+    max_width: int,
+    min_height: int,
+    max_height: int,
+    seed: int,
+) -> Dict[str, ScenarioSpec]:
+    rng = random.Random(seed)
+    specs: Dict[str, ScenarioSpec] = {}
+    normalized_ratios = [normalize_ratio(ratio) for ratio in ratios]
+
+    for ratio in normalized_ratios:
+        ratio_percent = int(round(ratio * 100))
+        for agent_count in agent_counts:
+            if agent_count < 0:
+                raise SystemExit("Agent counts cannot be negative.")
+            for sample in range(1, samples + 1):
+                width = random_width(rng, min_width, max_width)
+                height = odd_between(rng, min_height, max_height)
+                tunnel_length = int(round(width * ratio))
+                name = f"sweep_r{ratio_percent:02d}_w{width}_h{height}_a{agent_count:02d}_s{sample:02d}"
+                specs[name] = ScenarioSpec(
+                    name=name,
+                    grid_width=width,
+                    grid_height=height,
+                    tunnel_length=tunnel_length,
+                    tunnel_target_ratio=ratio,
+                    agent_count=agent_count,
+                    corridor_case=corridor_case_for_ratio(ratio),
+                    agent_case=agent_case_for_count(agent_count),
+                    description=(
+                        f"Random-width tunnel sweep: tunnel is {ratio_percent}% "
+                        f"of grid width {width}, with {agent_count} agents."
+                    ),
+                )
+
+    return specs
+
+
+def infer_grid_columns(vertices: Set[int], edges: Set[Tuple[int, int]]) -> int:
+    differences = Counter(abs(dst - src) for src, dst in edges if abs(dst - src) > 1)
+    if differences:
+        return differences.most_common(1)[0][0]
+    if vertices:
+        return max(vertices) + 1
+    return 1
+
+
+def node_column(node: int, columns: int) -> int:
+    return node % columns if columns else node
+
+
+def node_row(node: int, columns: int) -> int:
+    return node // columns if columns else 0
+
+
+def side_sorted(nodes: Iterable[int], columns: int, side: str) -> List[int]:
+    if side == "left":
+        return sorted(nodes, key=lambda node: (node_column(node, columns), node_row(node, columns), node))
+    if side == "right":
+        return sorted(nodes, key=lambda node: (-node_column(node, columns), node_row(node, columns), node))
+    raise ValueError(f"Unknown side: {side}")
+
+
+def choose_unique(candidates: Sequence[int], count: int, used: Set[int]) -> List[int]:
+    chosen = []
+    for node in candidates:
+        if node in used:
+            continue
+        chosen.append(node)
+        used.add(node)
+        if len(chosen) == count:
+            break
+    if len(chosen) < count:
+        raise SystemExit(f"Only found {len(chosen)} unique nodes, but needed {count}.")
+    return chosen
+
+
+def cell_id(row: int, column: int, width: int) -> int:
+    return row * width + column
+
+
 def add_edge(edges: Set[Tuple[int, int]], left: int, right: int) -> None:
     edges.add((left, right))
     edges.add((right, left))
 
 
-def scenario_dir(spec: ScenarioSpec) -> Path:
-    return SCENARIOS_ROOT / spec.name
+def tunnel_bounds(spec: ScenarioSpec) -> Tuple[int, int, int]:
+    tunnel_length = int(round(spec.grid_width * spec.tunnel_target_ratio))
+    tunnel_length = min(spec.grid_width - 2, max(3, tunnel_length))
+    start_col = (spec.grid_width - tunnel_length) // 2
+    end_col = start_col + tunnel_length - 1
+    return start_col, end_col, tunnel_length
 
 
-def build_scenario_graph(spec: ScenarioSpec) -> Tuple[Set[int], Set[Tuple[int, int]], Set[int], Dict[int, int]]:
-    """Build a graph with one pod-lined corridor and side parking nodes."""
+def tunnel_cells(spec: ScenarioSpec) -> Tuple[Set[Tuple[int, int]], Set[Tuple[int, int]]]:
+    width = spec.grid_width
+    height = spec.grid_height
+    tunnel_row = height // 2
+    start_col, end_col, _tunnel_length = tunnel_bounds(spec)
+    chamber_half_height = 2
 
-    length = spec.corridor_length
-    vertices: Set[int] = set()
+    aisle_cells: Set[Tuple[int, int]] = set()
+    pod_cells: Set[Tuple[int, int]] = set()
+
+    for column in range(start_col, end_col + 1):
+        aisle_cells.add((tunnel_row, column))
+        if tunnel_row - 1 >= 0:
+            pod_cells.add((tunnel_row - 1, column))
+        if tunnel_row + 1 < height:
+            pod_cells.add((tunnel_row + 1, column))
+
+    chamber_rows = range(
+        max(0, tunnel_row - chamber_half_height),
+        min(height, tunnel_row + chamber_half_height + 1),
+    )
+    for row in chamber_rows:
+        left_stop = start_col + 1 if row == tunnel_row else start_col
+        right_start = end_col if row == tunnel_row else end_col + 1
+        for column in range(0, left_stop):
+            aisle_cells.add((row, column))
+        for column in range(right_start, width):
+            aisle_cells.add((row, column))
+
+    pod_cells.difference_update(aisle_cells)
+    return aisle_cells, pod_cells
+
+
+def build_tunnel_graph(spec: ScenarioSpec) -> Tuple[Set[int], Set[Tuple[int, int]], Set[int], Dict[str, int]]:
+    width = spec.grid_width
+    tunnel_row = spec.grid_height // 2
+    start_col, end_col, tunnel_length = tunnel_bounds(spec)
+    aisle_cells, pod_cells = tunnel_cells(spec)
+
+    vertices = {cell_id(row, col, width) for row, col in aisle_cells | pod_cells}
+    pods = {cell_id(row, col, width) for row, col in pod_cells}
     edges: Set[Tuple[int, int]] = set()
-    pods: Set[int] = set()
-    starts: Dict[int, int] = {}
 
-    corridor_nodes = list(range(length))
-    vertices.update(corridor_nodes)
+    for row, col in aisle_cells:
+        current = cell_id(row, col, width)
+        for drow, dcol in ((0, 1), (1, 0)):
+            neighbor = (row + drow, col + dcol)
+            if neighbor in aisle_cells:
+                add_edge(edges, current, cell_id(neighbor[0], neighbor[1], width))
 
-    for node in corridor_nodes[:-1]:
-        add_edge(edges, node, node + 1)
-
-    pod_base = 1000
-    for corridor_node in corridor_nodes:
-        pod_node = pod_base + corridor_node
-        vertices.add(pod_node)
-        pods.add(pod_node)
-        add_edge(edges, corridor_node, pod_node)
-
-    left_count = (spec.agent_count + 1) // 2
-    for index in range(spec.agent_count):
-        robot_id = index + 1
-        if index < left_count:
-            start_node = 2000 + index
-            attach_to = 0
+    for row, col in pod_cells:
+        if row == tunnel_row - 1:
+            aisle = (tunnel_row, col)
+        elif row == tunnel_row + 1:
+            aisle = (tunnel_row, col)
         else:
-            start_node = 3000 + index
-            attach_to = length - 1
-        vertices.add(start_node)
-        starts[robot_id] = start_node
-        add_edge(edges, start_node, attach_to)
+            continue
+        if aisle in aisle_cells:
+            add_edge(edges, cell_id(row, col, width), cell_id(aisle[0], aisle[1], width))
 
-    return vertices, edges, pods, starts
+    metadata = {
+        "grid_width": width,
+        "grid_height": spec.grid_height,
+        "tunnel_row": tunnel_row,
+        "tunnel_start_col": start_col,
+        "tunnel_end_col": end_col,
+        "tunnel_length": tunnel_length,
+        "tunnel_width_ratio": round(tunnel_length / float(width), 6),
+        "left_station": cell_id(tunnel_row, max(0, start_col - 1), width),
+        "right_station": cell_id(tunnel_row, min(width - 1, end_col + 1), width),
+    }
+    return vertices, edges, pods, metadata
 
 
 def make_map_lines(vertices: Set[int], edges: Set[Tuple[int, int]], pods: Set[int]) -> List[str]:
+    outgoing = defaultdict(list)
+    for src, dst in sorted(edges):
+        outgoing[src].append(dst)
+
     lines: List[str] = []
     for vertex in sorted(vertices):
         lines.append(f"vertice({vertex}).")
         if vertex in pods:
             lines.append(f"pods({vertex}).")
-        for src, dst in sorted(edge for edge in edges if edge[0] == vertex):
-            lines.append(f"edge({src},{dst}).")
+        for dst in outgoing.get(vertex, []):
+            lines.append(f"edge({vertex},{dst}).")
     return lines
 
 
-def make_agents_lines(spec: ScenarioSpec, starts: Dict[int, int]) -> List[str]:
-    length = spec.corridor_length
-    left_count = (spec.agent_count + 1) // 2
-    lines: List[str] = []
+def candidate_cells_for_side(spec: ScenarioSpec, side: str) -> List[Tuple[int, int]]:
+    tunnel_row = spec.grid_height // 2
+    start_col, end_col, _tunnel_length = tunnel_bounds(spec)
+    rows = list(range(max(0, tunnel_row - 2), min(spec.grid_height, tunnel_row + 3)))
 
-    for robot_id in range(1, spec.agent_count + 1):
-        lines.append(f"agent({robot_id},{starts[robot_id]},a).")
+    if side == "left":
+        columns = list(range(max(0, start_col - 1), -1, -1))
+    elif side == "right":
+        columns = list(range(min(spec.grid_width - 1, end_col + 1), spec.grid_width))
+    else:
+        raise ValueError(f"Unknown side: {side}")
+
+    return [(row, col) for col in columns for row in rows]
+
+
+def goal_pods_for_side(spec: ScenarioSpec, side: str) -> List[int]:
+    width = spec.grid_width
+    tunnel_row = spec.grid_height // 2
+    start_col, end_col, _tunnel_length = tunnel_bounds(spec)
+    pod_rows = [tunnel_row - 1, tunnel_row + 1]
+    goals: List[int] = []
+
+    if side == "left_to_right":
+        columns = list(range(end_col, start_col - 1, -1))
+    elif side == "right_to_left":
+        columns = list(range(start_col, end_col + 1))
+    else:
+        raise ValueError(f"Unknown side: {side}")
+
+    for column in columns:
+        for row in pod_rows:
+            if 0 <= row < spec.grid_height:
+                goals.append(cell_id(row, column, width))
+    return goals
+
+
+def make_agents_lines(spec: ScenarioSpec, pods: Set[int], metadata: Dict[str, int]) -> List[str]:
+    if spec.agent_count <= 0:
+        return []
+
+    width = spec.grid_width
+    left_count = (spec.agent_count + 1) // 2
+    right_count = spec.agent_count - left_count
+    used_starts: Set[int] = set()
+
+    left_candidates = [cell_id(row, col, width) for row, col in candidate_cells_for_side(spec, "left")]
+    right_candidates = [cell_id(row, col, width) for row, col in candidate_cells_for_side(spec, "right")]
+    left_starts = choose_unique(left_candidates, left_count, used_starts)
+    right_starts = choose_unique(right_candidates, right_count, used_starts)
+
+    left_goals = [goal for goal in goal_pods_for_side(spec, "right_to_left") if goal in pods]
+    right_goals = [goal for goal in goal_pods_for_side(spec, "left_to_right") if goal in pods]
+    if not left_goals or not right_goals:
+        raise SystemExit("The tunnel generator did not create enough pod goals.")
+
+    left_station = metadata["left_station"]
+    right_station = metadata["right_station"]
+
+    lines: List[str] = []
+    starts = left_starts + right_starts
+    sides = ["left"] * left_count + ["right"] * right_count
+    for robot_id, start in enumerate(starts, start=1):
+        lines.append(f"agent({robot_id},{start},a).")
 
     lines.append("group(1,0).")
 
-    for robot_id in range(1, spec.agent_count + 1):
-        starts_on_left = robot_id <= left_count
-        if starts_on_left:
-            goal_offset = length - 1 - ((robot_id - 1) % min(3, length))
-            store = 0
-            depot = length - 1
+    left_goal_index = 0
+    right_goal_index = 0
+    for robot_id, side in enumerate(sides, start=1):
+        if side == "left":
+            goal = right_goals[right_goal_index % len(right_goals)]
+            right_goal_index += 1
+            store = left_station
+            depot = right_station
         else:
-            goal_offset = (robot_id - left_count - 1) % min(3, length)
-            store = length - 1
-            depot = 0
+            goal = left_goals[left_goal_index % len(left_goals)]
+            left_goal_index += 1
+            store = right_station
+            depot = left_station
 
-        goal_pod = 1000 + goal_offset
-        lines.append(f"task({robot_id},1,{goal_pod},a).")
+        lines.append(f"task({robot_id},1,{goal},a).")
         lines.append(f"store({robot_id},{store}).")
         lines.append(f"depot({robot_id},{depot}).")
 
@@ -200,44 +456,58 @@ def make_agents_lines(spec: ScenarioSpec, starts: Dict[int, int]) -> List[str]:
 
 
 def make_ins_lines(spec: ScenarioSpec) -> List[str]:
-    length = spec.corridor_length
-    left_agents = (spec.agent_count + 1) // 2
-    right_agents = spec.agent_count - left_agents
-    left_label = "L" * min(left_agents, 12)
-    right_label = "R" * min(right_agents, 12)
-    corridor = "." * length
-    pods = "|" * length
-    return [
-        f"{left_label}{corridor}{right_label}",
-        f"{' ' * len(left_label)}{pods}",
-    ]
+    aisle_cells, pod_cells = tunnel_cells(spec)
+    lines = []
+    for row in range(spec.grid_height):
+        chars = []
+        for col in range(spec.grid_width):
+            if (row, col) in pod_cells:
+                chars.append("|")
+            elif (row, col) in aisle_cells:
+                chars.append(".")
+            else:
+                chars.append("#")
+        lines.append("".join(chars))
+    return lines
 
 
-def write_metadata(spec: ScenarioSpec, vertices: Set[int], edges: Set[Tuple[int, int]], pods: Set[int]) -> None:
+def write_metadata(
+    spec: ScenarioSpec,
+    vertices: Set[int],
+    edges: Set[Tuple[int, int]],
+    pods: Set[int],
+    tunnel_metadata: Dict[str, int],
+) -> None:
     metadata = asdict(spec)
     metadata.update(
         {
             "map_vertices": len(vertices),
             "map_edges": len(edges),
             "pods": len(pods),
-            "agent_density": round(spec.agent_count / float(spec.corridor_length), 6),
+            "agent_density": round(spec.agent_count / float(tunnel_metadata["tunnel_length"]), 6),
             "hypothesis": (
                 "Longer corridors should increase abstraction repair length; "
                 "more agents per corridor node should increase waits and conflict handling."
             ),
         }
     )
+    metadata.update(tunnel_metadata)
     path = scenario_dir(spec) / "metadata.json"
     path.write_text(json.dumps(metadata, indent=2, sort_keys=True), encoding="utf-8")
 
 
 def generate_scenario(spec: ScenarioSpec) -> None:
     path = scenario_dir(spec)
-    vertices, edges, pods, starts = build_scenario_graph(spec)
+    vertices, edges, pods, tunnel_metadata = build_tunnel_graph(spec)
+
+    path.mkdir(parents=True, exist_ok=True)
+    generated_dir = path / "generated"
+    if generated_dir.exists():
+        shutil.rmtree(generated_dir)
     write_lines(path / f"{spec.name}.map", make_map_lines(vertices, edges, pods))
-    write_lines(path / f"{spec.name}.agents", make_agents_lines(spec, starts))
     write_lines(path / f"{spec.name}.ins", make_ins_lines(spec))
-    write_metadata(spec, vertices, edges, pods)
+    write_lines(path / f"{spec.name}.agents", make_agents_lines(spec, pods, tunnel_metadata))
+    write_metadata(spec, vertices, edges, pods, tunnel_metadata)
 
 
 def generate_scenarios(case_names: Sequence[str]) -> None:
@@ -246,7 +516,31 @@ def generate_scenarios(case_names: Sequence[str]) -> None:
         print(f"Generated {SCENARIOS[name].name} in {scenario_dir(SCENARIOS[name])}")
 
 
-def run_solver(case_names: Sequence[str]) -> Path:
+def generate_specs(specs: Dict[str, ScenarioSpec]) -> None:
+    for spec in specs.values():
+        generate_scenario(spec)
+        print(f"Generated {spec.name} in {scenario_dir(spec)}")
+
+
+def run_status_path(case_name: str) -> Path:
+    return SCENARIOS_ROOT / case_name / "run_status.json"
+
+
+def write_run_status(case_names: Sequence[str], status: str, returncode: int, log_path: Path, message: str = "") -> None:
+    payload = {
+        "status": status,
+        "returncode": returncode,
+        "log_path": str(log_path),
+        "message": message,
+        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+    }
+    for case_name in case_names:
+        path = run_status_path(case_name)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+
+
+def run_solver(case_names: Sequence[str], timeout_seconds: int = 0) -> Path:
     SCENARIOS_ROOT.mkdir(parents=True, exist_ok=True)
     LOGS_ROOT.mkdir(parents=True, exist_ok=True)
 
@@ -255,28 +549,48 @@ def run_solver(case_names: Sequence[str]) -> Path:
     env["PDIR"] = "../../../../"
 
     timestamp = time.strftime("%Y%m%d_%H%M%S")
-    log_path = LOGS_ROOT / f"debug_run_{timestamp}.log"
+    slug = "_".join(case_names)
+    if len(slug) > 80:
+        slug = f"{len(case_names)}_cases"
+    log_path = LOGS_ROOT / f"debug_run_{timestamp}_{slug}.log"
     command = ["bash", "../../test_asp"]
 
     print(f"Running: PROBS=\"{env['PROBS']}\" PDIR=\"{env['PDIR']}\" bash ../../test_asp")
     print(f"Log: {log_path}")
 
-    completed = subprocess.run(
-        command,
-        cwd=str(SCENARIOS_ROOT),
-        env=env,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        check=False,
-    )
-    log_path.write_text(completed.stdout, encoding="utf-8", errors="replace")
+    with log_path.open("w", encoding="utf-8", errors="replace") as log_file:
+        try:
+            completed = subprocess.run(
+                command,
+                cwd=str(SCENARIOS_ROOT),
+                env=env,
+                text=True,
+                stdout=log_file,
+                stderr=subprocess.STDOUT,
+                timeout=timeout_seconds if timeout_seconds > 0 else None,
+                check=False,
+            )
+        except subprocess.TimeoutExpired as exc:
+            log_file.write(f"\nTimed out after {timeout_seconds} seconds.\n")
+            write_run_status(case_names, "timed_out", -1, log_path, f"Timed out after {timeout_seconds} seconds.")
+            raise SystemExit(f"test_asp timed out after {timeout_seconds} seconds. See {log_path}") from exc
 
     if completed.returncode != 0:
-        print(completed.stdout)
+        write_run_status(case_names, "failed", completed.returncode, log_path)
         raise SystemExit(f"test_asp failed with exit code {completed.returncode}. See {log_path}")
 
+    write_run_status(case_names, "completed", completed.returncode, log_path)
     return log_path
+
+
+def run_cases_individually(case_names: Sequence[str], timeout_seconds: int = 0, keep_going: bool = False) -> None:
+    for case_name in case_names:
+        try:
+            run_solver([case_name], timeout_seconds=timeout_seconds)
+        except SystemExit as exc:
+            if not keep_going:
+                raise
+            print(exc)
 
 
 def graph_from_map(map_file: Path) -> Tuple[Set[int], Set[Tuple[int, int]], Set[int]]:
@@ -388,6 +702,24 @@ def format_action_records(records: List[Tuple[str, object, object, int]], action
     return DETAIL_SEPARATOR.join(details)
 
 
+def format_visited_records(records: List[Tuple[str, object, object, object, int]]) -> str:
+    by_result_robot = defaultdict(list)
+    for result_name, robot, real_goal, abstract_goal, time_value in records:
+        by_result_robot[(result_name, robot)].append((time_value, real_goal, abstract_goal))
+
+    details = []
+    for (result_name, robot), visits in sorted(
+        by_result_robot.items(),
+        key=lambda item: (item[0][0], sort_key(item[0][1])),
+    ):
+        pieces = [
+            f"time {time_value} visited real {real_goal} abstract {abstract_goal}"
+            for time_value, real_goal, abstract_goal in sorted(visits)
+        ]
+        details.append(f"{result_name}: robot {robot}: " + " -> ".join(pieces))
+    return DETAIL_SEPARATOR.join(details)
+
+
 def collect_result_metrics(generated_dir: Path) -> Dict[str, object]:
     result_files = sorted(
         path for path in generated_dir.glob("*.result")
@@ -412,6 +744,7 @@ def collect_result_metrics(generated_dir: Path) -> Dict[str, object]:
     repair_path_points = defaultdict(dict)
     move_records = []
     stay_records = []
+    visited_records = []
 
     for result_file in result_files:
         for pred, args in iter_facts(result_file):
@@ -440,9 +773,10 @@ def collect_result_metrics(generated_dir: Path) -> Dict[str, object]:
                 per_agent_repair_cost[robot] = max(per_agent_repair_cost[robot], int(time_value))
                 repair_path_points[(result_file.name, robot, int(index))][int(time_value)] = loc
             elif pred == "visited" and len(args) == 4:
-                robot = args[0]
+                robot, real_goal, abstract_goal, time_value = args
                 visited_count += 1
                 per_agent_visited[robot] += 1
+                visited_records.append((result_file.name, robot, real_goal, abstract_goal, int(time_value)))
 
     abstract_makespan = safe_max(at_times)
     if abstract_makespan == "" and action_times:
@@ -533,6 +867,7 @@ def collect_result_metrics(generated_dir: Path) -> Dict[str, object]:
         "repair_path_details_readable": DETAIL_SEPARATOR.join(repair_path_details_readable),
         "move_details": format_action_records(move_records, "move_to"),
         "stay_details": format_action_records(stay_records, "stay_at"),
+        "visited_details": format_visited_records(visited_records),
         "per_agent_costs": per_agent_costs,
     }
 
@@ -541,9 +876,17 @@ def collect_scenario(spec: ScenarioSpec) -> Dict[str, object]:
     path = scenario_dir(spec)
     map_file = path / f"{spec.name}.map"
     agents_file = path / f"{spec.name}.agents"
+    metadata_file = path / "metadata.json"
     generated_dir = path / "generated"
     abstract_map = generated_dir / "__tmp.map"
     time_file = generated_dir / f"time_{spec.name}.txt"
+    metadata = {}
+    if metadata_file.exists():
+        metadata = json.loads(metadata_file.read_text(encoding="utf-8"))
+    run_status = {}
+    status_file = run_status_path(spec.name)
+    if status_file.exists():
+        run_status = json.loads(status_file.read_text(encoding="utf-8"))
 
     vertices, edges, pods = graph_from_map(map_file)
     graph = adjacency(vertices, edges)
@@ -573,9 +916,21 @@ def collect_scenario(spec: ScenarioSpec) -> Dict[str, object]:
         "corridor_case": spec.corridor_case,
         "agent_case": spec.agent_case,
         "description": spec.description,
-        "configured_corridor_length": spec.corridor_length,
+        "grid_width": metadata.get("grid_width", spec.grid_width),
+        "grid_height": metadata.get("grid_height", spec.grid_height),
+        "tunnel_target_ratio": metadata.get("tunnel_target_ratio", spec.tunnel_target_ratio),
+        "tunnel_width_ratio": metadata.get("tunnel_width_ratio", ""),
+        "tunnel_width_percent": round(float(metadata.get("tunnel_width_ratio", 0)) * 100, 2)
+        if metadata.get("tunnel_width_ratio", "") != "" else "",
+        "configured_corridor_length": metadata.get("tunnel_length", spec.tunnel_length),
+        "configured_tunnel_length": metadata.get("tunnel_length", spec.tunnel_length),
+        "tunnel_start_col": metadata.get("tunnel_start_col", ""),
+        "tunnel_end_col": metadata.get("tunnel_end_col", ""),
+        "tunnel_row": metadata.get("tunnel_row", ""),
+        "left_station": metadata.get("left_station", ""),
+        "right_station": metadata.get("right_station", ""),
         "total_agents": spec.agent_count,
-        "agent_density": round(spec.agent_count / float(spec.corridor_length), 6),
+        "agent_density": round(spec.agent_count / float(metadata.get("tunnel_length", spec.tunnel_length)), 6),
         "total_tasks": count_predicate(agents_file, "task"),
         "map_vertices": len(vertices),
         "map_edges": len(edges),
@@ -593,6 +948,10 @@ def collect_scenario(spec: ScenarioSpec) -> Dict[str, object]:
         "egroup_3_count": egroup_3_count,
         "compression_ratio": compression_ratio,
         "runtime_seconds": runtime_seconds,
+        "solver_status": run_status.get("status", ""),
+        "solver_returncode": run_status.get("returncode", ""),
+        "solver_log_path": run_status.get("log_path", ""),
+        "solver_message": run_status.get("message", ""),
         "generated_dir": str(generated_dir),
     }
     row.update(result_metrics)
@@ -637,10 +996,14 @@ def merge_csv_rows(csv_path: Path, rows: Sequence[Dict[str, object]]) -> None:
 
 
 def collect_scenarios(case_names: Sequence[str]) -> None:
+    collect_specs({name: SCENARIOS[name] for name in case_names})
+
+
+def collect_specs(specs: Dict[str, ScenarioSpec]) -> None:
     DETAILS_ROOT.mkdir(parents=True, exist_ok=True)
     rows = []
-    for name in case_names:
-        row = collect_scenario(SCENARIOS[name])
+    for name, spec in specs.items():
+        row = collect_scenario(spec)
         rows.append(row)
         detail_path = DETAILS_ROOT / f"{name}.json"
         detail_path.write_text(json.dumps(row, indent=2, sort_keys=True), encoding="utf-8")
@@ -680,6 +1043,42 @@ def add_case_argument(parser: argparse.ArgumentParser) -> None:
     )
 
 
+def add_sweep_arguments(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "--agent-counts",
+        nargs="*",
+        type=int,
+        default=DEFAULT_SWEEP_AGENT_COUNTS,
+        help="Agent counts for the sweep. Default: 2 10 20 25 30 35",
+    )
+    parser.add_argument(
+        "--ratios",
+        nargs="*",
+        type=float,
+        default=DEFAULT_SWEEP_RATIOS,
+        help="Tunnel ratios as fractions or percents. Default: 50 60 70 80",
+    )
+    parser.add_argument("--samples", type=int, default=1, help="Random grid samples per agent/ratio pair")
+    parser.add_argument("--min-width", type=int, default=80, help="Minimum random grid width")
+    parser.add_argument("--max-width", type=int, default=160, help="Maximum random grid width")
+    parser.add_argument("--min-height", type=int, default=15, help="Minimum random grid height")
+    parser.add_argument("--max-height", type=int, default=25, help="Maximum random grid height")
+    parser.add_argument("--seed", type=int, default=DEFAULT_SWEEP_SEED, help="Random seed for reproducible grid sizes")
+
+
+def sweep_specs_from_args(args) -> Dict[str, ScenarioSpec]:
+    return build_sweep_specs(
+        agent_counts=args.agent_counts,
+        ratios=args.ratios,
+        samples=args.samples,
+        min_width=args.min_width,
+        max_width=args.max_width,
+        min_height=args.min_height,
+        max_height=args.max_height,
+        seed=args.seed,
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Controlled GTAPF debug experiment framework")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -693,36 +1092,84 @@ def main() -> None:
     run_parser = subparsers.add_parser("run", help="Run test_asp on generated debug scenarios")
     add_case_argument(run_parser)
     run_parser.add_argument("--no-collect", action="store_true", help="Do not collect CSV metrics after running")
+    run_parser.add_argument("--timeout-seconds", type=int, default=0, help="Stop the solver after this many seconds; 0 means no timeout")
 
     collect_parser = subparsers.add_parser("collect", help="Collect metrics from existing debug generated folders")
     add_case_argument(collect_parser)
 
     all_parser = subparsers.add_parser("all", help="Generate, run, and collect debug metrics")
     add_case_argument(all_parser)
+    all_parser.add_argument("--timeout-seconds", type=int, default=0, help="Stop the solver after this many seconds; 0 means no timeout")
+
+    sweep_list_parser = subparsers.add_parser("sweep-list", help="List generated parameter-sweep cases")
+    add_sweep_arguments(sweep_list_parser)
+
+    sweep_generate_parser = subparsers.add_parser("sweep-generate", help="Generate parameter-sweep scenario files")
+    add_sweep_arguments(sweep_generate_parser)
+
+    sweep_run_parser = subparsers.add_parser("sweep-run", help="Run generated parameter-sweep scenarios one by one")
+    add_sweep_arguments(sweep_run_parser)
+    sweep_run_parser.add_argument("--timeout-seconds", type=int, default=0, help="Stop each scenario after this many seconds; 0 means no timeout")
+    sweep_run_parser.add_argument("--keep-going", action="store_true", help="Continue to the next scenario if one fails or times out")
+    sweep_run_parser.add_argument("--no-collect", action="store_true", help="Do not collect CSV metrics after running")
+
+    sweep_collect_parser = subparsers.add_parser("sweep-collect", help="Collect metrics from parameter-sweep scenarios")
+    add_sweep_arguments(sweep_collect_parser)
+
+    sweep_all_parser = subparsers.add_parser("sweep-all", help="Generate, run, and collect parameter-sweep metrics")
+    add_sweep_arguments(sweep_all_parser)
+    sweep_all_parser.add_argument("--timeout-seconds", type=int, default=0, help="Stop each scenario after this many seconds; 0 means no timeout")
+    sweep_all_parser.add_argument("--keep-going", action="store_true", help="Continue to the next scenario if one fails or times out")
 
     args = parser.parse_args()
 
     if args.command == "list":
         for spec in SCENARIOS.values():
             print(
-                f"{spec.name}: corridor={spec.corridor_case}({spec.corridor_length}), "
+                f"{spec.name}: corridor={spec.corridor_case}({spec.tunnel_length}/{spec.grid_width}), "
                 f"agents={spec.agent_case}({spec.agent_count})"
             )
         return
 
-    cases = selected_cases(args.cases)
+    if args.command == "sweep-list":
+        specs = sweep_specs_from_args(args)
+        for spec in specs.values():
+            print(
+                f"{spec.name}: width={spec.grid_width}, height={spec.grid_height}, "
+                f"ratio={spec.tunnel_target_ratio:.2f}, tunnel={round(spec.grid_width * spec.tunnel_target_ratio)}, "
+                f"agents={spec.agent_count}"
+            )
+        return
 
+    if args.command.startswith("sweep-"):
+        specs = sweep_specs_from_args(args)
+        case_names = list(specs)
+        if args.command == "sweep-generate":
+            generate_specs(specs)
+        elif args.command == "sweep-run":
+            run_cases_individually(case_names, timeout_seconds=args.timeout_seconds, keep_going=args.keep_going)
+            if not args.no_collect:
+                collect_specs(specs)
+        elif args.command == "sweep-collect":
+            collect_specs(specs)
+        elif args.command == "sweep-all":
+            generate_specs(specs)
+            run_cases_individually(case_names, timeout_seconds=args.timeout_seconds, keep_going=args.keep_going)
+            collect_specs(specs)
+        return
+
+    cases = selected_cases(args.cases)
     if args.command == "generate":
         generate_scenarios(cases)
     elif args.command == "run":
-        run_solver(cases)
+        run_solver(cases, timeout_seconds=args.timeout_seconds)
         if not args.no_collect:
             collect_scenarios(cases)
     elif args.command == "collect":
         collect_scenarios(cases)
     elif args.command == "all":
         generate_scenarios(cases)
-        run_solver(cases)
+        run_solver(cases, timeout_seconds=args.timeout_seconds)
         collect_scenarios(cases)
     else:
         parser.print_help()

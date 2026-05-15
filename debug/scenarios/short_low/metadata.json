@@ -1,13 +1,22 @@
 {
   "agent_case": "low",
   "agent_count": 2,
-  "agent_density": 0.25,
+  "agent_density": 0.1,
   "corridor_case": "short",
-  "corridor_length": 8,
-  "description": "Short corridor with low traffic; baseline case.",
+  "description": "Short tunnel with low traffic; baseline case.",
+  "grid_height": 15,
+  "grid_width": 100,
   "hypothesis": "Longer corridors should increase abstraction repair length; more agents per corridor node should increase waits and conflict handling.",
-  "map_edges": 34,
-  "map_vertices": 18,
+  "left_station": 739,
+  "map_edges": 1542,
+  "map_vertices": 460,
   "name": "short_low",
-  "pods": 8
+  "pods": 40,
+  "right_station": 760,
+  "tunnel_end_col": 59,
+  "tunnel_length": 20,
+  "tunnel_row": 7,
+  "tunnel_start_col": 40,
+  "tunnel_target_ratio": 0.2,
+  "tunnel_width_ratio": 0.2
 }
