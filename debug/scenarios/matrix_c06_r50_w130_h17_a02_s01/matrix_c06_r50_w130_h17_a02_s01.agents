@@ -1,0 +1,9 @@
+agent(1,811,a).
+agent(2,877,a).
+group(1,0).
+task(1,1,1006,a).
+store(1,1071).
+depot(1,1137).
+task(2,1,942,a).
+store(2,1137).
+depot(2,1071).
