@@ -287,14 +287,14 @@ PATH_ABSTRACTION_PROOF_SCENARIOS: Dict[str, ScenarioSpec] = {
         agent_count=2,
         corridor_case="long",
         agent_case="low",
-        description="Fail case 1: the long tunnel has a middle gap, so no complete abstract path should be usable.",
+        description="Fail case 1: concrete long tunnel stays connected, but the abstract bridge is removed.",
         target_failure_cause="missing_path_abstraction",
-        target_failure_hypothesis="Breaking the middle of the tunnel should remove the start-to-goal path evidence.",
+        target_failure_hypothesis="The concrete path exists, but the high-level abstract bridge is missing.",
         debug_suite="path_abstraction_proof",
         proof_role="fail_missing_abstraction_low_agents",
         expected_outcome="fail",
         expected_missing_abstraction=True,
-        graph_mutation="break_tunnel_middle",
+        graph_mutation="remove_abstract_bridge",
     ),
     "path_abs_fail_broken_long_high": ScenarioSpec(
         name="path_abs_fail_broken_long_high",
@@ -305,16 +305,67 @@ PATH_ABSTRACTION_PROOF_SCENARIOS: Dict[str, ScenarioSpec] = {
         agent_count=20,
         corridor_case="long",
         agent_case="high",
-        description="Fail case 2: the same missing tunnel bridge with many agents.",
+        description="Fail case 2: concrete long tunnel stays connected, but the abstract bridge is removed for many agents.",
         target_failure_cause="missing_path_abstraction",
-        target_failure_hypothesis="With many agents and a broken tunnel, the abstract path evidence should still be missing.",
+        target_failure_hypothesis="The concrete path exists, but many agents cannot use the missing abstract bridge.",
         debug_suite="path_abstraction_proof",
         proof_role="fail_missing_abstraction_high_agents",
         expected_outcome="fail",
         expected_missing_abstraction=True,
-        graph_mutation="break_tunnel_middle",
+        graph_mutation="remove_abstract_bridge",
     ),
 }
+
+
+MISSING_PATH_ABSTRACTION_SCENARIOS: Dict[str, ScenarioSpec] = {
+    "mpa_success_connected_short": ScenarioSpec(
+        name="mpa_success_connected_short",
+        grid_width=80,
+        grid_height=15,
+        tunnel_length=40,
+        tunnel_target_ratio=0.50,
+        agent_count=2,
+        corridor_case="short",
+        agent_case="low",
+        description="Control: connected short tunnel, low agents, abstract path should exist.",
+        target_failure_cause="missing_path_abstraction",
+        target_failure_hypothesis="A normal connected tunnel should produce an abstract plan and repair path.",
+        debug_suite="missing_path_abstraction_reason",
+        proof_role="success_control_connected_tunnel",
+        expected_outcome="success",
+        expected_missing_abstraction=False,
+    ),
+    "mpa_fail_long_missing_connector": ScenarioSpec(
+        name="mpa_fail_long_missing_connector",
+        grid_width=120,
+        grid_height=17,
+        tunnel_length=84,
+        tunnel_target_ratio=0.70,
+        agent_count=2,
+        corridor_case="long",
+        agent_case="low",
+        description="Clean fail proof: real long tunnel is connected, but the abstract corridor connector is removed.",
+        target_failure_cause="missing_path_abstraction",
+        target_failure_hypothesis=(
+            "If the concrete start-goal path is reachable but the abstract bridge is removed, "
+            "missing output is caused by abstraction, not by a broken real map."
+        ),
+        debug_suite="missing_path_abstraction_reason",
+        proof_role="fail_long_tunnel_missing_abstract_connector",
+        expected_outcome="fail",
+        expected_missing_abstraction=True,
+        graph_mutation="remove_abstract_bridge",
+    ),
+}
+
+
+LONG_TUNNEL_PROOF_CASES = [
+    "cause_01_long_tunnel",
+    "cause_03_head_on_traffic",
+    "cause_06_large_repair_overhead",
+    "cause_07_abstraction_compression",
+    "cause_10_misleading_abstract_makespan",
+]
 
 
 def parse_atom_value(value: str):
@@ -615,7 +666,8 @@ def build_tunnel_graph(spec: ScenarioSpec) -> Tuple[Set[int], Set[Tuple[int, int
         "left_station": cell_id(tunnel_row, max(0, start_col - 1), width),
         "right_station": cell_id(tunnel_row, min(width - 1, end_col + 1), width),
         "graph_mutation": spec.graph_mutation,
-        "tunnel_gap_col": (start_col + end_col) // 2 if spec.graph_mutation == "break_tunnel_middle" else "",
+        "tunnel_gap_col": (start_col + end_col) // 2
+        if spec.graph_mutation in {"break_tunnel_middle", "remove_abstract_bridge"} else "",
     }
     return vertices, edges, pods, metadata
 
@@ -1018,6 +1070,8 @@ def build_failure_evidence(row: Dict[str, object]) -> Dict[str, object]:
     path_count = int(to_float(row.get("path_count")) or 0)
     repair_segments = int(to_float(row.get("repair_segments")) or 0)
     abstract_vertices = int(to_float(row.get("abstract_vertices")) or 0)
+    abstract_removed_edges = int(to_float(row.get("abstract_removed_edge_count")) or 0)
+    start_goal_pairs = int(to_float(row.get("start_goal_pair_count")) or 0)
     start_goal_unreachable = int(to_float(row.get("start_goal_unreachable_count")) or 0)
     longest_repair_steps = to_float(row.get("longest_repair_steps"))
     abstract_makespan = to_float(row.get("abstract_makespan"))
@@ -1059,6 +1113,8 @@ def build_failure_evidence(row: Dict[str, object]) -> Dict[str, object]:
         "abstract_compression_risk_value": compression_ratio if compression_ratio is not None else "",
         "abstract_plan_present": int(at_count > 0 and result_files > 0),
         "repair_path_present": int(path_count > 0 and result_files > 0),
+        "concrete_start_goal_all_reachable": int(start_goal_pairs > 0 and start_goal_unreachable == 0),
+        "missing_path_abstraction_reason": "",
     }
 
     flags = {
@@ -1079,6 +1135,7 @@ def build_failure_evidence(row: Dict[str, object]) -> Dict[str, object]:
         and abstract_makespan is not None
         and repair_makespan > abstract_makespan,
         "abstract_graph_missing_risk": solver_was_run and abstract_vertices == 0,
+        "abstract_bridge_removed_risk": abstract_removed_edges > 0,
         "missing_abstract_plan_risk": solver_was_run and (result_files == 0 or at_count == 0),
         "missing_repair_path_risk": solver_was_run and (result_files == 0 or path_count == 0),
         "concrete_start_goal_unreachable_risk": start_goal_unreachable > 0,
@@ -1117,6 +1174,8 @@ def build_failure_evidence(row: Dict[str, object]) -> Dict[str, object]:
         causes.append("misleading_abstract_makespan")
     if flags["path_abstraction_missing_risk"]:
         causes.append("missing_path_abstraction")
+    if flags["abstract_bridge_removed_risk"]:
+        causes.append("abstract_bridge_removed")
     if flags["wait_congestion_risk"]:
         causes.append("high_wait_congestion")
     if flags["timeout_or_failed_risk"]:
@@ -1125,6 +1184,19 @@ def build_failure_evidence(row: Dict[str, object]) -> Dict[str, object]:
         causes.append("missing_result_files")
 
     evidence.update({name: int(value) for name, value in flags.items()})
+    if flags["path_abstraction_missing_risk"] and flags["abstract_bridge_removed_risk"]:
+        if evidence["concrete_start_goal_all_reachable"]:
+            evidence["missing_path_abstraction_reason"] = (
+                "Concrete start-goal paths are reachable, but the abstract corridor connector was removed."
+            )
+        else:
+            evidence["missing_path_abstraction_reason"] = (
+                "Abstract corridor connector was removed, but concrete reachability also failed."
+            )
+    elif flags["path_abstraction_missing_risk"]:
+        evidence["missing_path_abstraction_reason"] = (
+            "No usable abstract plan/result was produced; inspect log and reachability columns."
+        )
     target_cause = str(row.get("target_failure_cause", ""))
     target_flag = TARGET_CAUSE_FLAGS.get(target_cause, "")
     evidence["target_failure_flag"] = target_flag
@@ -1410,10 +1482,14 @@ def collect_scenario(spec: ScenarioSpec) -> Dict[str, object]:
     metadata_file = path / "metadata.json"
     generated_dir = path / "generated"
     abstract_map = generated_dir / "__tmp.map"
+    abstract_mutation_file = generated_dir / "__tmp.abstract_mutation.json"
     time_file = generated_dir / f"time_{spec.name}.txt"
     metadata = {}
     if metadata_file.exists():
         metadata = json.loads(metadata_file.read_text(encoding="utf-8"))
+    abstract_mutation = {}
+    if abstract_mutation_file.exists():
+        abstract_mutation = json.loads(abstract_mutation_file.read_text(encoding="utf-8"))
     run_status = {}
     status_file = run_status_path(spec.name)
     if status_file.exists():
@@ -1464,6 +1540,12 @@ def collect_scenario(spec: ScenarioSpec) -> Dict[str, object]:
         "force_shared_store_depot": metadata.get("force_shared_store_depot", int(spec.force_shared_store_depot)),
         "graph_mutation": metadata.get("graph_mutation", spec.graph_mutation),
         "tunnel_gap_col": metadata.get("tunnel_gap_col", ""),
+        "abstract_mutation": abstract_mutation.get("abstract_mutation", ""),
+        "abstract_bridge_cut_col": abstract_mutation.get("abstract_bridge_cut_col", ""),
+        "abstract_removed_edge_count": abstract_mutation.get("abstract_removed_edge_count", ""),
+        "abstract_removed_edges_preview": DETAIL_SEPARATOR.join(
+            str(edge) for edge in abstract_mutation.get("abstract_removed_edges_preview", [])
+        ),
         "grid_width": metadata.get("grid_width", spec.grid_width),
         "grid_height": metadata.get("grid_height", spec.grid_height),
         "tunnel_target_ratio": metadata.get("tunnel_target_ratio", spec.tunnel_target_ratio),
@@ -1557,6 +1639,14 @@ def collect_path_abs_scenarios(case_names: Sequence[str]) -> None:
     collect_specs({name: PATH_ABSTRACTION_PROOF_SCENARIOS[name] for name in case_names})
 
 
+def collect_missing_path_scenarios(case_names: Sequence[str]) -> None:
+    collect_specs({name: MISSING_PATH_ABSTRACTION_SCENARIOS[name] for name in case_names})
+
+
+def collect_long_proof_scenarios(case_names: Sequence[str]) -> None:
+    collect_specs({name: CAUSE_SCENARIOS[name] for name in case_names})
+
+
 def collect_specs(specs: Dict[str, ScenarioSpec]) -> None:
     DETAILS_ROOT.mkdir(parents=True, exist_ok=True)
     rows = []
@@ -1634,6 +1724,48 @@ def selected_path_abs_cases(values: Sequence[str]) -> List[str]:
     return deduped
 
 
+def selected_missing_path_cases(values: Sequence[str]) -> List[str]:
+    if not values:
+        return list(MISSING_PATH_ABSTRACTION_SCENARIOS)
+    names: List[str] = []
+    for value in values:
+        if value == "all":
+            names.extend(MISSING_PATH_ABSTRACTION_SCENARIOS)
+        elif value in MISSING_PATH_ABSTRACTION_SCENARIOS:
+            names.append(value)
+        else:
+            valid = ", ".join(MISSING_PATH_ABSTRACTION_SCENARIOS)
+            raise SystemExit(f"Unknown missing-path scenario {value!r}. Valid cases: {valid}")
+    deduped = []
+    seen = set()
+    for name in names:
+        if name not in seen:
+            deduped.append(name)
+            seen.add(name)
+    return deduped
+
+
+def selected_long_proof_cases(values: Sequence[str]) -> List[str]:
+    if not values:
+        return list(LONG_TUNNEL_PROOF_CASES)
+    names: List[str] = []
+    for value in values:
+        if value == "all":
+            names.extend(LONG_TUNNEL_PROOF_CASES)
+        elif value in LONG_TUNNEL_PROOF_CASES:
+            names.append(value)
+        else:
+            valid = ", ".join(LONG_TUNNEL_PROOF_CASES)
+            raise SystemExit(f"Unknown long-proof scenario {value!r}. Valid cases: {valid}")
+    deduped = []
+    seen = set()
+    for name in names:
+        if name not in seen:
+            deduped.append(name)
+            seen.add(name)
+    return deduped
+
+
 def add_case_argument(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--cases",
@@ -1658,6 +1790,24 @@ def add_path_abs_argument(parser: argparse.ArgumentParser) -> None:
         nargs="*",
         default=["all"],
         help="Path abstraction proof cases to use. Use all or one/more path_abs_* names.",
+    )
+
+
+def add_missing_path_argument(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "--cases",
+        nargs="*",
+        default=["all"],
+        help="Missing-path proof cases to use. Use all or one/more mpa_* names.",
+    )
+
+
+def add_long_proof_argument(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "--cases",
+        nargs="*",
+        default=["all"],
+        help="Long-tunnel proof cases to use. Use all or one/more selected cause_XX names.",
     )
 
 
@@ -1734,6 +1884,46 @@ def main() -> None:
     all_parser = subparsers.add_parser("all", help="Generate, run, and collect debug metrics")
     add_case_argument(all_parser)
     all_parser.add_argument("--timeout-seconds", type=int, default=0, help="Stop the solver after this many seconds; 0 means no timeout")
+
+    missing_path_list_parser = subparsers.add_parser("missing-path-list", help="List the clean missing-path-abstraction proof cases")
+    add_missing_path_argument(missing_path_list_parser)
+
+    missing_path_generate_parser = subparsers.add_parser("missing-path-generate", help="Generate clean missing-path-abstraction proof cases")
+    add_missing_path_argument(missing_path_generate_parser)
+
+    missing_path_run_parser = subparsers.add_parser("missing-path-run", help="Run clean missing-path-abstraction proof cases one by one")
+    add_missing_path_argument(missing_path_run_parser)
+    missing_path_run_parser.add_argument("--timeout-seconds", type=int, default=0, help="Stop each scenario after this many seconds; 0 means no timeout")
+    missing_path_run_parser.add_argument("--keep-going", action="store_true", help="Continue to the next scenario if one fails or times out")
+    missing_path_run_parser.add_argument("--no-collect", action="store_true", help="Do not collect CSV metrics after running")
+
+    missing_path_collect_parser = subparsers.add_parser("missing-path-collect", help="Collect metrics from clean missing-path proof cases")
+    add_missing_path_argument(missing_path_collect_parser)
+
+    missing_path_all_parser = subparsers.add_parser("missing-path-all", help="Generate, run, and collect clean missing-path proof cases")
+    add_missing_path_argument(missing_path_all_parser)
+    missing_path_all_parser.add_argument("--timeout-seconds", type=int, default=0, help="Stop each scenario after this many seconds; 0 means no timeout")
+    missing_path_all_parser.add_argument("--keep-going", action="store_true", help="Continue to the next scenario if one fails or times out")
+
+    long_proof_list_parser = subparsers.add_parser("long-proof-list", help="List the selected long-tunnel abstraction failure proof cases")
+    add_long_proof_argument(long_proof_list_parser)
+
+    long_proof_generate_parser = subparsers.add_parser("long-proof-generate", help="Generate selected long-tunnel proof cases")
+    add_long_proof_argument(long_proof_generate_parser)
+
+    long_proof_run_parser = subparsers.add_parser("long-proof-run", help="Run selected long-tunnel proof cases one by one")
+    add_long_proof_argument(long_proof_run_parser)
+    long_proof_run_parser.add_argument("--timeout-seconds", type=int, default=0, help="Stop each scenario after this many seconds; 0 means no timeout")
+    long_proof_run_parser.add_argument("--keep-going", action="store_true", help="Continue to the next scenario if one fails or times out")
+    long_proof_run_parser.add_argument("--no-collect", action="store_true", help="Do not collect CSV metrics after running")
+
+    long_proof_collect_parser = subparsers.add_parser("long-proof-collect", help="Collect metrics from selected long-tunnel proof cases")
+    add_long_proof_argument(long_proof_collect_parser)
+
+    long_proof_all_parser = subparsers.add_parser("long-proof-all", help="Generate, run, and collect selected long-tunnel proof cases")
+    add_long_proof_argument(long_proof_all_parser)
+    long_proof_all_parser.add_argument("--timeout-seconds", type=int, default=0, help="Stop each scenario after this many seconds; 0 means no timeout")
+    long_proof_all_parser.add_argument("--keep-going", action="store_true", help="Continue to the next scenario if one fails or times out")
 
     path_abs_list_parser = subparsers.add_parser("path-abs-list", help="List the one-success two-failure path abstraction proof cases")
     add_path_abs_argument(path_abs_list_parser)
@@ -1823,6 +2013,54 @@ def main() -> None:
                 f"{spec.name}: corridor={spec.corridor_case}({spec.tunnel_length}/{spec.grid_width}), "
                 f"agents={spec.agent_case}({spec.agent_count})"
         )
+        return
+
+    if args.command.startswith("missing-path-"):
+        cases = selected_missing_path_cases(args.cases)
+        specs = {name: MISSING_PATH_ABSTRACTION_SCENARIOS[name] for name in cases}
+        if args.command == "missing-path-list":
+            for spec in specs.values():
+                print(
+                    f"{spec.name}: role={spec.proof_role}, expected={spec.expected_outcome}, "
+                    f"mutation={spec.graph_mutation or 'none'}, ratio={spec.tunnel_target_ratio:.2f}, "
+                    f"agents={spec.agent_count}"
+                )
+        elif args.command == "missing-path-generate":
+            generate_specs(specs)
+        elif args.command == "missing-path-run":
+            run_cases_individually(cases, timeout_seconds=args.timeout_seconds, keep_going=args.keep_going)
+            if not args.no_collect:
+                collect_missing_path_scenarios(cases)
+        elif args.command == "missing-path-collect":
+            collect_missing_path_scenarios(cases)
+        elif args.command == "missing-path-all":
+            generate_specs(specs)
+            run_cases_individually(cases, timeout_seconds=args.timeout_seconds, keep_going=args.keep_going)
+            collect_missing_path_scenarios(cases)
+        return
+
+    if args.command.startswith("long-proof-"):
+        cases = selected_long_proof_cases(args.cases)
+        specs = {name: CAUSE_SCENARIOS[name] for name in cases}
+        if args.command == "long-proof-list":
+            for spec in specs.values():
+                print(
+                    f"{spec.name}: cause={spec.target_failure_cause}, "
+                    f"ratio={spec.tunnel_target_ratio:.2f}, agents={spec.agent_count}, "
+                    f"hypothesis={spec.target_failure_hypothesis}"
+                )
+        elif args.command == "long-proof-generate":
+            generate_specs(specs)
+        elif args.command == "long-proof-run":
+            run_cases_individually(cases, timeout_seconds=args.timeout_seconds, keep_going=args.keep_going)
+            if not args.no_collect:
+                collect_long_proof_scenarios(cases)
+        elif args.command == "long-proof-collect":
+            collect_long_proof_scenarios(cases)
+        elif args.command == "long-proof-all":
+            generate_specs(specs)
+            run_cases_individually(cases, timeout_seconds=args.timeout_seconds, keep_going=args.keep_going)
+            collect_long_proof_scenarios(cases)
         return
 
     if args.command.startswith("path-abs-"):

@@ -20,6 +20,9 @@ for domain in $PROBS; do
    cd "$generated_dir" || exit 1
 
    clingo ${PDIR}simplify2.lp ../${domain}.map -q2
+   if [ -f "../metadata.json" ] ; then
+       python3 ${PDIR}debug/mutate_abstract_map.py __tmp.map ../metadata.json
+   fi
    clingo ${PDIR}drive.lp ../${domain}.agents __tmp.map -q2
 
    if [ -f "outs.txt" ] ; then

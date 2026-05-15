@@ -151,8 +151,8 @@ It creates exactly three scenarios:
 | Scenario | Expected | Purpose |
 | --- | --- | --- |
 | `path_abs_success_control` | success | connected short tunnel, low agents |
-| `path_abs_fail_broken_long_low` | fail | long tunnel with a middle gap, low agents |
-| `path_abs_fail_broken_long_high` | fail | long tunnel with a middle gap, high agents |
+| `path_abs_fail_broken_long_low` | fail | connected long tunnel, abstract bridge removed, low agents |
+| `path_abs_fail_broken_long_high` | fail | connected long tunnel, abstract bridge removed, high agents |
 
 Run all three:
 
@@ -172,11 +172,97 @@ The proof columns to use in charts are:
 - `expected_outcome`
 - `expected_missing_abstraction`
 - `graph_mutation`
+- `abstract_mutation`
+- `abstract_removed_edge_count`
+- `concrete_start_goal_all_reachable`
 - `start_goal_unreachable_count`
 - `abstract_plan_present`
 - `repair_path_present`
 - `path_abstraction_missing_risk`
 - `target_failure_triggered`
+
+## Organized Minimal Proof Workflow
+
+Use this workflow for the professor-facing proof with only a few rows.
+
+### 1. Missing Path Abstraction Reason
+
+This creates only two rows:
+
+| Scenario | Purpose |
+| --- | --- |
+| `mpa_success_connected_short` | control case, connected tunnel, path should exist |
+| `mpa_fail_long_missing_connector` | long tunnel, concrete path exists, abstract connector is removed |
+
+Run:
+
+```bash
+python3 debug/debug_framework.py missing-path-all --timeout-seconds 1800 --keep-going
+```
+
+Important proof columns:
+
+- `graph_mutation`
+- `abstract_mutation`
+- `abstract_removed_edge_count`
+- `concrete_start_goal_all_reachable`
+- `start_goal_unreachable_count`
+- `result_files`
+- `abstract_plan_present`
+- `repair_path_present`
+- `path_abstraction_missing_risk`
+- `missing_path_abstraction_reason`
+- `target_failure_triggered`
+
+Expected failure-row pattern:
+
+```text
+graph_mutation = remove_abstract_bridge
+abstract_mutation = remove_abstract_bridge
+abstract_removed_edge_count > 0
+concrete_start_goal_all_reachable = 1
+start_goal_unreachable_count = 0
+abstract_plan_present = 0
+path_abstraction_missing_risk = 1
+```
+
+This means the real map still has a path, but the high-level abstract connector is missing.
+
+### 2. Long Tunnel Abstraction Failure Proof
+
+This runs only the selected long-tunnel cause cases:
+
+| Scenario | Proof target |
+| --- | --- |
+| `cause_01_long_tunnel` | long tunnel hides many concrete cells |
+| `cause_03_head_on_traffic` | opposite-direction robot pressure |
+| `cause_06_large_repair_overhead` | one abstract move becomes many repair moves |
+| `cause_07_abstraction_compression` | compression loses graph detail |
+| `cause_10_misleading_abstract_makespan` | abstract makespan looks good, real execution is bad |
+
+Run:
+
+```bash
+python3 debug/debug_framework.py long-proof-all --timeout-seconds 1800 --keep-going
+```
+
+Important proof columns:
+
+- `compression_ratio`
+- `abstract_vertices`
+- `map_vertices`
+- `abstract_transitions`
+- `repair_path_details_readable`
+- `longest_repair_steps`
+- `repair_cost`
+- `repair_overhead_ratio`
+- `opposing_pair_pressure`
+- `abstract_makespan`
+- `repair_makespan`
+- `observed_makespan`
+- `repair_makespan_gap`
+- `likely_failure_causes`
+- `failure_risk_score`
 
 ## Full Cause-By-Sweep Proof Matrix
 
