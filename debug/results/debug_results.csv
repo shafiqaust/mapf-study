@@ -1,82 +1,4 @@
 scenario_name,scenario_path,corridor_case,agent_case,description,debug_suite,base_sweep_name,cause_case_name,cause_number,proof_role,expected_outcome,expected_missing_abstraction,target_failure_cause,target_failure_hypothesis,duplicate_goal_limit,force_shared_store_depot,graph_mutation,tunnel_gap_col,abstract_mutation,abstract_bridge_cut_col,abstract_removed_edge_count,abstract_removed_edges_preview,grid_width,grid_height,tunnel_target_ratio,tunnel_width_ratio,tunnel_width_percent,configured_corridor_length,configured_tunnel_length,tunnel_start_col,tunnel_end_col,tunnel_row,left_station,right_station,total_agents,agent_density,total_tasks,map_vertices,map_edges,pods,corridor_node_count,corridor_component_count,largest_corridor_component,longest_corridor_component,junction_count,dead_end_count,degree_distribution,abstract_vertices,abstract_edges,egroup_count,egroup_3_count,compression_ratio,runtime_seconds,solver_status,solver_returncode,solver_log_path,solver_message,generated_dir,left_agent_count,right_agent_count,inside_tunnel_agent_count,unknown_side_agent_count,opposing_agent_pair_count,same_side_pair_count,unique_start_count,duplicate_start_count,unique_goal_count,duplicate_goal_count,max_agents_per_goal,unique_store_count,unique_depot_count,max_agents_per_store,max_agents_per_depot,start_goal_pair_count,start_goal_reachable_count,start_goal_unreachable_count,start_goal_unreachable_details,result_files,abstract_makespan,repair_makespan,observed_makespan,sum_of_costs,repair_cost,concrete_cost_proxy,total_waits,move_count,stay_count,at_count,path_count,visited_count,repair_segments,longest_repair_steps,longest_repair_detail,abstract_plan_robot_count,abstract_transition_count,repair_path_detail_count,abstract_plan_details,abstract_transitions,repair_path_details,repair_path_details_readable,move_details,stay_details,visited_details,per_agent_costs,tunnel_lane_count,tunnel_entry_count,tunnel_bottleneck_capacity,agents_per_tunnel_node,agents_per_tunnel_percent,opposing_pair_pressure,bottleneck_load,bottleneck_load_per_lane,wait_ratio,waits_per_agent,moves_per_agent,repair_segments_per_agent,repair_cost_per_agent,cost_per_agent,repair_cost_ratio,repair_makespan_gap,repair_overhead_ratio,longest_repair_to_tunnel_ratio,observed_makespan_per_agent,abstract_compression_risk_value,abstract_plan_present,repair_path_present,concrete_start_goal_all_reachable,missing_path_abstraction_reason,long_tunnel_risk,very_long_tunnel_risk,high_agent_density_risk,very_high_agent_density_risk,head_on_traffic_risk,high_head_on_pressure_risk,single_lane_bottleneck_risk,duplicate_goal_risk,shared_store_depot_risk,abstraction_compression_risk,repair_overhead_risk,misleading_abstract_makespan_risk,abstract_graph_missing_risk,abstract_bridge_removed_risk,missing_abstract_plan_risk,missing_repair_path_risk,concrete_start_goal_unreachable_risk,wait_congestion_risk,timeout_or_failed_risk,missing_result_risk,path_abstraction_missing_risk,target_failure_flag,target_failure_triggered,failure_risk_score,likely_failure_causes,failure_evidence_summary
-mpa_success_connected_short,debug/scenarios/mpa_success_connected_short,short,low,"Control: connected short tunnel, low agents, abstract path should exist.",missing_path_abstraction_reason,,,,success_control_connected_tunnel,success,False,missing_path_abstraction,A normal connected tunnel should produce an abstract plan and repair path.,0,0,,,,,,,80,15,0.5,0.5,50.0,40,40,20,59,7,579,620,2,0.05,2,320,942,80,40,1,40,39,232,0,degree_2=8;degree_3=82;degree_4=150,210,760,1,7,1.52381,4,completed,0,/home/grad6/mzaman/ZAMAN_WORKS/mapf-study/debug/results/logs/debug_run_20260515_044430_mpa_success_connected_short.log,,/home/grad6/mzaman/ZAMAN_WORKS/mapf-study/debug/scenarios/mpa_success_connected_short/generated,1,1,0,0,1,0,2,0,2,0,1,2,2,1,1,2,2,0,,1,10,36,36,19,72,91,1,19,1,22,406,6,18,36,f1.agents.result:r1:t6:abstract=613->500:repair=613->612->611->610->609->608->607->606->605->604->603->602->601->600->599->598->597->597->596->595->595->594->593->592->591->590->589->588->587->586->585->584->583->582->581->580->500:steps=36,2,20,18,"f1.agents.result: robot 1: time 0 at 419 -> time 1 at 499 -> time 2 at 499 -> time 3 at 579 -> time 4 at 613 -> time 5 at 620 -> time 6 at 613 -> time 7 at 500 -> time 8 at 613 -> time 9 at 579 -> time 10 at 578
-f1.agents.result: robot 2: time 0 at 460 -> time 1 at 540 -> time 2 at 620 -> time 3 at 613 -> time 4 at 532 -> time 5 at 613 -> time 6 at 579 -> time 7 at 613 -> time 8 at 539 -> time 9 at 613 -> time 10 at 620","f1.agents.result:r1:t0:419->499
-f1.agents.result:r1:t1:499->499
-f1.agents.result:r1:t2:499->579
-f1.agents.result:r1:t3:579->613
-f1.agents.result:r1:t4:613->620
-f1.agents.result:r1:t5:620->613
-f1.agents.result:r1:t6:613->500
-f1.agents.result:r1:t7:500->613
-f1.agents.result:r1:t8:613->579
-f1.agents.result:r1:t9:579->578
-f1.agents.result:r2:t0:460->540
-f1.agents.result:r2:t1:540->620
-f1.agents.result:r2:t2:620->613
-f1.agents.result:r2:t3:613->532
-f1.agents.result:r2:t4:532->613
-f1.agents.result:r2:t5:613->579
-f1.agents.result:r2:t6:579->613
-f1.agents.result:r2:t7:613->539
-f1.agents.result:r2:t8:539->613
-f1.agents.result:r2:t9:613->620","f1.agents.result:r1:t0:abstract=419->499:repair=419->499:steps=1
-f1.agents.result:r1:t2:abstract=499->579:repair=499->579->579->579->579->579->579->579:steps=7
-f1.agents.result:r1:t3:abstract=579->613:repair=579->580->581->582->583->584->585->586->587->588->589->590->591->592->593->594->595->596->597->598->599->600->601->602->603->604->605->606->607->608->609->610->611->612->613:steps=34
-f1.agents.result:r1:t4:abstract=613->620:repair=613->614->615->616->617->618->619->620:steps=7
-f1.agents.result:r1:t5:abstract=620->613:repair=620->619->618->617->616->615->614->613->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->613:steps=34
-f1.agents.result:r1:t6:abstract=613->500:repair=613->612->611->610->609->608->607->606->605->604->603->602->601->600->599->598->597->597->596->595->595->594->593->592->591->590->589->588->587->586->585->584->583->582->581->580->500:steps=36
-f1.agents.result:r1:t7:abstract=500->613:repair=500->580->581->582->583->584->585->586->587->588->589->590->591->592->593->594->595->596->597->598->599->600->601->602->603->604->605->606->607->608->609->610->611->612->613:steps=34
-f1.agents.result:r1:t8:abstract=613->579:repair=613->612->611->610->609->608->607->606->605->604->603->602->601->600->599->598->597->596->595->594->593->592->591->590->589->588->587->586->585->584->583->582->581->580->579:steps=34
-f1.agents.result:r1:t9:abstract=579->578:repair=579->578->578->578->578->578->578->578:steps=7
-f1.agents.result:r2:t0:abstract=460->540:repair=460->540:steps=1
-f1.agents.result:r2:t2:abstract=620->613:repair=620->619->618->617->616->615->614->613:steps=7
-f1.agents.result:r2:t3:abstract=613->532:repair=613->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->613->612->532->532->532->532->532->532->532->532->532:steps=34
-f1.agents.result:r2:t4:abstract=532->613:repair=532->532->612->613->533->533->533->613:steps=7
-f1.agents.result:r2:t5:abstract=613->579:repair=613->612->611->610->609->608->607->606->605->604->603->602->601->600->599->598->597->596->595->594->593->592->591->590->589->588->587->586->585->584->583->582->581->580->579:steps=34
-f1.agents.result:r2:t6:abstract=579->613:repair=579->580->581->582->583->584->585->586->587->588->589->590->591->592->593->594->595->596->676->596->597->598->599->600->601->602->603->604->605->606->607->608->609->610->611->612->613:steps=36
-f1.agents.result:r2:t7:abstract=613->539:repair=613->614->615->616->617->618->619->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539:steps=34
-f1.agents.result:r2:t8:abstract=539->613:repair=539->619->618->617->616->615->614->613->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->613:steps=34
-f1.agents.result:r2:t9:abstract=613->620:repair=613->614->615->616->617->618->619->620:steps=7","f1.agents.result: robot 1: time 0: abstract plan 419 -> 499; repair path 419->499; steps 1
-f1.agents.result: robot 1: time 2: abstract plan 499 -> 579; repair path 499->579->579->579->579->579->579->579; steps 7
-f1.agents.result: robot 1: time 3: abstract plan 579 -> 613; repair path 579->580->581->582->583->584->585->586->587->588->589->590->591->592->593->594->595->596->597->598->599->600->601->602->603->604->605->606->607->608->609->610->611->612->613; steps 34
-f1.agents.result: robot 1: time 4: abstract plan 613 -> 620; repair path 613->614->615->616->617->618->619->620; steps 7
-f1.agents.result: robot 1: time 5: abstract plan 620 -> 613; repair path 620->619->618->617->616->615->614->613->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->613; steps 34
-f1.agents.result: robot 1: time 6: abstract plan 613 -> 500; repair path 613->612->611->610->609->608->607->606->605->604->603->602->601->600->599->598->597->597->596->595->595->594->593->592->591->590->589->588->587->586->585->584->583->582->581->580->500; steps 36
-f1.agents.result: robot 1: time 7: abstract plan 500 -> 613; repair path 500->580->581->582->583->584->585->586->587->588->589->590->591->592->593->594->595->596->597->598->599->600->601->602->603->604->605->606->607->608->609->610->611->612->613; steps 34
-f1.agents.result: robot 1: time 8: abstract plan 613 -> 579; repair path 613->612->611->610->609->608->607->606->605->604->603->602->601->600->599->598->597->596->595->594->593->592->591->590->589->588->587->586->585->584->583->582->581->580->579; steps 34
-f1.agents.result: robot 1: time 9: abstract plan 579 -> 578; repair path 579->578->578->578->578->578->578->578; steps 7
-f1.agents.result: robot 2: time 0: abstract plan 460 -> 540; repair path 460->540; steps 1
-f1.agents.result: robot 2: time 2: abstract plan 620 -> 613; repair path 620->619->618->617->616->615->614->613; steps 7
-f1.agents.result: robot 2: time 3: abstract plan 613 -> 532; repair path 613->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->613->612->532->532->532->532->532->532->532->532->532; steps 34
-f1.agents.result: robot 2: time 4: abstract plan 532 -> 613; repair path 532->532->612->613->533->533->533->613; steps 7
-f1.agents.result: robot 2: time 5: abstract plan 613 -> 579; repair path 613->612->611->610->609->608->607->606->605->604->603->602->601->600->599->598->597->596->595->594->593->592->591->590->589->588->587->586->585->584->583->582->581->580->579; steps 34
-f1.agents.result: robot 2: time 6: abstract plan 579 -> 613; repair path 579->580->581->582->583->584->585->586->587->588->589->590->591->592->593->594->595->596->676->596->597->598->599->600->601->602->603->604->605->606->607->608->609->610->611->612->613; steps 36
-f1.agents.result: robot 2: time 7: abstract plan 613 -> 539; repair path 613->614->615->616->617->618->619->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539; steps 34
-f1.agents.result: robot 2: time 8: abstract plan 539 -> 613; repair path 539->619->618->617->616->615->614->613->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->613; steps 34
-f1.agents.result: robot 2: time 9: abstract plan 613 -> 620; repair path 613->614->615->616->617->618->619->620; steps 7","f1.agents.result: robot 1: time 0 move_to 499 -> time 2 move_to 579 -> time 3 move_to 613 -> time 4 move_to 620 -> time 5 move_to 613 -> time 6 move_to 500 -> time 7 move_to 613 -> time 8 move_to 579 -> time 9 move_to 578
-f1.agents.result: robot 2: time 0 move_to 540 -> time 1 move_to 620 -> time 2 move_to 613 -> time 3 move_to 532 -> time 4 move_to 613 -> time 5 move_to 579 -> time 6 move_to 613 -> time 7 move_to 539 -> time 8 move_to 613 -> time 9 move_to 620",f1.agents.result: robot 1: time 1 stay_at 499,"f1.agents.result: robot 1: time 5 visited real 620 abstract 620 -> time 7 visited real 500 abstract 500 -> time 9 visited real 579 abstract 579
-f1.agents.result: robot 2: time 6 visited real 579 abstract 579 -> time 8 visited real 539 abstract 539 -> time 10 visited real 620 abstract 620","1:move=9:wait=1:repair=36:visited=3
-2:move=10:wait=0:repair=36:visited=3",1,2,1,0.05,5.0,0.025,2,2,0.05,0.5,9.5,9.0,36.0,9.5,3.789474,26,3.6,0.9,18.0,1.52381,1,1,1,,0,0,0,0,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,path_abstraction_missing_risk,0,3,opposite_direction_head_on_traffic;large_repair_overhead;misleading_abstract_makespan,ratio=0.5;agents=2;density=0.05;opposing_pairs=1;wait_ratio=0.05;repair_overhead=3.6;status=completed
-mpa_fail_long_missing_connector,debug/scenarios/mpa_fail_long_missing_connector,long,low,"Clean fail proof: real long tunnel is connected, but the abstract corridor connector is removed.",missing_path_abstraction_reason,,,,fail_long_tunnel_missing_abstract_connector,fail,True,missing_path_abstraction,"If the concrete start-goal path is reachable but the abstract bridge is removed, missing output is caused by abstraction, not by a broken real map.",0,0,remove_abstract_bridge,59,remove_abstract_bridge,59,170,"edge(858,1034).
-edge(859,1034).
-edge(860,1034).
-edge(861,1034).
-edge(862,1034).
-edge(863,1034).
-edge(864,1034).
-edge(865,1034).
-edge(866,1034).
-edge(867,1034).
-edge(868,1034).
-edge(869,1034).
-edge(870,1034).
-edge(871,1034).
-edge(872,1034).
-edge(873,1034).
-edge(874,1034).
-edge(875,1034).
-edge(876,1034).
-edge(877,1034).",120,17,0.7,0.7,70.0,84,84,18,101,8,977,1062,2,0.02381,2,432,1134,168,84,1,84,83,256,0,degree_2=8;degree_3=74;degree_4=182,285,670,1,6,1.515789,0,completed,0,/home/grad6/mzaman/ZAMAN_WORKS/mapf-study/debug/results/logs/debug_run_20260515_044434_mpa_fail_long_missing_connector.log,,/home/grad6/mzaman/ZAMAN_WORKS/mapf-study/debug/scenarios/mpa_fail_long_missing_connector/generated,1,1,0,0,1,0,2,0,2,0,1,2,2,1,1,2,2,0,,0,,,,0,0,0,0,0,0,0,0,0,0,,,0,0,0,,,,,,,,,1,2,1,0.02381,2.38,0.011905,2,2,,0.0,0.0,0.0,0.0,0.0,,,,,,1.515789,0,0,1,"Concrete start-goal paths are reachable, but the abstract corridor connector was removed.",1,0,0,0,1,0,0,0,0,0,0,0,0,1,1,1,0,0,0,1,1,path_abstraction_missing_risk,1,7,long_tunnel_ratio;opposite_direction_head_on_traffic;missing_path_abstraction;abstract_bridge_removed;missing_result_files,ratio=0.7;agents=2;density=0.024;opposing_pairs=1;wait_ratio=;repair_overhead=;status=completed
 cause_01_long_tunnel,debug/scenarios/cause_01_long_tunnel,long,low,Cause 01: long tunnel with low traffic.,,,,,,,False,long_tunnel_ratio,A long tunnel makes one abstract step hide many concrete cells.,0,0,,,,,,,120,17,0.7,0.7,70.0,84,84,18,101,8,977,1062,2,0.02381,2,432,1134,168,84,1,84,83,256,0,degree_2=8;degree_3=74;degree_4=182,285,840,1,6,1.515789,12,completed,0,/home/grad6/mzaman/ZAMAN_WORKS/mapf-study/debug/results/logs/debug_run_20260515_064944_cause_01_long_tunnel.log,,/home/grad6/mzaman/ZAMAN_WORKS/mapf-study/debug/scenarios/cause_01_long_tunnel/generated,1,1,0,0,1,0,2,0,2,0,1,2,2,1,1,2,2,0,,1,10,59,59,18,118,136,2,18,2,22,766,6,18,59,f1.agents.result:r1:t6:abstract=1034->858:repair=1034->1033->1032->1031->1030->1029->1028->1027->1026->1025->1024->1023->1022->1021->1020->1019->1018->1017->1016->1015->1014->1013->1012->1011->1010->1009->1008->1007->1006->886->1006->1005->1004->1003->1002->1001->1000->999->998->997->996->995->994->993->992->991->990->989->988->987->986->985->984->983->982->981->980->979->978->858:steps=59,2,20,18,"f1.agents.result: robot 1: time 0 at 737 -> time 1 at 857 -> time 2 at 977 -> time 3 at 977 -> time 4 at 1034 -> time 5 at 1062 -> time 6 at 1034 -> time 7 at 858 -> time 8 at 1034 -> time 9 at 977 -> time 10 at 977
 f1.agents.result: robot 2: time 0 at 822 -> time 1 at 942 -> time 2 at 1062 -> time 3 at 1034 -> time 4 at 941 -> time 5 at 1034 -> time 6 at 977 -> time 7 at 1034 -> time 8 at 941 -> time 9 at 1034 -> time 10 at 1062","f1.agents.result:r1:t0:737->857
 f1.agents.result:r1:t1:857->977
@@ -454,3 +376,81 @@ f1.agents.result: robot 2: time 9: abstract plan 667 -> 711; repair path 667->66
 f1.agents.result: robot 2: time 0 move_to 621 -> time 1 move_to 711 -> time 2 move_to 667 -> time 3 move_to 606 -> time 4 move_to 667 -> time 5 move_to 638 -> time 6 move_to 667 -> time 7 move_to 620 -> time 8 move_to 667 -> time 9 move_to 711",f1.agents.result: robot 1: time 2 stay_at 638,"f1.agents.result: robot 1: time 5 visited real 711 abstract 711 -> time 7 visited real 549 abstract 549 -> time 9 visited real 638 abstract 638
 f1.agents.result: robot 2: time 6 visited real 638 abstract 638 -> time 8 visited real 620 abstract 620 -> time 10 visited real 711 abstract 711","1:move=9:wait=1:repair=44:visited=3
 2:move=10:wait=0:repair=44:visited=3",1,2,1,0.027778,2.78,0.013889,2,2,0.05,0.5,9.5,9.0,44.0,9.5,4.631579,34,4.4,0.611111,22.0,1.478261,1,1,1,,1,1,0,0,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,,0,5,long_tunnel_ratio;very_long_tunnel_ratio;opposite_direction_head_on_traffic;large_repair_overhead;misleading_abstract_makespan,ratio=0.8;agents=2;density=0.028;opposing_pairs=1;wait_ratio=0.05;repair_overhead=4.4;status=completed
+mpa_success_connected_short,debug/scenarios/mpa_success_connected_short,short,low,"Control: connected short tunnel, low agents, abstract path should exist.",missing_path_abstraction_reason,,,,success_control_connected_tunnel,success,False,missing_path_abstraction,A normal connected tunnel should produce an abstract plan and repair path.,0,0,,,,,,,80,15,0.5,0.5,50.0,40,40,20,59,7,579,620,2,0.05,2,320,942,80,40,1,40,39,232,0,degree_2=8;degree_3=82;degree_4=150,210,760,1,7,1.52381,4,completed,0,/home/grad6/mzaman/ZAMAN_WORKS/mapf-study/debug/results/logs/debug_run_20260515_070355_mpa_success_connected_short.log,,/home/grad6/mzaman/ZAMAN_WORKS/mapf-study/debug/scenarios/mpa_success_connected_short/generated,1,1,0,0,1,0,2,0,2,0,1,2,2,1,1,2,2,0,,1,10,36,36,19,72,91,1,19,1,22,406,6,18,36,f1.agents.result:r1:t6:abstract=613->500:repair=613->612->611->610->609->608->607->606->605->604->603->602->601->600->599->598->597->597->596->595->595->594->593->592->591->590->589->588->587->586->585->584->583->582->581->580->500:steps=36,2,20,18,"f1.agents.result: robot 1: time 0 at 419 -> time 1 at 499 -> time 2 at 499 -> time 3 at 579 -> time 4 at 613 -> time 5 at 620 -> time 6 at 613 -> time 7 at 500 -> time 8 at 613 -> time 9 at 579 -> time 10 at 578
+f1.agents.result: robot 2: time 0 at 460 -> time 1 at 540 -> time 2 at 620 -> time 3 at 613 -> time 4 at 532 -> time 5 at 613 -> time 6 at 579 -> time 7 at 613 -> time 8 at 539 -> time 9 at 613 -> time 10 at 620","f1.agents.result:r1:t0:419->499
+f1.agents.result:r1:t1:499->499
+f1.agents.result:r1:t2:499->579
+f1.agents.result:r1:t3:579->613
+f1.agents.result:r1:t4:613->620
+f1.agents.result:r1:t5:620->613
+f1.agents.result:r1:t6:613->500
+f1.agents.result:r1:t7:500->613
+f1.agents.result:r1:t8:613->579
+f1.agents.result:r1:t9:579->578
+f1.agents.result:r2:t0:460->540
+f1.agents.result:r2:t1:540->620
+f1.agents.result:r2:t2:620->613
+f1.agents.result:r2:t3:613->532
+f1.agents.result:r2:t4:532->613
+f1.agents.result:r2:t5:613->579
+f1.agents.result:r2:t6:579->613
+f1.agents.result:r2:t7:613->539
+f1.agents.result:r2:t8:539->613
+f1.agents.result:r2:t9:613->620","f1.agents.result:r1:t0:abstract=419->499:repair=419->499:steps=1
+f1.agents.result:r1:t2:abstract=499->579:repair=499->579->579->579->579->579->579->579:steps=7
+f1.agents.result:r1:t3:abstract=579->613:repair=579->580->581->582->583->584->585->586->587->588->589->590->591->592->593->594->595->596->597->598->599->600->601->602->603->604->605->606->607->608->609->610->611->612->613:steps=34
+f1.agents.result:r1:t4:abstract=613->620:repair=613->614->615->616->617->618->619->620:steps=7
+f1.agents.result:r1:t5:abstract=620->613:repair=620->619->618->617->616->615->614->613->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->613:steps=34
+f1.agents.result:r1:t6:abstract=613->500:repair=613->612->611->610->609->608->607->606->605->604->603->602->601->600->599->598->597->597->596->595->595->594->593->592->591->590->589->588->587->586->585->584->583->582->581->580->500:steps=36
+f1.agents.result:r1:t7:abstract=500->613:repair=500->580->581->582->583->584->585->586->587->588->589->590->591->592->593->594->595->596->597->598->599->600->601->602->603->604->605->606->607->608->609->610->611->612->613:steps=34
+f1.agents.result:r1:t8:abstract=613->579:repair=613->612->611->610->609->608->607->606->605->604->603->602->601->600->599->598->597->596->595->594->593->592->591->590->589->588->587->586->585->584->583->582->581->580->579:steps=34
+f1.agents.result:r1:t9:abstract=579->578:repair=579->578->578->578->578->578->578->578:steps=7
+f1.agents.result:r2:t0:abstract=460->540:repair=460->540:steps=1
+f1.agents.result:r2:t2:abstract=620->613:repair=620->619->618->617->616->615->614->613:steps=7
+f1.agents.result:r2:t3:abstract=613->532:repair=613->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->613->612->532->532->532->532->532->532->532->532->532:steps=34
+f1.agents.result:r2:t4:abstract=532->613:repair=532->532->612->613->533->533->533->613:steps=7
+f1.agents.result:r2:t5:abstract=613->579:repair=613->612->611->610->609->608->607->606->605->604->603->602->601->600->599->598->597->596->595->594->593->592->591->590->589->588->587->586->585->584->583->582->581->580->579:steps=34
+f1.agents.result:r2:t6:abstract=579->613:repair=579->580->581->582->583->584->585->586->587->588->589->590->591->592->593->594->595->596->676->596->597->598->599->600->601->602->603->604->605->606->607->608->609->610->611->612->613:steps=36
+f1.agents.result:r2:t7:abstract=613->539:repair=613->614->615->616->617->618->619->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539:steps=34
+f1.agents.result:r2:t8:abstract=539->613:repair=539->619->618->617->616->615->614->613->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->613:steps=34
+f1.agents.result:r2:t9:abstract=613->620:repair=613->614->615->616->617->618->619->620:steps=7","f1.agents.result: robot 1: time 0: abstract plan 419 -> 499; repair path 419->499; steps 1
+f1.agents.result: robot 1: time 2: abstract plan 499 -> 579; repair path 499->579->579->579->579->579->579->579; steps 7
+f1.agents.result: robot 1: time 3: abstract plan 579 -> 613; repair path 579->580->581->582->583->584->585->586->587->588->589->590->591->592->593->594->595->596->597->598->599->600->601->602->603->604->605->606->607->608->609->610->611->612->613; steps 34
+f1.agents.result: robot 1: time 4: abstract plan 613 -> 620; repair path 613->614->615->616->617->618->619->620; steps 7
+f1.agents.result: robot 1: time 5: abstract plan 620 -> 613; repair path 620->619->618->617->616->615->614->613->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->613; steps 34
+f1.agents.result: robot 1: time 6: abstract plan 613 -> 500; repair path 613->612->611->610->609->608->607->606->605->604->603->602->601->600->599->598->597->597->596->595->595->594->593->592->591->590->589->588->587->586->585->584->583->582->581->580->500; steps 36
+f1.agents.result: robot 1: time 7: abstract plan 500 -> 613; repair path 500->580->581->582->583->584->585->586->587->588->589->590->591->592->593->594->595->596->597->598->599->600->601->602->603->604->605->606->607->608->609->610->611->612->613; steps 34
+f1.agents.result: robot 1: time 8: abstract plan 613 -> 579; repair path 613->612->611->610->609->608->607->606->605->604->603->602->601->600->599->598->597->596->595->594->593->592->591->590->589->588->587->586->585->584->583->582->581->580->579; steps 34
+f1.agents.result: robot 1: time 9: abstract plan 579 -> 578; repair path 579->578->578->578->578->578->578->578; steps 7
+f1.agents.result: robot 2: time 0: abstract plan 460 -> 540; repair path 460->540; steps 1
+f1.agents.result: robot 2: time 2: abstract plan 620 -> 613; repair path 620->619->618->617->616->615->614->613; steps 7
+f1.agents.result: robot 2: time 3: abstract plan 613 -> 532; repair path 613->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->613->612->532->532->532->532->532->532->532->532->532; steps 34
+f1.agents.result: robot 2: time 4: abstract plan 532 -> 613; repair path 532->532->612->613->533->533->533->613; steps 7
+f1.agents.result: robot 2: time 5: abstract plan 613 -> 579; repair path 613->612->611->610->609->608->607->606->605->604->603->602->601->600->599->598->597->596->595->594->593->592->591->590->589->588->587->586->585->584->583->582->581->580->579; steps 34
+f1.agents.result: robot 2: time 6: abstract plan 579 -> 613; repair path 579->580->581->582->583->584->585->586->587->588->589->590->591->592->593->594->595->596->676->596->597->598->599->600->601->602->603->604->605->606->607->608->609->610->611->612->613; steps 36
+f1.agents.result: robot 2: time 7: abstract plan 613 -> 539; repair path 613->614->615->616->617->618->619->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539->539; steps 34
+f1.agents.result: robot 2: time 8: abstract plan 539 -> 613; repair path 539->619->618->617->616->615->614->613->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->533->613; steps 34
+f1.agents.result: robot 2: time 9: abstract plan 613 -> 620; repair path 613->614->615->616->617->618->619->620; steps 7","f1.agents.result: robot 1: time 0 move_to 499 -> time 2 move_to 579 -> time 3 move_to 613 -> time 4 move_to 620 -> time 5 move_to 613 -> time 6 move_to 500 -> time 7 move_to 613 -> time 8 move_to 579 -> time 9 move_to 578
+f1.agents.result: robot 2: time 0 move_to 540 -> time 1 move_to 620 -> time 2 move_to 613 -> time 3 move_to 532 -> time 4 move_to 613 -> time 5 move_to 579 -> time 6 move_to 613 -> time 7 move_to 539 -> time 8 move_to 613 -> time 9 move_to 620",f1.agents.result: robot 1: time 1 stay_at 499,"f1.agents.result: robot 1: time 5 visited real 620 abstract 620 -> time 7 visited real 500 abstract 500 -> time 9 visited real 579 abstract 579
+f1.agents.result: robot 2: time 6 visited real 579 abstract 579 -> time 8 visited real 539 abstract 539 -> time 10 visited real 620 abstract 620","1:move=9:wait=1:repair=36:visited=3
+2:move=10:wait=0:repair=36:visited=3",1,2,1,0.05,5.0,0.025,2,2,0.05,0.5,9.5,9.0,36.0,9.5,3.789474,26,3.6,0.9,18.0,1.52381,1,1,1,,0,0,0,0,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,path_abstraction_missing_risk,0,3,opposite_direction_head_on_traffic;large_repair_overhead;misleading_abstract_makespan,ratio=0.5;agents=2;density=0.05;opposing_pairs=1;wait_ratio=0.05;repair_overhead=3.6;status=completed
+mpa_fail_long_missing_connector,debug/scenarios/mpa_fail_long_missing_connector,long,low,"Clean fail proof: real long tunnel is connected, but the abstract corridor connector is removed.",missing_path_abstraction_reason,,,,fail_long_tunnel_missing_abstract_connector,fail,True,missing_path_abstraction,"If the concrete start-goal path is reachable but the abstract bridge is removed, missing output is caused by abstraction, not by a broken real map.",0,0,remove_abstract_bridge,59,remove_abstract_bridge,59,170,"edge(858,1034).
+edge(859,1034).
+edge(860,1034).
+edge(861,1034).
+edge(862,1034).
+edge(863,1034).
+edge(864,1034).
+edge(865,1034).
+edge(866,1034).
+edge(867,1034).
+edge(868,1034).
+edge(869,1034).
+edge(870,1034).
+edge(871,1034).
+edge(872,1034).
+edge(873,1034).
+edge(874,1034).
+edge(875,1034).
+edge(876,1034).
+edge(877,1034).",120,17,0.7,0.7,70.0,84,84,18,101,8,977,1062,2,0.02381,2,432,1134,168,84,1,84,83,256,0,degree_2=8;degree_3=74;degree_4=182,285,670,1,6,1.515789,0,completed,0,/home/grad6/mzaman/ZAMAN_WORKS/mapf-study/debug/results/logs/debug_run_20260515_070359_mpa_fail_long_missing_connector.log,,/home/grad6/mzaman/ZAMAN_WORKS/mapf-study/debug/scenarios/mpa_fail_long_missing_connector/generated,1,1,0,0,1,0,2,0,2,0,1,2,2,1,1,2,2,0,,0,,,,0,0,0,0,0,0,0,0,0,0,,,0,0,0,,,,,,,,,1,2,1,0.02381,2.38,0.011905,2,2,,0.0,0.0,0.0,0.0,0.0,,,,,,1.515789,0,0,1,"Concrete start-goal paths are reachable, but the abstract corridor connector was removed.",1,0,0,0,1,0,0,0,0,0,0,0,0,1,1,1,0,0,0,1,1,path_abstraction_missing_risk,1,7,long_tunnel_ratio;opposite_direction_head_on_traffic;missing_path_abstraction;abstract_bridge_removed;missing_result_files,ratio=0.7;agents=2;density=0.024;opposing_pairs=1;wait_ratio=;repair_overhead=;status=completed

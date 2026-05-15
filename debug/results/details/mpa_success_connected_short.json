@@ -112,7 +112,7 @@
   "scenario_path": "debug/scenarios/mpa_success_connected_short",
   "shared_store_depot_risk": 0,
   "single_lane_bottleneck_risk": 0,
-  "solver_log_path": "/home/grad6/mzaman/ZAMAN_WORKS/mapf-study/debug/results/logs/debug_run_20260515_044430_mpa_success_connected_short.log",
+  "solver_log_path": "/home/grad6/mzaman/ZAMAN_WORKS/mapf-study/debug/results/logs/debug_run_20260515_070355_mpa_success_connected_short.log",
   "solver_message": "",
   "solver_returncode": 0,
   "solver_status": "completed",
