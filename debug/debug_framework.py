@@ -36,6 +36,18 @@ DETAIL_SEPARATOR = "\n"
 DEFAULT_SWEEP_AGENT_COUNTS = [2, 10, 20, 25, 30, 35]
 DEFAULT_SWEEP_RATIOS = [0.50, 0.60, 0.70, 0.80]
 DEFAULT_SWEEP_SEED = 7
+TARGET_CAUSE_FLAGS = {
+    "long_tunnel_ratio": "long_tunnel_risk",
+    "high_agent_density": "high_agent_density_risk",
+    "opposite_direction_head_on_traffic": "head_on_traffic_risk",
+    "single_lane_bottleneck": "single_lane_bottleneck_risk",
+    "high_wait_congestion": "wait_congestion_risk",
+    "large_repair_overhead": "repair_overhead_risk",
+    "large_abstraction_compression": "abstraction_compression_risk",
+    "shared_store_depot_pressure": "shared_store_depot_risk",
+    "duplicate_goal_pressure": "duplicate_goal_risk",
+    "misleading_abstract_makespan": "misleading_abstract_makespan_risk",
+}
 
 
 @dataclass(frozen=True)
@@ -49,6 +61,14 @@ class ScenarioSpec:
     corridor_case: str
     agent_case: str
     description: str
+    target_failure_cause: str = ""
+    target_failure_hypothesis: str = ""
+    duplicate_goal_limit: int = 0
+    force_shared_store_depot: bool = False
+    debug_suite: str = ""
+    base_sweep_name: str = ""
+    cause_case_name: str = ""
+    cause_number: str = ""
 
 
 SCENARIOS: Dict[str, ScenarioSpec] = {
@@ -95,6 +115,142 @@ SCENARIOS: Dict[str, ScenarioSpec] = {
         corridor_case="long",
         agent_case="high",
         description="Long tunnel is 70 percent of grid width with high traffic.",
+    ),
+}
+
+
+CAUSE_SCENARIOS: Dict[str, ScenarioSpec] = {
+    "cause_01_long_tunnel": ScenarioSpec(
+        name="cause_01_long_tunnel",
+        grid_width=120,
+        grid_height=17,
+        tunnel_length=84,
+        tunnel_target_ratio=0.70,
+        agent_count=2,
+        corridor_case="long",
+        agent_case="low",
+        description="Cause 01: long tunnel with low traffic.",
+        target_failure_cause="long_tunnel_ratio",
+        target_failure_hypothesis="A long tunnel makes one abstract step hide many concrete cells.",
+    ),
+    "cause_02_high_agent_density": ScenarioSpec(
+        name="cause_02_high_agent_density",
+        grid_width=80,
+        grid_height=17,
+        tunnel_length=40,
+        tunnel_target_ratio=0.50,
+        agent_count=35,
+        corridor_case="short",
+        agent_case="very_high",
+        description="Cause 02: many agents per tunnel node.",
+        target_failure_cause="high_agent_density",
+        target_failure_hypothesis="High agents-per-tunnel-node increases conflicts and waiting.",
+    ),
+    "cause_03_head_on_traffic": ScenarioSpec(
+        name="cause_03_head_on_traffic",
+        grid_width=100,
+        grid_height=17,
+        tunnel_length=70,
+        tunnel_target_ratio=0.70,
+        agent_count=20,
+        corridor_case="long",
+        agent_case="high",
+        description="Cause 03: agents start from both sides and meet head-on.",
+        target_failure_cause="opposite_direction_head_on_traffic",
+        target_failure_hypothesis="Opposite-direction traffic creates swap and vertex conflicts inside the tunnel.",
+    ),
+    "cause_04_single_lane_bottleneck": ScenarioSpec(
+        name="cause_04_single_lane_bottleneck",
+        grid_width=100,
+        grid_height=15,
+        tunnel_length=60,
+        tunnel_target_ratio=0.60,
+        agent_count=30,
+        corridor_case="medium",
+        agent_case="high",
+        description="Cause 04: many agents must pass through a one-cell-wide tunnel.",
+        target_failure_cause="single_lane_bottleneck",
+        target_failure_hypothesis="Tunnel capacity is one robot per time step, but bottleneck load is high.",
+    ),
+    "cause_05_high_waiting_cost": ScenarioSpec(
+        name="cause_05_high_waiting_cost",
+        grid_width=90,
+        grid_height=17,
+        tunnel_length=63,
+        tunnel_target_ratio=0.70,
+        agent_count=35,
+        corridor_case="long",
+        agent_case="very_high",
+        description="Cause 05: dense bidirectional traffic should create large wait ratio.",
+        target_failure_cause="high_wait_congestion",
+        target_failure_hypothesis="Many agents in a long single-lane tunnel should increase stay actions and wait ratio.",
+    ),
+    "cause_06_large_repair_overhead": ScenarioSpec(
+        name="cause_06_large_repair_overhead",
+        grid_width=140,
+        grid_height=17,
+        tunnel_length=112,
+        tunnel_target_ratio=0.80,
+        agent_count=4,
+        corridor_case="very_long",
+        agent_case="low",
+        description="Cause 06: very long tunnel should make repair much longer than abstract movement.",
+        target_failure_cause="large_repair_overhead",
+        target_failure_hypothesis="The abstract move is short, but the inserted concrete path spans most of the tunnel.",
+    ),
+    "cause_07_abstraction_compression": ScenarioSpec(
+        name="cause_07_abstraction_compression",
+        grid_width=160,
+        grid_height=25,
+        tunnel_length=128,
+        tunnel_target_ratio=0.80,
+        agent_count=10,
+        corridor_case="very_long",
+        agent_case="medium",
+        description="Cause 07: large map area compressed into fewer abstract nodes.",
+        target_failure_cause="large_abstraction_compression",
+        target_failure_hypothesis="Large compression ratio means the high-level graph hides much concrete structure.",
+    ),
+    "cause_08_shared_store_depot": ScenarioSpec(
+        name="cause_08_shared_store_depot",
+        grid_width=100,
+        grid_height=17,
+        tunnel_length=60,
+        tunnel_target_ratio=0.60,
+        agent_count=30,
+        corridor_case="medium",
+        agent_case="high",
+        description="Cause 08: many agents share the same store/depot endpoints.",
+        target_failure_cause="shared_store_depot_pressure",
+        target_failure_hypothesis="Shared store/depot nodes create repeated local congestion.",
+        force_shared_store_depot=True,
+    ),
+    "cause_09_duplicate_goals": ScenarioSpec(
+        name="cause_09_duplicate_goals",
+        grid_width=100,
+        grid_height=17,
+        tunnel_length=60,
+        tunnel_target_ratio=0.60,
+        agent_count=30,
+        corridor_case="medium",
+        agent_case="high",
+        description="Cause 09: many agents target the same small set of pod goals.",
+        target_failure_cause="duplicate_goal_pressure",
+        target_failure_hypothesis="Duplicate goals create goal-area contention and repeated repair conflicts.",
+        duplicate_goal_limit=4,
+    ),
+    "cause_10_misleading_abstract_makespan": ScenarioSpec(
+        name="cause_10_misleading_abstract_makespan",
+        grid_width=150,
+        grid_height=19,
+        tunnel_length=120,
+        tunnel_target_ratio=0.80,
+        agent_count=20,
+        corridor_case="very_long",
+        agent_case="high",
+        description="Cause 10: abstract makespan may look small while repaired execution is large.",
+        target_failure_cause="misleading_abstract_makespan",
+        target_failure_hypothesis="Compare abstract_makespan with repair_makespan and observed_makespan.",
     ),
 }
 
@@ -220,6 +376,48 @@ def build_sweep_specs(
                     ),
                 )
 
+    return specs
+
+
+def cause_number_from_name(cause_name: str) -> str:
+    match = re.search(r"cause_(\d+)", cause_name)
+    return match.group(1) if match else cause_name
+
+
+def build_cause_sweep_specs(
+    base_specs: Dict[str, ScenarioSpec],
+    cause_names: Sequence[str],
+) -> Dict[str, ScenarioSpec]:
+    specs: Dict[str, ScenarioSpec] = {}
+    for cause_name in cause_names:
+        cause_spec = CAUSE_SCENARIOS[cause_name]
+        cause_number = cause_number_from_name(cause_name)
+        for base_spec in base_specs.values():
+            base_slug = base_spec.name.replace("sweep_", "")
+            name = f"matrix_c{cause_number}_{base_slug}"
+            ratio_percent = int(round(base_spec.tunnel_target_ratio * 100))
+            specs[name] = ScenarioSpec(
+                name=name,
+                grid_width=base_spec.grid_width,
+                grid_height=base_spec.grid_height,
+                tunnel_length=base_spec.tunnel_length,
+                tunnel_target_ratio=base_spec.tunnel_target_ratio,
+                agent_count=base_spec.agent_count,
+                corridor_case=base_spec.corridor_case,
+                agent_case=base_spec.agent_case,
+                description=(
+                    f"Cause matrix {cause_number}: {cause_spec.target_failure_cause} "
+                    f"tested on tunnel ratio {ratio_percent}% with {base_spec.agent_count} agents."
+                ),
+                target_failure_cause=cause_spec.target_failure_cause,
+                target_failure_hypothesis=cause_spec.target_failure_hypothesis,
+                duplicate_goal_limit=cause_spec.duplicate_goal_limit,
+                force_shared_store_depot=cause_spec.force_shared_store_depot,
+                debug_suite="cause_sweep_matrix",
+                base_sweep_name=base_spec.name,
+                cause_case_name=cause_name,
+                cause_number=cause_number,
+            )
     return specs
 
 
@@ -422,9 +620,13 @@ def make_agents_lines(spec: ScenarioSpec, pods: Set[int], metadata: Dict[str, in
     right_goals = [goal for goal in goal_pods_for_side(spec, "left_to_right") if goal in pods]
     if not left_goals or not right_goals:
         raise SystemExit("The tunnel generator did not create enough pod goals.")
+    if spec.duplicate_goal_limit > 0:
+        left_goals = left_goals[:spec.duplicate_goal_limit]
+        right_goals = right_goals[:spec.duplicate_goal_limit]
 
     left_station = metadata["left_station"]
     right_station = metadata["right_station"]
+    shared_station = left_station
 
     lines: List[str] = []
     starts = left_starts + right_starts
@@ -440,13 +642,13 @@ def make_agents_lines(spec: ScenarioSpec, pods: Set[int], metadata: Dict[str, in
         if side == "left":
             goal = right_goals[right_goal_index % len(right_goals)]
             right_goal_index += 1
-            store = left_station
-            depot = right_station
+            store = shared_station if spec.force_shared_store_depot else left_station
+            depot = shared_station if spec.force_shared_store_depot else right_station
         else:
             goal = left_goals[left_goal_index % len(left_goals)]
             left_goal_index += 1
-            store = right_station
-            depot = left_station
+            store = shared_station if spec.force_shared_store_depot else right_station
+            depot = shared_station if spec.force_shared_store_depot else left_station
 
         lines.append(f"task({robot_id},1,{goal},a).")
         lines.append(f"store({robot_id},{store}).")
@@ -485,6 +687,10 @@ def write_metadata(
             "map_edges": len(edges),
             "pods": len(pods),
             "agent_density": round(spec.agent_count / float(tunnel_metadata["tunnel_length"]), 6),
+            "target_failure_cause": spec.target_failure_cause,
+            "target_failure_hypothesis": spec.target_failure_hypothesis,
+            "duplicate_goal_limit": spec.duplicate_goal_limit,
+            "force_shared_store_depot": int(spec.force_shared_store_depot),
             "hypothesis": (
                 "Longer corridors should increase abstraction repair length; "
                 "more agents per corridor node should increase waits and conflict handling."
@@ -759,6 +965,9 @@ def build_failure_evidence(row: Dict[str, object]) -> Dict[str, object]:
         "abstraction_compression_risk": compression_ratio is not None and compression_ratio >= 2.0,
         "repair_overhead_risk": (to_float(evidence["repair_overhead_ratio"]) or 0) >= 2.0
         or (to_float(evidence["longest_repair_to_tunnel_ratio"]) or 0) >= 0.50,
+        "misleading_abstract_makespan_risk": repair_makespan is not None
+        and abstract_makespan is not None
+        and repair_makespan > abstract_makespan,
         "wait_congestion_risk": (to_float(wait_ratio) or 0) >= 0.30,
         "timeout_or_failed_risk": solver_status in {"timed_out", "failed"},
         "missing_result_risk": solver_was_run and result_files == 0,
@@ -785,6 +994,8 @@ def build_failure_evidence(row: Dict[str, object]) -> Dict[str, object]:
         causes.append("large_abstraction_compression")
     if flags["repair_overhead_risk"]:
         causes.append("large_repair_overhead")
+    if flags["misleading_abstract_makespan_risk"]:
+        causes.append("misleading_abstract_makespan")
     if flags["wait_congestion_risk"]:
         causes.append("high_wait_congestion")
     if flags["timeout_or_failed_risk"]:
@@ -793,6 +1004,10 @@ def build_failure_evidence(row: Dict[str, object]) -> Dict[str, object]:
         causes.append("missing_result_files")
 
     evidence.update({name: int(value) for name, value in flags.items()})
+    target_cause = str(row.get("target_failure_cause", ""))
+    target_flag = TARGET_CAUSE_FLAGS.get(target_cause, "")
+    evidence["target_failure_flag"] = target_flag
+    evidence["target_failure_triggered"] = int(bool(target_flag and flags.get(target_flag)))
     evidence["failure_risk_score"] = sum(1 for value in flags.values() if value)
     evidence["likely_failure_causes"] = ";".join(causes)
     evidence["failure_evidence_summary"] = (
@@ -1109,6 +1324,14 @@ def collect_scenario(spec: ScenarioSpec) -> Dict[str, object]:
         "corridor_case": spec.corridor_case,
         "agent_case": spec.agent_case,
         "description": spec.description,
+        "debug_suite": metadata.get("debug_suite", spec.debug_suite),
+        "base_sweep_name": metadata.get("base_sweep_name", spec.base_sweep_name),
+        "cause_case_name": metadata.get("cause_case_name", spec.cause_case_name),
+        "cause_number": metadata.get("cause_number", spec.cause_number),
+        "target_failure_cause": metadata.get("target_failure_cause", spec.target_failure_cause),
+        "target_failure_hypothesis": metadata.get("target_failure_hypothesis", spec.target_failure_hypothesis),
+        "duplicate_goal_limit": metadata.get("duplicate_goal_limit", spec.duplicate_goal_limit),
+        "force_shared_store_depot": metadata.get("force_shared_store_depot", int(spec.force_shared_store_depot)),
         "grid_width": metadata.get("grid_width", spec.grid_width),
         "grid_height": metadata.get("grid_height", spec.grid_height),
         "tunnel_target_ratio": metadata.get("tunnel_target_ratio", spec.tunnel_target_ratio),
@@ -1194,6 +1417,10 @@ def collect_scenarios(case_names: Sequence[str]) -> None:
     collect_specs({name: SCENARIOS[name] for name in case_names})
 
 
+def collect_cause_scenarios(case_names: Sequence[str]) -> None:
+    collect_specs({name: CAUSE_SCENARIOS[name] for name in case_names})
+
+
 def collect_specs(specs: Dict[str, ScenarioSpec]) -> None:
     DETAILS_ROOT.mkdir(parents=True, exist_ok=True)
     rows = []
@@ -1229,12 +1456,42 @@ def selected_cases(values: Sequence[str]) -> List[str]:
     return deduped
 
 
+def selected_cause_cases(values: Sequence[str]) -> List[str]:
+    if not values:
+        return list(CAUSE_SCENARIOS)
+    names: List[str] = []
+    for value in values:
+        if value == "all":
+            names.extend(CAUSE_SCENARIOS)
+        elif value in CAUSE_SCENARIOS:
+            names.append(value)
+        else:
+            valid = ", ".join(CAUSE_SCENARIOS)
+            raise SystemExit(f"Unknown cause scenario {value!r}. Valid cases: {valid}")
+    deduped = []
+    seen = set()
+    for name in names:
+        if name not in seen:
+            deduped.append(name)
+            seen.add(name)
+    return deduped
+
+
 def add_case_argument(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--cases",
         nargs="*",
         default=["all"],
         help="Cases to use: all, short_low, long_low, short_high, long_high",
+    )
+
+
+def add_cause_argument(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "--cases",
+        nargs="*",
+        default=["all"],
+        help="Cause scenarios to use. Use all or one/more cause_XX names.",
     )
 
 
@@ -1261,6 +1518,16 @@ def add_sweep_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--seed", type=int, default=DEFAULT_SWEEP_SEED, help="Random seed for reproducible grid sizes")
 
 
+def add_cause_sweep_arguments(parser: argparse.ArgumentParser) -> None:
+    add_sweep_arguments(parser)
+    parser.add_argument(
+        "--cause-cases",
+        nargs="*",
+        default=["all"],
+        help="Cause scenarios to cross with the sweep. Use all or one/more cause_XX names.",
+    )
+
+
 def sweep_specs_from_args(args) -> Dict[str, ScenarioSpec]:
     return build_sweep_specs(
         agent_counts=args.agent_counts,
@@ -1272,6 +1539,12 @@ def sweep_specs_from_args(args) -> Dict[str, ScenarioSpec]:
         max_height=args.max_height,
         seed=args.seed,
     )
+
+
+def cause_sweep_specs_from_args(args) -> Dict[str, ScenarioSpec]:
+    base_specs = sweep_specs_from_args(args)
+    cause_names = selected_cause_cases(args.cause_cases)
+    return build_cause_sweep_specs(base_specs, cause_names)
 
 
 def main() -> None:
@@ -1296,6 +1569,26 @@ def main() -> None:
     add_case_argument(all_parser)
     all_parser.add_argument("--timeout-seconds", type=int, default=0, help="Stop the solver after this many seconds; 0 means no timeout")
 
+    cause_list_parser = subparsers.add_parser("cause-list", help="List the 10 targeted failure-cause scenarios")
+    add_cause_argument(cause_list_parser)
+
+    cause_generate_parser = subparsers.add_parser("cause-generate", help="Generate the 10 targeted failure-cause scenarios")
+    add_cause_argument(cause_generate_parser)
+
+    cause_run_parser = subparsers.add_parser("cause-run", help="Run targeted failure-cause scenarios one by one")
+    add_cause_argument(cause_run_parser)
+    cause_run_parser.add_argument("--timeout-seconds", type=int, default=0, help="Stop each scenario after this many seconds; 0 means no timeout")
+    cause_run_parser.add_argument("--keep-going", action="store_true", help="Continue to the next scenario if one fails or times out")
+    cause_run_parser.add_argument("--no-collect", action="store_true", help="Do not collect CSV metrics after running")
+
+    cause_collect_parser = subparsers.add_parser("cause-collect", help="Collect metrics from targeted failure-cause scenarios")
+    add_cause_argument(cause_collect_parser)
+
+    cause_all_parser = subparsers.add_parser("cause-all", help="Generate, run, and collect the 10 targeted failure-cause scenarios")
+    add_cause_argument(cause_all_parser)
+    cause_all_parser.add_argument("--timeout-seconds", type=int, default=0, help="Stop each scenario after this many seconds; 0 means no timeout")
+    cause_all_parser.add_argument("--keep-going", action="store_true", help="Continue to the next scenario if one fails or times out")
+
     sweep_list_parser = subparsers.add_parser("sweep-list", help="List generated parameter-sweep cases")
     add_sweep_arguments(sweep_list_parser)
 
@@ -1316,6 +1609,26 @@ def main() -> None:
     sweep_all_parser.add_argument("--timeout-seconds", type=int, default=0, help="Stop each scenario after this many seconds; 0 means no timeout")
     sweep_all_parser.add_argument("--keep-going", action="store_true", help="Continue to the next scenario if one fails or times out")
 
+    cause_sweep_list_parser = subparsers.add_parser("cause-sweep-list", help="List every failure cause crossed with every sweep case")
+    add_cause_sweep_arguments(cause_sweep_list_parser)
+
+    cause_sweep_generate_parser = subparsers.add_parser("cause-sweep-generate", help="Generate every failure cause crossed with every sweep case")
+    add_cause_sweep_arguments(cause_sweep_generate_parser)
+
+    cause_sweep_run_parser = subparsers.add_parser("cause-sweep-run", help="Run every failure cause crossed with every sweep case one by one")
+    add_cause_sweep_arguments(cause_sweep_run_parser)
+    cause_sweep_run_parser.add_argument("--timeout-seconds", type=int, default=0, help="Stop each scenario after this many seconds; 0 means no timeout")
+    cause_sweep_run_parser.add_argument("--keep-going", action="store_true", help="Continue to the next scenario if one fails or times out")
+    cause_sweep_run_parser.add_argument("--no-collect", action="store_true", help="Do not collect CSV metrics after running")
+
+    cause_sweep_collect_parser = subparsers.add_parser("cause-sweep-collect", help="Collect metrics from every cause-by-sweep scenario")
+    add_cause_sweep_arguments(cause_sweep_collect_parser)
+
+    cause_sweep_all_parser = subparsers.add_parser("cause-sweep-all", help="Generate, run, and collect every cause-by-sweep scenario")
+    add_cause_sweep_arguments(cause_sweep_all_parser)
+    cause_sweep_all_parser.add_argument("--timeout-seconds", type=int, default=0, help="Stop each scenario after this many seconds; 0 means no timeout")
+    cause_sweep_all_parser.add_argument("--keep-going", action="store_true", help="Continue to the next scenario if one fails or times out")
+
     args = parser.parse_args()
 
     if args.command == "list":
@@ -1324,6 +1637,58 @@ def main() -> None:
                 f"{spec.name}: corridor={spec.corridor_case}({spec.tunnel_length}/{spec.grid_width}), "
                 f"agents={spec.agent_case}({spec.agent_count})"
             )
+        return
+
+    if args.command == "cause-sweep-list":
+        specs = cause_sweep_specs_from_args(args)
+        for spec in specs.values():
+            print(
+                f"{spec.name}: cause={spec.target_failure_cause}, base={spec.base_sweep_name}, "
+                f"width={spec.grid_width}, height={spec.grid_height}, "
+                f"ratio={spec.tunnel_target_ratio:.2f}, agents={spec.agent_count}"
+            )
+        print(f"Total cause-by-sweep scenarios: {len(specs)}")
+        return
+
+    if args.command.startswith("cause-sweep-"):
+        specs = cause_sweep_specs_from_args(args)
+        case_names = list(specs)
+        if args.command == "cause-sweep-generate":
+            generate_specs(specs)
+        elif args.command == "cause-sweep-run":
+            run_cases_individually(case_names, timeout_seconds=args.timeout_seconds, keep_going=args.keep_going)
+            if not args.no_collect:
+                collect_specs(specs)
+        elif args.command == "cause-sweep-collect":
+            collect_specs(specs)
+        elif args.command == "cause-sweep-all":
+            generate_specs(specs)
+            run_cases_individually(case_names, timeout_seconds=args.timeout_seconds, keep_going=args.keep_going)
+            collect_specs(specs)
+        return
+
+    if args.command.startswith("cause-"):
+        cases = selected_cause_cases(args.cases)
+        specs = {name: CAUSE_SCENARIOS[name] for name in cases}
+        if args.command == "cause-list":
+            for spec in specs.values():
+                print(
+                    f"{spec.name}: cause={spec.target_failure_cause}, "
+                    f"width={spec.grid_width}, ratio={spec.tunnel_target_ratio:.2f}, "
+                    f"agents={spec.agent_count}"
+                )
+        elif args.command == "cause-generate":
+            generate_specs(specs)
+        elif args.command == "cause-run":
+            run_cases_individually(cases, timeout_seconds=args.timeout_seconds, keep_going=args.keep_going)
+            if not args.no_collect:
+                collect_cause_scenarios(cases)
+        elif args.command == "cause-collect":
+            collect_cause_scenarios(cases)
+        elif args.command == "cause-all":
+            generate_specs(specs)
+            run_cases_individually(cases, timeout_seconds=args.timeout_seconds, keep_going=args.keep_going)
+            collect_cause_scenarios(cases)
         return
 
     if args.command == "sweep-list":

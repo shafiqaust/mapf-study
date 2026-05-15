@@ -97,6 +97,108 @@ If you need a zero-agent baseline, include `0` explicitly:
 python3 debug/debug_framework.py sweep-all --agent-counts 0 2 10 20 25 30 35 --ratios 50 60 70 80
 ```
 
+## Targeted Failure Causes
+
+These commands build one rich scenario for each failure cause:
+
+1. `cause_01_long_tunnel`
+2. `cause_02_high_agent_density`
+3. `cause_03_head_on_traffic`
+4. `cause_04_single_lane_bottleneck`
+5. `cause_05_high_waiting_cost`
+6. `cause_06_large_repair_overhead`
+7. `cause_07_abstraction_compression`
+8. `cause_08_shared_store_depot`
+9. `cause_09_duplicate_goals`
+10. `cause_10_misleading_abstract_makespan`
+
+List them:
+
+```bash
+python3 debug/debug_framework.py cause-list
+```
+
+Generate only:
+
+```bash
+python3 debug/debug_framework.py cause-generate
+```
+
+Run and collect:
+
+```bash
+python3 debug/debug_framework.py cause-all --timeout-seconds 1800 --keep-going
+```
+
+Run one cause only:
+
+```bash
+python3 debug/debug_framework.py cause-all --cases cause_09_duplicate_goals --timeout-seconds 1800 --keep-going
+```
+
+If the solver already ran, rebuild the CSV without rerunning:
+
+```bash
+python3 debug/debug_framework.py cause-collect
+```
+
+## Full Cause-By-Sweep Proof Matrix
+
+Use this when every failure cause must be tested on every debug sweep scenario.
+
+Default size:
+
+- `10` failure causes
+- `4` tunnel ratios: `50 60 70 80`
+- `6` agent counts: `2 10 20 25 30 35`
+- `1` random grid sample
+- total: `10 x 4 x 6 x 1 = 240` scenarios
+
+First, only list the scenarios:
+
+```bash
+python3 debug/debug_framework.py cause-sweep-list --samples 1
+```
+
+Generate only:
+
+```bash
+python3 debug/debug_framework.py cause-sweep-generate --samples 1
+```
+
+Run everything one by one and keep collecting evidence even if a case fails:
+
+```bash
+python3 debug/debug_framework.py cause-sweep-all --samples 1 --timeout-seconds 1800 --keep-going
+```
+
+If your solver run already finished, rebuild the CSV only:
+
+```bash
+python3 debug/debug_framework.py cause-sweep-collect --samples 1
+```
+
+To include the zero-agent baseline:
+
+```bash
+python3 debug/debug_framework.py cause-sweep-all \
+  --agent-counts 0 2 10 20 25 30 35 \
+  --ratios 50 60 70 80 \
+  --samples 1 \
+  --timeout-seconds 1800 \
+  --keep-going
+```
+
+To run only one cause across every sweep scenario:
+
+```bash
+python3 debug/debug_framework.py cause-sweep-all \
+  --cause-cases cause_01_long_tunnel \
+  --samples 1 \
+  --timeout-seconds 1800 \
+  --keep-going
+```
+
 ## Main CSV
 
 The main output file is:
@@ -108,6 +210,10 @@ debug/results/debug_results.csv
 Important columns include:
 
 - `scenario_name`
+- `debug_suite`
+- `base_sweep_name`
+- `cause_case_name`
+- `cause_number`
 - `corridor_case`
 - `agent_case`
 - `grid_width`
@@ -158,6 +264,8 @@ Important columns include:
 - `repair_overhead_risk`
 - `wait_congestion_risk`
 - `timeout_or_failed_risk`
+- `target_failure_flag`
+- `target_failure_triggered`
 - `failure_risk_score`
 - `likely_failure_causes`
 - `failure_evidence_summary`
