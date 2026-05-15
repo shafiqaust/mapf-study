@@ -30,12 +30,14 @@ import argparse
 import csv
 import re
 from collections import defaultdict
+from collections import Counter
 from pathlib import Path
 from typing import Dict, Iterable, List, Tuple
 
 
 FACT_RE = re.compile(r"^\s*([A-Za-z_][A-Za-z0-9_]*)\((.*)\)\.\s*$")
 TIME_RE = re.compile(r"Time:\s*(\d+)")
+DETAIL_SEPARATOR = "\n"
 
 
 def parse_arg(value: str):
@@ -65,6 +67,33 @@ def count_predicate(path: Path, predicate: str) -> int:
     return sum(1 for pred, _args in iter_facts(path) if pred == predicate)
 
 
+def infer_grid_size(map_file: Path) -> Tuple[object, object, str]:
+    vertices = []
+    edges = []
+    for pred, args in iter_facts(map_file):
+        if pred == "vertice" and len(args) == 1 and isinstance(args[0], int):
+            vertices.append(args[0])
+        elif pred == "edge" and len(args) == 2:
+            src, dst = args
+            if isinstance(src, int) and isinstance(dst, int):
+                edges.append((src, dst))
+
+    if not vertices:
+        return "", "", ""
+
+    differences = [abs(dst - src) for src, dst in edges if abs(dst - src) > 1]
+    if not differences:
+        return "", "", ""
+
+    columns = Counter(differences).most_common(1)[0][0]
+    if columns <= 0:
+        return "", "", ""
+
+    max_vertex = max(vertices)
+    rows = (max_vertex // columns) + 1
+    return rows, columns, f"{rows}x{columns}"
+
+
 def read_runtime_seconds(path: Path) -> str:
     if not path.exists():
         return ""
@@ -86,6 +115,50 @@ def format_node(value) -> str:
 
 def format_path(nodes: List[object]) -> str:
     return "->".join(format_node(node) for node in nodes)
+
+
+def format_timed_plan(result_name: str, robot, positions: Dict[int, object]) -> str:
+    steps = " -> ".join(
+        f"time {time} at {format_node(positions[time])}"
+        for time in sorted(positions)
+    )
+    return f"{result_name}: robot {robot}: {steps}"
+
+
+def format_action_records(records: List[Tuple[str, object, object, int]], action_name: str) -> str:
+    by_result_robot = defaultdict(list)
+    for result_name, robot, loc, time in records:
+        by_result_robot[(result_name, robot)].append((time, loc))
+
+    details = []
+    for (result_name, robot), actions in sorted(
+        by_result_robot.items(),
+        key=lambda item: (item[0][0], sort_key(item[0][1])),
+    ):
+        pieces = [
+            f"time {time} {action_name} {format_node(loc)}"
+            for time, loc in sorted(actions)
+        ]
+        details.append(f"{result_name}: robot {robot}: " + " -> ".join(pieces))
+    return DETAIL_SEPARATOR.join(details)
+
+
+def format_visited_records(records: List[Tuple[str, object, object, object, int]]) -> str:
+    by_result_robot = defaultdict(list)
+    for result_name, robot, real_goal, abstract_goal, time in records:
+        by_result_robot[(result_name, robot)].append((time, real_goal, abstract_goal))
+
+    details = []
+    for (result_name, robot), visits in sorted(
+        by_result_robot.items(),
+        key=lambda item: (item[0][0], sort_key(item[0][1])),
+    ):
+        pieces = [
+            f"time {time} visited real {format_node(real_goal)} abstract {format_node(abstract_goal)}"
+            for time, real_goal, abstract_goal in sorted(visits)
+        ]
+        details.append(f"{result_name}: robot {robot}: " + " -> ".join(pieces))
+    return DETAIL_SEPARATOR.join(details)
 
 
 def collect_scenario(root: Path, scenario: str) -> Dict[str, object]:
@@ -113,6 +186,7 @@ def collect_scenario(root: Path, scenario: str) -> Dict[str, object]:
     pods = count_predicate(map_file, "pods")
     abstract_vertices = count_predicate(abstract_map, "vertice")
     abstract_edges = count_predicate(abstract_map, "edge")
+    grid_rows, grid_columns, grid_size = infer_grid_size(map_file)
 
     move_count = 0
     stay_count = 0
@@ -132,19 +206,24 @@ def collect_scenario(root: Path, scenario: str) -> Dict[str, object]:
     repair_segments = set()
     at_positions = defaultdict(dict)
     repair_path_points = defaultdict(dict)
+    move_records = []
+    stay_records = []
+    visited_records = []
 
     for result_file in result_files:
         for pred, args in iter_facts(result_file):
             if pred == "move" and len(args) == 3:
-                robot, _loc, time = args
+                robot, loc, time = args
                 move_count += 1
                 per_agent_moves[robot] += 1
                 action_times.append(int(time))
+                move_records.append((result_file.name, robot, loc, int(time)))
             elif pred == "stay" and len(args) == 3:
-                robot, _loc, time = args
+                robot, loc, time = args
                 stay_count += 1
                 per_agent_waits[robot] += 1
                 action_times.append(int(time))
+                stay_records.append((result_file.name, robot, loc, int(time)))
             elif pred == "at" and len(args) == 3:
                 robot, loc, time = args
                 at_count += 1
@@ -158,9 +237,10 @@ def collect_scenario(root: Path, scenario: str) -> Dict[str, object]:
                 per_agent_repair_cost[robot] = max(per_agent_repair_cost[robot], int(time))
                 repair_path_points[(result_file.name, robot, int(index))][int(time)] = loc
             elif pred == "visited" and len(args) == 4:
-                robot = args[0]
+                robot, real_goal, abstract_goal, time = args
                 visited_count += 1
                 per_agent_visited[robot] += 1
+                visited_records.append((result_file.name, robot, real_goal, abstract_goal, int(time)))
 
     abstract_makespan = safe_max(at_times)
     if abstract_makespan == "" and action_times:
@@ -179,17 +259,19 @@ def collect_scenario(root: Path, scenario: str) -> Dict[str, object]:
     scenario_name = f"{benchmark}_{instance}_{dimension}_{total_agents}a"
 
     agents = sorted(set(per_agent_moves) | set(per_agent_waits) | set(per_agent_repair_cost) | set(per_agent_visited))
-    per_agent_costs = ";".join(
+    per_agent_costs = DETAIL_SEPARATOR.join(
         f"{agent}:move={per_agent_moves[agent]}:wait={per_agent_waits[agent]}:"
         f"repair={per_agent_repair_cost[agent]}:visited={per_agent_visited[agent]}"
         for agent in agents
     )
 
     abstract_transition_details = []
+    abstract_plan_details = []
     for (result_name, robot), positions in sorted(
         at_positions.items(),
         key=lambda item: (item[0][0], sort_key(item[0][1])),
     ):
+        abstract_plan_details.append(format_timed_plan(result_name, robot, positions))
         for time in sorted(positions):
             if time + 1 in positions:
                 abstract_transition_details.append(
@@ -197,6 +279,7 @@ def collect_scenario(root: Path, scenario: str) -> Dict[str, object]:
                 )
 
     repair_path_details = []
+    repair_path_details_readable = []
     repair_lengths = []
     for (result_name, robot, index), points in sorted(
         repair_path_points.items(),
@@ -218,6 +301,12 @@ def collect_scenario(root: Path, scenario: str) -> Dict[str, object]:
             f"repair={format_path(path_nodes)}:"
             f"steps={repair_steps}"
         )
+        repair_path_details_readable.append(
+            f"{result_name}: robot {robot}: time {index}: "
+            f"abstract plan {abstract_start} -> {abstract_end}; "
+            f"repair path {format_path(path_nodes)}; "
+            f"steps {repair_steps}"
+        )
 
     longest_repair_steps = max(repair_lengths) if repair_lengths else ""
     longest_repair_detail = ""
@@ -231,6 +320,9 @@ def collect_scenario(root: Path, scenario: str) -> Dict[str, object]:
         "benchmark": benchmark,
         "instance": instance,
         "dimension": dimension,
+        "grid_rows": grid_rows,
+        "grid_columns": grid_columns,
+        "grid_size": grid_size,
         "total_agents": total_agents,
         "total_tasks": total_tasks,
         "map_vertices": map_vertices,
@@ -253,10 +345,15 @@ def collect_scenario(root: Path, scenario: str) -> Dict[str, object]:
         "path_count": path_count,
         "visited_count": visited_count,
         "repair_segments": len(repair_segments),
-        "abstract_transitions": ";".join(abstract_transition_details),
-        "repair_path_details": ";".join(repair_path_details),
+        "abstract_plan_details": DETAIL_SEPARATOR.join(abstract_plan_details),
+        "abstract_transitions": DETAIL_SEPARATOR.join(abstract_transition_details),
+        "repair_path_details": DETAIL_SEPARATOR.join(repair_path_details),
+        "repair_path_details_readable": DETAIL_SEPARATOR.join(repair_path_details_readable),
         "longest_repair_steps": longest_repair_steps,
         "longest_repair_detail": longest_repair_detail,
+        "move_details": format_action_records(move_records, "move_to"),
+        "stay_details": format_action_records(stay_records, "stay_at"),
+        "visited_details": format_visited_records(visited_records),
         "per_agent_costs": per_agent_costs,
         "generated_dir": str(generated_dir),
     }
@@ -264,28 +361,42 @@ def collect_scenario(root: Path, scenario: str) -> Dict[str, object]:
 
 def append_csv(csv_path: Path, row: Dict[str, object]) -> None:
     csv_path.parent.mkdir(parents=True, exist_ok=True)
+    row_key = str(row.get("scenario_name", ""))
+
     if csv_path.exists():
         with csv_path.open("r", newline="", encoding="utf-8") as handle:
             reader = csv.DictReader(handle)
             existing_rows = list(reader)
             existing_fields = reader.fieldnames or []
+
         fieldnames = list(existing_fields)
         for field in row:
             if field not in fieldnames:
                 fieldnames.append(field)
-        if fieldnames != existing_fields:
-            with csv_path.open("w", newline="", encoding="utf-8") as handle:
-                writer = csv.DictWriter(handle, fieldnames=fieldnames)
-                writer.writeheader()
-                writer.writerows(existing_rows)
-                writer.writerow(row)
-            return
 
-    write_header = not csv_path.exists()
-    with csv_path.open("a", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(row.keys()))
-        if write_header:
+        deduped_rows = []
+        seen_keys = set()
+        for existing_row in reversed(existing_rows):
+            existing_key = existing_row.get("scenario_name", "")
+            if row_key and existing_key == row_key:
+                continue
+            if existing_key and existing_key in seen_keys:
+                continue
+            if existing_key:
+                seen_keys.add(existing_key)
+            deduped_rows.append(existing_row)
+        deduped_rows.reverse()
+
+        with csv_path.open("w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(handle, fieldnames=fieldnames)
             writer.writeheader()
+            writer.writerows(deduped_rows)
+            writer.writerow(row)
+        return
+
+    with csv_path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(row.keys()))
+        writer.writeheader()
         writer.writerow(row)
 
 
@@ -303,7 +414,7 @@ def main() -> None:
 
     row = collect_scenario(root, args.scenario)
     append_csv(csv_path, row)
-    print(f"Appended {row['scenario_name']} to {csv_path}")
+    print(f"Saved unique row for {row['scenario_name']} to {csv_path}")
 
 
 if __name__ == "__main__":
