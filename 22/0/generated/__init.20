@@ -1,0 +1,9 @@
+index(20).
+begin(3,160).
+begin(1,106).
+begin(2,16).
+begin(4,77).
+end(3,140).
+end(2,43).
+end(4,59).
+end(1,77).
