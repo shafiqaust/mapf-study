@@ -823,14 +823,49 @@ def write_metadata(
     path.write_text(json.dumps(metadata, indent=2, sort_keys=True), encoding="utf-8")
 
 
+def clean_generated_dir(generated_dir: Path) -> None:
+    if not generated_dir.exists():
+        return
+
+    def retry_remove(func, path, _exc_info):
+        try:
+            os.chmod(path, 0o700)
+            func(path)
+        except OSError:
+            pass
+
+    for attempt in range(5):
+        try:
+            shutil.rmtree(generated_dir, onerror=retry_remove)
+            return
+        except OSError:
+            if not generated_dir.exists():
+                return
+            if attempt < 4:
+                time.sleep(0.25 * (attempt + 1))
+                continue
+
+    trash_dir = generated_dir.with_name(
+        f".{generated_dir.name}.trash_{time.strftime('%Y%m%d_%H%M%S')}_{os.getpid()}"
+    )
+    try:
+        generated_dir.rename(trash_dir)
+    except OSError as exc:
+        raise SystemExit(f"Could not clean old generated folder: {generated_dir}") from exc
+
+    try:
+        shutil.rmtree(trash_dir, onerror=retry_remove)
+    except OSError:
+        print(f"Warning: moved old generated folder aside but could not delete it: {trash_dir}")
+
+
 def generate_scenario(spec: ScenarioSpec) -> None:
     path = scenario_dir(spec)
     vertices, edges, pods, tunnel_metadata = build_tunnel_graph(spec)
 
     path.mkdir(parents=True, exist_ok=True)
     generated_dir = path / "generated"
-    if generated_dir.exists():
-        shutil.rmtree(generated_dir)
+    clean_generated_dir(generated_dir)
     write_lines(path / f"{spec.name}.map", make_map_lines(vertices, edges, pods))
     write_lines(path / f"{spec.name}.ins", make_ins_lines(spec))
     write_lines(path / f"{spec.name}.agents", make_agents_lines(spec, pods, tunnel_metadata))
