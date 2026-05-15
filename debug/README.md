@@ -142,5 +142,24 @@ Important columns include:
 - `stay_details`
 - `visited_details`
 - `per_agent_costs`
+- `left_agent_count`
+- `right_agent_count`
+- `opposing_agent_pair_count`
+- `agents_per_tunnel_node`
+- `opposing_pair_pressure`
+- `wait_ratio`
+- `repair_overhead_ratio`
+- `longest_repair_to_tunnel_ratio`
+- `long_tunnel_risk`
+- `high_agent_density_risk`
+- `head_on_traffic_risk`
+- `single_lane_bottleneck_risk`
+- `abstraction_compression_risk`
+- `repair_overhead_risk`
+- `wait_congestion_risk`
+- `timeout_or_failed_risk`
+- `failure_risk_score`
+- `likely_failure_causes`
+- `failure_evidence_summary`
 
 These columns are meant for charts that compare long corridor cost, high-agent conflict cost, and the combined case.

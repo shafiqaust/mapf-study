@@ -20,7 +20,7 @@ import time
 from collections import Counter, defaultdict, deque
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List, Sequence, Set, Tuple
+from typing import Dict, Iterable, List, Optional, Sequence, Set, Tuple
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -611,6 +611,198 @@ def count_predicate(path: Path, predicate: str) -> int:
     return sum(1 for pred, _args in iter_facts(path) if pred == predicate)
 
 
+def to_float(value) -> Optional[float]:
+    if value == "" or value is None:
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def ratio_or_blank(numerator, denominator):
+    numerator_value = to_float(numerator)
+    denominator_value = to_float(denominator)
+    if numerator_value is None or denominator_value in (None, 0):
+        return ""
+    return round(numerator_value / denominator_value, 6)
+
+
+def parse_agent_task_metrics(agents_file: Path, metadata: Dict[str, object]) -> Dict[str, object]:
+    agents: Dict[object, object] = {}
+    tasks = []
+    stores = {}
+    depots = {}
+
+    for pred, args in iter_facts(agents_file):
+        if pred == "agent" and len(args) >= 2:
+            agents[args[0]] = args[1]
+        elif pred == "task" and len(args) >= 3:
+            tasks.append((args[0], args[2]))
+        elif pred == "store" and len(args) >= 2:
+            stores[args[0]] = args[1]
+        elif pred == "depot" and len(args) >= 2:
+            depots[args[0]] = args[1]
+
+    width = int(metadata.get("grid_width", 0) or 0)
+    tunnel_start = int(metadata.get("tunnel_start_col", -1) or -1)
+    tunnel_end = int(metadata.get("tunnel_end_col", -1) or -1)
+
+    left_agents = 0
+    right_agents = 0
+    inside_tunnel_agents = 0
+    unknown_side_agents = 0
+    if width > 0 and tunnel_start >= 0 and tunnel_end >= 0:
+        for start in agents.values():
+            if not isinstance(start, int):
+                unknown_side_agents += 1
+                continue
+            column = start % width
+            if column < tunnel_start:
+                left_agents += 1
+            elif column > tunnel_end:
+                right_agents += 1
+            else:
+                inside_tunnel_agents += 1
+    else:
+        unknown_side_agents = len(agents)
+
+    goal_counts = Counter(goal for _task_id, goal in tasks)
+    start_counts = Counter(agents.values())
+    store_counts = Counter(stores.values())
+    depot_counts = Counter(depots.values())
+
+    return {
+        "left_agent_count": left_agents,
+        "right_agent_count": right_agents,
+        "inside_tunnel_agent_count": inside_tunnel_agents,
+        "unknown_side_agent_count": unknown_side_agents,
+        "opposing_agent_pair_count": left_agents * right_agents,
+        "same_side_pair_count": (left_agents * max(0, left_agents - 1) // 2)
+        + (right_agents * max(0, right_agents - 1) // 2),
+        "unique_start_count": len(start_counts),
+        "duplicate_start_count": sum(max(0, count - 1) for count in start_counts.values()),
+        "unique_goal_count": len(goal_counts),
+        "duplicate_goal_count": sum(max(0, count - 1) for count in goal_counts.values()),
+        "max_agents_per_goal": max(goal_counts.values()) if goal_counts else 0,
+        "unique_store_count": len(store_counts),
+        "unique_depot_count": len(depot_counts),
+        "max_agents_per_store": max(store_counts.values()) if store_counts else 0,
+        "max_agents_per_depot": max(depot_counts.values()) if depot_counts else 0,
+    }
+
+
+def build_failure_evidence(row: Dict[str, object]) -> Dict[str, object]:
+    total_agents = int(to_float(row.get("total_agents")) or 0)
+    tunnel_length = int(to_float(row.get("configured_tunnel_length")) or 0)
+    tunnel_ratio = to_float(row.get("tunnel_width_ratio")) or 0.0
+    agent_density = to_float(row.get("agent_density")) or 0.0
+    opposing_pairs = int(to_float(row.get("opposing_agent_pair_count")) or 0)
+    left_agents = int(to_float(row.get("left_agent_count")) or 0)
+    right_agents = int(to_float(row.get("right_agent_count")) or 0)
+    result_files = int(to_float(row.get("result_files")) or 0)
+    total_waits = int(to_float(row.get("total_waits")) or 0)
+    move_count = int(to_float(row.get("move_count")) or 0)
+    stay_count = int(to_float(row.get("stay_count")) or 0)
+    repair_segments = int(to_float(row.get("repair_segments")) or 0)
+    longest_repair_steps = to_float(row.get("longest_repair_steps"))
+    abstract_makespan = to_float(row.get("abstract_makespan"))
+    repair_makespan = to_float(row.get("repair_makespan"))
+    observed_makespan = to_float(row.get("observed_makespan"))
+    sum_of_costs = to_float(row.get("sum_of_costs"))
+    repair_cost = to_float(row.get("repair_cost"))
+    compression_ratio = to_float(row.get("compression_ratio"))
+    solver_status = str(row.get("solver_status", ""))
+    runtime_seconds = str(row.get("runtime_seconds", ""))
+    solver_was_run = bool(solver_status or runtime_seconds)
+
+    action_count = move_count + stay_count
+    wait_ratio = ratio_or_blank(total_waits, action_count)
+    repair_makespan_gap = ""
+    if repair_makespan is not None and abstract_makespan is not None:
+        repair_makespan_gap = int(repair_makespan - abstract_makespan)
+
+    evidence = {
+        "tunnel_lane_count": 1,
+        "tunnel_entry_count": 2,
+        "tunnel_bottleneck_capacity": 1,
+        "agents_per_tunnel_node": round(agent_density, 6),
+        "agents_per_tunnel_percent": round(agent_density * 100, 2),
+        "opposing_pair_pressure": ratio_or_blank(opposing_pairs, tunnel_length),
+        "bottleneck_load": total_agents,
+        "bottleneck_load_per_lane": total_agents,
+        "wait_ratio": wait_ratio,
+        "waits_per_agent": ratio_or_blank(total_waits, total_agents),
+        "moves_per_agent": ratio_or_blank(move_count, total_agents),
+        "repair_segments_per_agent": ratio_or_blank(repair_segments, total_agents),
+        "repair_cost_per_agent": ratio_or_blank(repair_cost, total_agents),
+        "cost_per_agent": ratio_or_blank(sum_of_costs, total_agents),
+        "repair_cost_ratio": ratio_or_blank(repair_cost, sum_of_costs),
+        "repair_makespan_gap": repair_makespan_gap,
+        "repair_overhead_ratio": ratio_or_blank(repair_makespan, abstract_makespan),
+        "longest_repair_to_tunnel_ratio": ratio_or_blank(longest_repair_steps, tunnel_length),
+        "observed_makespan_per_agent": ratio_or_blank(observed_makespan, total_agents),
+        "abstract_compression_risk_value": compression_ratio if compression_ratio is not None else "",
+    }
+
+    flags = {
+        "long_tunnel_risk": tunnel_ratio >= 0.70,
+        "very_long_tunnel_risk": tunnel_ratio >= 0.80,
+        "high_agent_density_risk": agent_density >= 0.25,
+        "very_high_agent_density_risk": agent_density >= 0.40,
+        "head_on_traffic_risk": left_agents > 0 and right_agents > 0 and opposing_pairs > 0,
+        "high_head_on_pressure_risk": (to_float(evidence["opposing_pair_pressure"]) or 0) >= 1.0,
+        "single_lane_bottleneck_risk": total_agents > 2,
+        "duplicate_goal_risk": int(to_float(row.get("duplicate_goal_count")) or 0) > 0,
+        "shared_store_depot_risk": int(to_float(row.get("max_agents_per_store")) or 0) > 1
+        or int(to_float(row.get("max_agents_per_depot")) or 0) > 1,
+        "abstraction_compression_risk": compression_ratio is not None and compression_ratio >= 2.0,
+        "repair_overhead_risk": (to_float(evidence["repair_overhead_ratio"]) or 0) >= 2.0
+        or (to_float(evidence["longest_repair_to_tunnel_ratio"]) or 0) >= 0.50,
+        "wait_congestion_risk": (to_float(wait_ratio) or 0) >= 0.30,
+        "timeout_or_failed_risk": solver_status in {"timed_out", "failed"},
+        "missing_result_risk": solver_was_run and result_files == 0,
+    }
+
+    causes = []
+    if flags["long_tunnel_risk"]:
+        causes.append("long_tunnel_ratio")
+    if flags["very_long_tunnel_risk"]:
+        causes.append("very_long_tunnel_ratio")
+    if flags["high_agent_density_risk"]:
+        causes.append("high_agent_density")
+    if flags["head_on_traffic_risk"]:
+        causes.append("opposite_direction_head_on_traffic")
+    if flags["high_head_on_pressure_risk"]:
+        causes.append("high_head_on_pair_pressure")
+    if flags["single_lane_bottleneck_risk"]:
+        causes.append("single_lane_bottleneck")
+    if flags["duplicate_goal_risk"]:
+        causes.append("duplicate_goal_pressure")
+    if flags["shared_store_depot_risk"]:
+        causes.append("shared_store_depot_pressure")
+    if flags["abstraction_compression_risk"]:
+        causes.append("large_abstraction_compression")
+    if flags["repair_overhead_risk"]:
+        causes.append("large_repair_overhead")
+    if flags["wait_congestion_risk"]:
+        causes.append("high_wait_congestion")
+    if flags["timeout_or_failed_risk"]:
+        causes.append("solver_timeout_or_failure")
+    if flags["missing_result_risk"]:
+        causes.append("missing_result_files")
+
+    evidence.update({name: int(value) for name, value in flags.items()})
+    evidence["failure_risk_score"] = sum(1 for value in flags.values() if value)
+    evidence["likely_failure_causes"] = ";".join(causes)
+    evidence["failure_evidence_summary"] = (
+        f"ratio={round(tunnel_ratio, 3)};agents={total_agents};density={round(agent_density, 3)};"
+        f"opposing_pairs={opposing_pairs};wait_ratio={wait_ratio};"
+        f"repair_overhead={evidence['repair_overhead_ratio']};status={solver_status or 'not_run'}"
+    )
+    return evidence
+
+
 def adjacency(vertices: Set[int], edges: Set[Tuple[int, int]]) -> Dict[int, Set[int]]:
     graph: Dict[int, Set[int]] = {vertex: set() for vertex in vertices}
     for src, dst in edges:
@@ -910,6 +1102,7 @@ def collect_scenario(spec: ScenarioSpec) -> Dict[str, object]:
         runtime_seconds = match.group(1) if match else ""
 
     result_metrics = collect_result_metrics(generated_dir)
+    agent_task_metrics = parse_agent_task_metrics(agents_file, metadata)
     row: Dict[str, object] = {
         "scenario_name": spec.name,
         "scenario_path": str(path.relative_to(REPO_ROOT)),
@@ -954,7 +1147,9 @@ def collect_scenario(spec: ScenarioSpec) -> Dict[str, object]:
         "solver_message": run_status.get("message", ""),
         "generated_dir": str(generated_dir),
     }
+    row.update(agent_task_metrics)
     row.update(result_metrics)
+    row.update(build_failure_evidence(row))
     return row
 
 
