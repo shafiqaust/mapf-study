@@ -20,9 +20,11 @@ from PyQt5.QtWidgets import QGraphicsItem
 from PyQt5.QtWidgets import QGraphicsTextItem
 from PyQt5.QtWidgets import QGraphicsRectItem
 from PyQt5.QtWidgets import QGraphicsEllipseItem
+from PyQt5.QtWidgets import QGraphicsPolygonItem
 from PyQt5.QtGui import QFont
 from PyQt5.QtGui import QColor
 from PyQt5.QtGui import QBrush
+from PyQt5.QtGui import QPolygonF
 from . import modelView 
 from . import visualizerItem
 from .configuration import *
@@ -38,6 +40,11 @@ VIZ_STATE_PUT_DOWN2 = 0x0080
 VIZ_STATE_CHARGED   = 0x0100
 VIZ_STATE_CHARGE    = 0x1000
 VIZ_STATE_ACTION    = 0xffff
+
+def scaled_font(point_size):
+    font = QFont('')
+    font.setPointSizeF(max(1.0, float(point_size)))
+    return font
  
 def calculate_color(first_color, second_color, multiplier):
     """
@@ -51,9 +58,9 @@ def calculate_color(first_color, second_color, multiplier):
     blue = (min(first_color.blue(), second_color.blue()), 
             max(first_color.blue(), second_color.blue()))
     return QColor(
-                red[0] + (red[1] - red[0]) * multiplier,
-                green[0] + (green[1] - green[0]) * multiplier,
-                blue[0] + (blue[1] - blue[0]) * multiplier)
+                int(red[0] + (red[1] - red[0]) * multiplier),
+                int(green[0] + (green[1] - green[0]) * multiplier),
+                int(blue[0] + (blue[1] - blue[0]) * multiplier))
 
 
 class VisualizerGraphicItem(QGraphicsItem, visualizerItem.VisualizerItem):
@@ -542,7 +549,7 @@ class PickingStation(VisualizerGraphicItem):
 
         scale = config.get('display', 'id_font_scale')
         bold = config.get('display', 'id_font_bold')
-        self._text.setFont(QFont('', rect.width()*0.08*scale))
+        self._text.setFont(scaled_font(rect.width()*0.08*scale))
         self._text.setPos(rect.x(), rect.y() + 0.6*rect.height())
         self._text.setDefaultTextColor(
             QColor(config.get('display', 'id_font_color')))
@@ -673,6 +680,13 @@ class Shelf(VisualizerGraphicItem):
         self._products   = []
         self._graphics_item = QGraphicsEllipseItem(self)
         self._graphics_carried = QGraphicsEllipseItem()
+        self._shelf_parts = [
+            QGraphicsRectItem(self),
+            QGraphicsRectItem(self),
+            QGraphicsRectItem(self),
+            QGraphicsRectItem(self),
+            QGraphicsRectItem(self),
+        ]
         self._text = QGraphicsTextItem(self)
         self.setZValue(2.0)
         self.update_tooltip()
@@ -690,7 +704,7 @@ class Shelf(VisualizerGraphicItem):
 
         scale = config.get('display', 'id_font_scale')
         bold = config.get('display', 'id_font_bold')
-        self._text.setFont(QFont('', rect.width()*0.08*scale))
+        self._text.setFont(scaled_font(rect.width()*0.08*scale))
         self._text.setPos(rect.x(), rect.y() + 0.4*rect.height())
         self._text.setDefaultTextColor(
             QColor(config.get('display', 'id_font_color')))
@@ -709,6 +723,29 @@ class Shelf(VisualizerGraphicItem):
                                         rect.y() + 0.325*rect.height(),
                                         rect.width()*0.35,
                                         rect.height()*0.35)
+            shelf_x = rect.x() + 0.18*rect.width()
+            shelf_y = rect.y() + 0.24*rect.height()
+            shelf_w = rect.width()*0.64
+            shelf_h = rect.height()*0.08
+            for i in range(3):
+                self._shelf_parts[i].setRect(
+                    shelf_x,
+                    shelf_y + i*rect.height()*0.17,
+                    shelf_w,
+                    shelf_h,
+                )
+            self._shelf_parts[3].setRect(
+                shelf_x,
+                shelf_y,
+                rect.width()*0.06,
+                rect.height()*0.42,
+            )
+            self._shelf_parts[4].setRect(
+                shelf_x + shelf_w - rect.width()*0.06,
+                shelf_y,
+                rect.width()*0.06,
+                rect.height()*0.42,
+            )
         elif self._display_mode == 1:
             self._text.setPlainText('')
             self._graphics_item.setRect(rect.x() + 0.05*rect.width(),
@@ -719,6 +756,29 @@ class Shelf(VisualizerGraphicItem):
                                         rect.y() + 0.125*rect.height(),
                                         rect.width()*0.75,
                                         rect.height()*0.75)
+            shelf_x = rect.x() + 0.14*rect.width()
+            shelf_y = rect.y() + 0.22*rect.height()
+            shelf_w = rect.width()*0.72
+            shelf_h = rect.height()*0.10
+            for i in range(3):
+                self._shelf_parts[i].setRect(
+                    shelf_x,
+                    shelf_y + i*rect.height()*0.20,
+                    shelf_w,
+                    shelf_h,
+                )
+            self._shelf_parts[3].setRect(
+                shelf_x,
+                shelf_y,
+                rect.width()*0.08,
+                rect.height()*0.50,
+            )
+            self._shelf_parts[4].setRect(
+                shelf_x + shelf_w - rect.width()*0.08,
+                shelf_y,
+                rect.width()*0.08,
+                rect.height()*0.50,
+            )
 
 
     def set_carried(self, robot):
@@ -856,6 +916,8 @@ class Shelf(VisualizerGraphicItem):
         color = calculate_color(self._colors[0], self._colors[1], (float)(number)/count)
         brush = QBrush(color)
         self._graphics_item.setBrush(brush)
+        for part in self._shelf_parts:
+            part.setBrush(brush)
         self._graphics_carried.setBrush(QBrush(self._colors[2]))
 
     def get_product_amount(self, product_id):
@@ -1019,10 +1081,11 @@ class Robot(VisualizerGraphicItem):
         self._carries = None
         self._initial_carries = None
         self._tasks = []
-        self._graphics_item = QGraphicsRectItem(self)
+        self._graphics_item = QGraphicsPolygonItem(self)
         self._energy_bar_full = QGraphicsRectItem(self)
         self._energy_bar_empty = QGraphicsRectItem(self)
         self._text = QGraphicsTextItem(self)
+        self._icon_rect = QRectF(0, 0, 1, 1)
         self.setZValue(1.0)
 
         self._energy_bar_empty.setBrush(QBrush(QColor(200,0,0)))
@@ -1088,7 +1151,7 @@ class Robot(VisualizerGraphicItem):
 
         scale = config.get('display', 'id_font_scale')
         bold = config.get('display', 'id_font_bold')
-        self._text.setFont(QFont('', rect.width()*0.08*scale))
+        self._text.setFont(scaled_font(rect.width()*0.08*scale))
         self._text.setPos(rect.x(), rect.y() + 0.2*rect.height())
         self._text.setDefaultTextColor(QColor(config.get('display', 'id_font_color')))
         rect2 = QRectF()
@@ -1122,7 +1185,16 @@ class Robot(VisualizerGraphicItem):
                                rect.width()*1.3,
                                rect.height()*1.3,)
 
-        self._graphics_item.setRect(rect2)
+        self._icon_rect = QRectF(rect2)
+        cx = rect2.x() + rect2.width()*0.5
+        self._graphics_item.setPolygon(QPolygonF([
+            QPointF(cx, rect2.y()),
+            QPointF(rect2.x() + rect2.width()*0.85, rect2.y() + rect2.height()*0.35),
+            QPointF(rect2.x() + rect2.width()*0.68, rect2.y() + rect2.height()),
+            QPointF(cx, rect2.y() + rect2.height()*0.78),
+            QPointF(rect2.x() + rect2.width()*0.32, rect2.y() + rect2.height()),
+            QPointF(rect2.x() + rect2.width()*0.15, rect2.y() + rect2.height()*0.35),
+        ]))
         #draw energy bar if max energy > 0
         if self._max_energy > 0:
             per_energy = max(0.0, min(1.0, float(self._current_energy) / self._max_energy))
@@ -1700,7 +1772,7 @@ class Robot(VisualizerGraphicItem):
         """
 
         if self._display_mode == 0:
-            rect = self._graphics_item.rect()
+            rect = QRectF(self._icon_rect)
             width = rect.width()*2
             height = rect.height()*2
             rect.setLeft(rect.x() - 0.25*width)
@@ -1709,7 +1781,7 @@ class Robot(VisualizerGraphicItem):
             rect.setHeight(height)
             return rect
         elif self._display_mode == 1:
-            rect = self._graphics_item.rect()
+            rect = QRectF(self._icon_rect)
             width = rect.width()/0.9
             height = rect.height()/0.9
             rect.setLeft(rect.x() - 0.05*width)
@@ -1810,8 +1882,9 @@ class Checkpoint(VisualizerGraphicItem):
 
         self._ids = {}
 
-        self._graphics_item = QGraphicsRectItem(self)
+        self._graphics_item = QGraphicsPolygonItem(self)
         self._text = QGraphicsTextItem(self._graphics_item)
+        self._icon_rect = QRectF(0, 0, 1, 1)
         self._shine = False
 
     def set_rect(self, rect):
@@ -1824,10 +1897,11 @@ class Checkpoint(VisualizerGraphicItem):
 
         scale = config.get('display', 'id_font_scale')
         bold = config.get('display', 'id_font_bold')
-        font = QFont('', rect.width()*0.08*scale)
+        font = scaled_font(rect.width()*0.08*scale)
         self._text.setFont(font)
         self._text.setPos(rect.x(), rect.y() + 0.6*rect.height())
         self._text.setDefaultTextColor(QColor(config.get('display', 'id_font_color')))
+        self._icon_rect = QRectF(rect)
 
         if self._display_mode == 0:            
             ss = ''
@@ -1847,11 +1921,21 @@ class Checkpoint(VisualizerGraphicItem):
                 ss += '</b>'
 
             self._text.setHtml(ss)
-            self._graphics_item.setRect(rect.x(), rect.y(), rect.width(), rect.height())
+            self._graphics_item.setPolygon(QPolygonF([
+                QPointF(rect.x() + rect.width()*0.5, rect.y()),
+                QPointF(rect.x() + rect.width(), rect.y() + rect.height()*0.5),
+                QPointF(rect.x() + rect.width()*0.5, rect.y() + rect.height()),
+                QPointF(rect.x(), rect.y() + rect.height()*0.5),
+            ]))
 
         elif self._display_mode == 1:
             self._text.setPlainText('')
-            self._graphics_item.setRect(rect.x(), rect.y(), rect.width(), rect.height())        
+            self._graphics_item.setPolygon(QPolygonF([
+                QPointF(rect.x() + rect.width()*0.5, rect.y()),
+                QPointF(rect.x() + rect.width(), rect.y() + rect.height()*0.5),
+                QPointF(rect.x() + rect.width()*0.5, rect.y() + rect.height()),
+                QPointF(rect.x(), rect.y() + rect.height()*0.5),
+            ]))
 
     def do_action(self, time_step):
         """
@@ -1929,4 +2013,4 @@ class Checkpoint(VisualizerGraphicItem):
         Returns the current rectangle of the checkpoint.
         """
 
-        return self._graphics_item.rect()
+        return QRectF(self._icon_rect)

@@ -1,0 +1,13 @@
+{
+  "agent_case": "high",
+  "agent_count": 12,
+  "agent_density": 0.333333,
+  "corridor_case": "long",
+  "corridor_length": 36,
+  "description": "Long corridor with high traffic; combined stress case.",
+  "hypothesis": "Longer corridors should increase abstraction repair length; more agents per corridor node should increase waits and conflict handling.",
+  "map_edges": 166,
+  "map_vertices": 84,
+  "name": "long_high",
+  "pods": 36
+}

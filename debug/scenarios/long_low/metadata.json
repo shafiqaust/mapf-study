@@ -1,0 +1,13 @@
+{
+  "agent_case": "low",
+  "agent_count": 2,
+  "agent_density": 0.055556,
+  "corridor_case": "long",
+  "corridor_length": 36,
+  "description": "Long corridor with low traffic; isolates long abstraction repair.",
+  "hypothesis": "Longer corridors should increase abstraction repair length; more agents per corridor node should increase waits and conflict handling.",
+  "map_edges": 146,
+  "map_vertices": 74,
+  "name": "long_low",
+  "pods": 36
+}

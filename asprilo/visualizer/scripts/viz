@@ -5,8 +5,8 @@
 import sys
 import os
 
-# Add visualizer module path to sys.path
-sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
+# Add local visualizer module path before any installed visualizer package.
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 
 from visualizer.control import VizControl
 

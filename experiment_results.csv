@@ -488,3 +488,467 @@ f2.agents.result: robot 1: time 8 visited real 0 abstract 0 -> time 13 visited r
 f2.agents.result: robot 2: time 3 visited real 0 abstract 0 -> time 11 visited real 70 abstract 70 -> time 21 visited real 43 abstract 43
 f2.agents.result: robot 3: time 5 visited real 1 abstract 96 -> time 12 visited real 118 abstract 118 -> time 21 visited real 140 abstract 140
 f2.agents.result: robot 4: time 11 visited real 0 abstract 0 -> time 17 visited real 111 abstract 111 -> time 21 visited real 59 abstract 59"
+22_1_168v_354e_4a,22/1,22,1,168v_354e,4,8,168,354,80,107,286,74,2,19,9,19,123,36,159,25,123,25,156,1100,24,144,"1:move=28:wait=9:repair=9:visited=6
+2:move=33:wait=4:repair=9:visited=6
+3:move=31:wait=6:repair=9:visited=6
+4:move=31:wait=6:repair=9:visited=6",/Users/shafiq/MSC/NMSU_PhD/mapf-study/22/1/generated,7,24,7x24,"f1.agents.result: robot 1: time 0 at 5 -> time 1 at 30 -> time 2 at 30 -> time 3 at 30 -> time 4 at 30 -> time 5 at 30 -> time 6 at 5 -> time 7 at 31 -> time 8 at 5 -> time 9 at 96 -> time 10 at 96 -> time 11 at 5 -> time 12 at 12 -> time 13 at 16 -> time 14 at 38 -> time 15 at 16 -> time 16 at 12 -> time 17 at 5 -> time 18 at 34
+f1.agents.result: robot 2: time 0 at 71 -> time 1 at 47 -> time 2 at 23 -> time 3 at 16 -> time 4 at 12 -> time 5 at 5 -> time 6 at 96 -> time 7 at 73 -> time 8 at 77 -> time 9 at 84 -> time 10 at 91 -> time 11 at 110 -> time 12 at 91 -> time 13 at 95 -> time 14 at 71 -> time 15 at 47 -> time 16 at 23 -> time 17 at 16 -> time 18 at 46
+f1.agents.result: robot 3: time 0 at 34 -> time 1 at 5 -> time 2 at 96 -> time 3 at 73 -> time 4 at 77 -> time 5 at 105 -> time 6 at 77 -> time 7 at 103 -> time 8 at 103 -> time 9 at 103 -> time 10 at 77 -> time 11 at 77 -> time 12 at 84 -> time 13 at 108 -> time 14 at 108 -> time 15 at 84 -> time 16 at 84 -> time 17 at 91 -> time 18 at 111
+f1.agents.result: robot 4: time 0 at 160 -> time 1 at 156 -> time 2 at 149 -> time 3 at 96 -> time 4 at 0 -> time 5 at 96 -> time 6 at 73 -> time 7 at 77 -> time 8 at 52 -> time 9 at 77 -> time 10 at 73 -> time 11 at 96 -> time 12 at 5 -> time 13 at 12 -> time 14 at 16 -> time 15 at 37 -> time 16 at 37 -> time 17 at 37 -> time 18 at 16
+f2.agents.result: robot 1: time 0 at 34 -> time 1 at 34 -> time 2 at 5 -> time 3 at 96 -> time 4 at 0 -> time 5 at 0 -> time 6 at 96 -> time 7 at 73 -> time 8 at 77 -> time 9 at 84 -> time 10 at 91 -> time 11 at 116 -> time 12 at 91 -> time 13 at 91 -> time 14 at 116 -> time 15 at 91 -> time 16 at 84 -> time 17 at 77 -> time 18 at 100 -> time 19 at 100
+f2.agents.result: robot 2: time 0 at 46 -> time 1 at 46 -> time 2 at 46 -> time 3 at 16 -> time 4 at 12 -> time 5 at 5 -> time 6 at 5 -> time 7 at 96 -> time 8 at 0 -> time 9 at 96 -> time 10 at 73 -> time 11 at 77 -> time 12 at 77 -> time 13 at 84 -> time 14 at 91 -> time 15 at 112 -> time 16 at 91 -> time 17 at 84 -> time 18 at 77 -> time 19 at 54
+f2.agents.result: robot 3: time 0 at 111 -> time 1 at 91 -> time 2 at 84 -> time 3 at 77 -> time 4 at 73 -> time 5 at 96 -> time 6 at 73 -> time 7 at 77 -> time 8 at 84 -> time 9 at 91 -> time 10 at 68 -> time 11 at 91 -> time 12 at 84 -> time 13 at 60 -> time 14 at 60 -> time 15 at 36 -> time 16 at 12 -> time 17 at 16 -> time 18 at 40 -> time 19 at 16
+f2.agents.result: robot 4: time 0 at 16 -> time 1 at 16 -> time 2 at 12 -> time 3 at 5 -> time 4 at 96 -> time 5 at 149 -> time 6 at 149 -> time 7 at 149 -> time 8 at 96 -> time 9 at 73 -> time 10 at 77 -> time 11 at 104 -> time 12 at 104 -> time 13 at 77 -> time 14 at 73 -> time 15 at 96 -> time 16 at 5 -> time 17 at 12 -> time 18 at 16 -> time 19 at 41","f1.agents.result:r1:t0:5->30
+f1.agents.result:r1:t1:30->30
+f1.agents.result:r1:t2:30->30
+f1.agents.result:r1:t3:30->30
+f1.agents.result:r1:t4:30->30
+f1.agents.result:r1:t5:30->5
+f1.agents.result:r1:t6:5->31
+f1.agents.result:r1:t7:31->5
+f1.agents.result:r1:t8:5->96
+f1.agents.result:r1:t9:96->96
+f1.agents.result:r1:t10:96->5
+f1.agents.result:r1:t11:5->12
+f1.agents.result:r1:t12:12->16
+f1.agents.result:r1:t13:16->38
+f1.agents.result:r1:t14:38->16
+f1.agents.result:r1:t15:16->12
+f1.agents.result:r1:t16:12->5
+f1.agents.result:r1:t17:5->34
+f1.agents.result:r2:t0:71->47
+f1.agents.result:r2:t1:47->23
+f1.agents.result:r2:t2:23->16
+f1.agents.result:r2:t3:16->12
+f1.agents.result:r2:t4:12->5
+f1.agents.result:r2:t5:5->96
+f1.agents.result:r2:t6:96->73
+f1.agents.result:r2:t7:73->77
+f1.agents.result:r2:t8:77->84
+f1.agents.result:r2:t9:84->91
+f1.agents.result:r2:t10:91->110
+f1.agents.result:r2:t11:110->91
+f1.agents.result:r2:t12:91->95
+f1.agents.result:r2:t13:95->71
+f1.agents.result:r2:t14:71->47
+f1.agents.result:r2:t15:47->23
+f1.agents.result:r2:t16:23->16
+f1.agents.result:r2:t17:16->46
+f1.agents.result:r3:t0:34->5
+f1.agents.result:r3:t1:5->96
+f1.agents.result:r3:t2:96->73
+f1.agents.result:r3:t3:73->77
+f1.agents.result:r3:t4:77->105
+f1.agents.result:r3:t5:105->77
+f1.agents.result:r3:t6:77->103
+f1.agents.result:r3:t7:103->103
+f1.agents.result:r3:t8:103->103
+f1.agents.result:r3:t9:103->77
+f1.agents.result:r3:t10:77->77
+f1.agents.result:r3:t11:77->84
+f1.agents.result:r3:t12:84->108
+f1.agents.result:r3:t13:108->108
+f1.agents.result:r3:t14:108->84
+f1.agents.result:r3:t15:84->84
+f1.agents.result:r3:t16:84->91
+f1.agents.result:r3:t17:91->111
+f1.agents.result:r4:t0:160->156
+f1.agents.result:r4:t1:156->149
+f1.agents.result:r4:t2:149->96
+f1.agents.result:r4:t3:96->0
+f1.agents.result:r4:t4:0->96
+f1.agents.result:r4:t5:96->73
+f1.agents.result:r4:t6:73->77
+f1.agents.result:r4:t7:77->52
+f1.agents.result:r4:t8:52->77
+f1.agents.result:r4:t9:77->73
+f1.agents.result:r4:t10:73->96
+f1.agents.result:r4:t11:96->5
+f1.agents.result:r4:t12:5->12
+f1.agents.result:r4:t13:12->16
+f1.agents.result:r4:t14:16->37
+f1.agents.result:r4:t15:37->37
+f1.agents.result:r4:t16:37->37
+f1.agents.result:r4:t17:37->16
+f2.agents.result:r1:t0:34->34
+f2.agents.result:r1:t1:34->5
+f2.agents.result:r1:t2:5->96
+f2.agents.result:r1:t3:96->0
+f2.agents.result:r1:t4:0->0
+f2.agents.result:r1:t5:0->96
+f2.agents.result:r1:t6:96->73
+f2.agents.result:r1:t7:73->77
+f2.agents.result:r1:t8:77->84
+f2.agents.result:r1:t9:84->91
+f2.agents.result:r1:t10:91->116
+f2.agents.result:r1:t11:116->91
+f2.agents.result:r1:t12:91->91
+f2.agents.result:r1:t13:91->116
+f2.agents.result:r1:t14:116->91
+f2.agents.result:r1:t15:91->84
+f2.agents.result:r1:t16:84->77
+f2.agents.result:r1:t17:77->100
+f2.agents.result:r1:t18:100->100
+f2.agents.result:r2:t0:46->46
+f2.agents.result:r2:t1:46->46
+f2.agents.result:r2:t2:46->16
+f2.agents.result:r2:t3:16->12
+f2.agents.result:r2:t4:12->5
+f2.agents.result:r2:t5:5->5
+f2.agents.result:r2:t6:5->96
+f2.agents.result:r2:t7:96->0
+f2.agents.result:r2:t8:0->96
+f2.agents.result:r2:t9:96->73
+f2.agents.result:r2:t10:73->77
+f2.agents.result:r2:t11:77->77
+f2.agents.result:r2:t12:77->84
+f2.agents.result:r2:t13:84->91
+f2.agents.result:r2:t14:91->112
+f2.agents.result:r2:t15:112->91
+f2.agents.result:r2:t16:91->84
+f2.agents.result:r2:t17:84->77
+f2.agents.result:r2:t18:77->54
+f2.agents.result:r3:t0:111->91
+f2.agents.result:r3:t1:91->84
+f2.agents.result:r3:t2:84->77
+f2.agents.result:r3:t3:77->73
+f2.agents.result:r3:t4:73->96
+f2.agents.result:r3:t5:96->73
+f2.agents.result:r3:t6:73->77
+f2.agents.result:r3:t7:77->84
+f2.agents.result:r3:t8:84->91
+f2.agents.result:r3:t9:91->68
+f2.agents.result:r3:t10:68->91
+f2.agents.result:r3:t11:91->84
+f2.agents.result:r3:t12:84->60
+f2.agents.result:r3:t13:60->60
+f2.agents.result:r3:t14:60->36
+f2.agents.result:r3:t15:36->12
+f2.agents.result:r3:t16:12->16
+f2.agents.result:r3:t17:16->40
+f2.agents.result:r3:t18:40->16
+f2.agents.result:r4:t0:16->16
+f2.agents.result:r4:t1:16->12
+f2.agents.result:r4:t2:12->5
+f2.agents.result:r4:t3:5->96
+f2.agents.result:r4:t4:96->149
+f2.agents.result:r4:t5:149->149
+f2.agents.result:r4:t6:149->149
+f2.agents.result:r4:t7:149->96
+f2.agents.result:r4:t8:96->73
+f2.agents.result:r4:t9:73->77
+f2.agents.result:r4:t10:77->104
+f2.agents.result:r4:t11:104->104
+f2.agents.result:r4:t12:104->77
+f2.agents.result:r4:t13:77->73
+f2.agents.result:r4:t14:73->96
+f2.agents.result:r4:t15:96->5
+f2.agents.result:r4:t16:5->12
+f2.agents.result:r4:t17:12->16
+f2.agents.result:r4:t18:16->41","f1.agents.result:r1:t0:abstract=5->30:repair=10->9->8->7->6->30->30:steps=6
+f1.agents.result:r1:t1:abstract=30->30:repair=30->30->6->30->30->30->30->30->30->30:steps=9
+f1.agents.result:r1:t2:abstract=30->30:repair=30->6->6->30->30->30->30->30:steps=7
+f1.agents.result:r1:t3:abstract=30->30:repair=30->6->30->30->30:steps=4
+f1.agents.result:r1:t4:abstract=30->30:repair=30->6->30->30->30->30->30->30:steps=7
+f1.agents.result:r1:t5:abstract=30->5:repair=30->30->6->5->29->29->29->29->29->5:steps=9
+f1.agents.result:r1:t6:abstract=5->31:repair=5->6->7->31->31:steps=4
+f1.agents.result:r1:t7:abstract=31->5:repair=31->7->6->5->5:steps=4
+f1.agents.result:r1:t8:abstract=5->96:repair=5->4->3->2->1->25->49->73->97->96:steps=9
+f1.agents.result:r1:t9:abstract=96->96:repair=96->120->144->145->145->144->120->96:steps=7
+f1.agents.result:r1:t10:abstract=96->5:repair=96->72->48->24->0->1->2->3->4->5:steps=9
+f1.agents.result:r1:t11:abstract=5->12:repair=5->6->7->8->9->10->11->12->13->12:steps=9
+f1.agents.result:r1:t12:abstract=12->16:repair=12->36->36->12->13->14->15->16:steps=7
+f1.agents.result:r1:t13:abstract=16->38:repair=16->15->14->38->38->38:steps=5
+f1.agents.result:r1:t14:abstract=38->16:repair=38->38->38->14->15->16:steps=5
+f1.agents.result:r1:t15:abstract=16->12:repair=16->15->14->13->12:steps=4
+f1.agents.result:r1:t16:abstract=12->5:repair=12->11->10->9->8->7->6->5:steps=7
+f1.agents.result:r1:t17:abstract=5->34:repair=5->6->7->8->9->10->34->34:steps=7
+f1.agents.result:r2:t0:abstract=71->47:repair=71->47->47->47->47->47->47:steps=6
+f1.agents.result:r2:t1:abstract=47->23:repair=47->23->23->23->23->23->23->23->23->23:steps=9
+f1.agents.result:r2:t2:abstract=23->16:repair=23->22->21->20->19->18->17->16:steps=7
+f1.agents.result:r2:t3:abstract=16->12:repair=16->15->14->13->12:steps=4
+f1.agents.result:r2:t4:abstract=12->5:repair=12->11->10->9->8->7->6->5:steps=7
+f1.agents.result:r2:t5:abstract=5->96:repair=5->4->3->2->1->25->49->73->97->96:steps=9
+f1.agents.result:r2:t6:abstract=96->73:repair=96->96->72->73->73:steps=4
+f1.agents.result:r2:t7:abstract=73->77:repair=73->74->75->76->77:steps=4
+f1.agents.result:r2:t8:abstract=77->84:repair=77->78->79->80->81->82->83->84->60->84:steps=9
+f1.agents.result:r2:t9:abstract=84->91:repair=84->85->86->87->88->89->90->91:steps=7
+f1.agents.result:r2:t10:abstract=91->110:repair=91->92->92->91->90->89->88->87->86->110:steps=9
+f1.agents.result:r2:t11:abstract=110->91:repair=110->86->87->88->89->90->91->91->92->91:steps=9
+f1.agents.result:r2:t12:abstract=91->95:repair=91->92->93->94->95->119->119->95:steps=7
+f1.agents.result:r2:t13:abstract=95->71:repair=95->71->71->71->71->71:steps=5
+f1.agents.result:r2:t14:abstract=71->47:repair=71->47->47->47->47->47:steps=5
+f1.agents.result:r2:t15:abstract=47->23:repair=47->23->23->23->23:steps=4
+f1.agents.result:r2:t16:abstract=23->16:repair=23->22->21->20->19->18->17->16:steps=7
+f1.agents.result:r2:t17:abstract=16->46:repair=16->17->18->19->20->21->22->46:steps=7
+f1.agents.result:r3:t0:abstract=34->5:repair=34->10->9->8->7->6->5:steps=6
+f1.agents.result:r3:t1:abstract=5->96:repair=5->4->3->2->1->25->49->73->97->96:steps=9
+f1.agents.result:r3:t2:abstract=96->73:repair=96->72->48->24->25->25->49->73:steps=7
+f1.agents.result:r3:t3:abstract=73->77:repair=73->74->75->76->77:steps=4
+f1.agents.result:r3:t4:abstract=77->105:repair=77->78->79->80->81->105->105->105:steps=7
+f1.agents.result:r3:t5:abstract=105->77:repair=105->81->80->79->78->77->53->53->53->77:steps=9
+f1.agents.result:r3:t6:abstract=77->103:repair=77->78->79->103->103:steps=4
+f1.agents.result:r3:t7:abstract=103->103:repair=103->103->103->103->103:steps=4
+f1.agents.result:r3:t8:abstract=103->103:repair=103->103->103->103->103->103->103->103->103->103:steps=9
+f1.agents.result:r3:t9:abstract=103->77:repair=103->79->78->77->101->101->101->77:steps=7
+f1.agents.result:r3:t10:abstract=77->77:repair=77->77->101->101->101->101->101->101->101->77:steps=9
+f1.agents.result:r3:t11:abstract=77->84:repair=77->78->79->80->81->82->83->84->85->84:steps=9
+f1.agents.result:r3:t12:abstract=84->108:repair=84->108->108->108->108->108->108->108:steps=7
+f1.agents.result:r3:t13:abstract=108->108:repair=108->132->156->156->132->108:steps=5
+f1.agents.result:r3:t14:abstract=108->84:repair=108->84->84->84->84->84:steps=5
+f1.agents.result:r3:t15:abstract=84->84:repair=84->108->132->108->84:steps=4
+f1.agents.result:r3:t16:abstract=84->91:repair=84->85->86->87->88->89->90->91:steps=7
+f1.agents.result:r3:t17:abstract=91->111:repair=91->90->89->88->87->111->111->111:steps=7
+f1.agents.result:r4:t0:abstract=160->156:repair=161->160->159->158->157->156->156:steps=6
+f1.agents.result:r4:t1:abstract=156->149:repair=156->155->154->153->152->151->150->149->125->149:steps=9
+f1.agents.result:r4:t2:abstract=149->96:repair=149->148->147->146->145->121->97->96:steps=7
+f1.agents.result:r4:t3:abstract=96->0:repair=96->72->48->24->0:steps=4
+f1.agents.result:r4:t4:abstract=0->96:repair=0->24->48->72->96->120->120->96:steps=7
+f1.agents.result:r4:t5:abstract=96->73:repair=96->120->144->145->145->144->120->96->72->73:steps=9
+f1.agents.result:r4:t6:abstract=73->77:repair=73->74->75->76->77:steps=4
+f1.agents.result:r4:t7:abstract=77->52:repair=77->76->52->52->52:steps=4
+f1.agents.result:r4:t8:abstract=52->77:repair=52->52->76->77->53->53->53->53->53->77:steps=9
+f1.agents.result:r4:t9:abstract=77->73:repair=77->76->75->74->73->97->97->73:steps=7
+f1.agents.result:r4:t10:abstract=73->96:repair=73->49->49->48->72->96->120->144->120->96:steps=9
+f1.agents.result:r4:t11:abstract=96->5:repair=96->72->48->24->0->1->2->3->4->5:steps=9
+f1.agents.result:r4:t12:abstract=5->12:repair=5->6->7->8->9->10->11->12:steps=7
+f1.agents.result:r4:t13:abstract=12->16:repair=12->13->13->14->15->16:steps=5
+f1.agents.result:r4:t14:abstract=16->37:repair=16->15->14->13->37->37:steps=5
+f1.agents.result:r4:t15:abstract=37->37:repair=37->13->13->37->37:steps=4
+f1.agents.result:r4:t16:abstract=37->37:repair=37->37->13->37->37->37->37->37:steps=7
+f1.agents.result:r4:t17:abstract=37->16:repair=37->13->14->15->16->40->40->16:steps=7
+f2.agents.result:r1:t1:abstract=34->5:repair=34->10->9->8->7->6->5->5:steps=7
+f2.agents.result:r1:t2:abstract=5->96:repair=5->4->3->2->1->25->49->73->97->96:steps=9
+f2.agents.result:r1:t3:abstract=96->0:repair=96->96->72->48->24->0->1->0->0->0:steps=9
+f2.agents.result:r1:t4:abstract=0->0:repair=0->24->24->0->0->0->0->0:steps=7
+f2.agents.result:r1:t5:abstract=0->96:repair=0->24->48->72->96:steps=4
+f2.agents.result:r1:t6:abstract=96->73:repair=96->96->72->48->24->0->1->25->49->73:steps=9
+f2.agents.result:r1:t7:abstract=73->77:repair=73->73->74->75->76->77->53->77:steps=7
+f2.agents.result:r1:t8:abstract=77->84:repair=77->78->79->80->81->82->83->84:steps=7
+f2.agents.result:r1:t9:abstract=84->91:repair=84->85->86->87->88->89->90->91:steps=7
+f2.agents.result:r1:t10:abstract=91->116:repair=91->92->116->116->116:steps=4
+f2.agents.result:r1:t11:abstract=116->91:repair=116->116->92->91->67->67->67->91:steps=7
+f2.agents.result:r1:t12:abstract=91->91:repair=91->115->115->115->115->115->115->91:steps=7
+f2.agents.result:r1:t13:abstract=91->116:repair=91->92->116->116->116->116->116->116:steps=7
+f2.agents.result:r1:t14:abstract=116->91:repair=116->116->92->91->91:steps=4
+f2.agents.result:r1:t15:abstract=91->84:repair=91->90->90->89->88->87->86->86->85->84:steps=9
+f2.agents.result:r1:t16:abstract=84->77:repair=84->83->82->81->80->79->78->77:steps=7
+f2.agents.result:r1:t17:abstract=77->100:repair=77->78->102->102->78->77->76->100:steps=7
+f2.agents.result:r1:t18:abstract=100->100:repair=100->100->100:steps=2
+f2.agents.result:r2:t1:abstract=46->46:repair=46->46->22->46->46->46->46->46:steps=7
+f2.agents.result:r2:t2:abstract=46->16:repair=46->22->21->20->19->18->17->16->15->16:steps=9
+f2.agents.result:r2:t3:abstract=16->12:repair=16->15->14->13->12->36->60->60->36->12:steps=9
+f2.agents.result:r2:t4:abstract=12->5:repair=12->11->10->9->8->7->6->5:steps=7
+f2.agents.result:r2:t5:abstract=5->5:repair=5->29->29->29->5:steps=4
+f2.agents.result:r2:t6:abstract=5->96:repair=5->4->3->2->1->25->49->73->97->96:steps=9
+f2.agents.result:r2:t7:abstract=96->0:repair=96->120->120->96->72->48->24->0:steps=7
+f2.agents.result:r2:t8:abstract=0->96:repair=0->0->24->25->49->73->97->96:steps=7
+f2.agents.result:r2:t9:abstract=96->73:repair=96->96->72->48->24->25->49->73:steps=7
+f2.agents.result:r2:t10:abstract=73->77:repair=73->74->75->76->77:steps=4
+f2.agents.result:r2:t11:abstract=77->77:repair=77->77->53->53->53->53->53->77:steps=7
+f2.agents.result:r2:t12:abstract=77->84:repair=77->78->79->80->81->82->83->84:steps=7
+f2.agents.result:r2:t13:abstract=84->91:repair=84->85->86->87->88->89->90->91:steps=7
+f2.agents.result:r2:t14:abstract=91->112:repair=91->90->89->88->112:steps=4
+f2.agents.result:r2:t15:abstract=112->91:repair=112->88->89->65->89->90->91->91->92->91:steps=9
+f2.agents.result:r2:t16:abstract=91->84:repair=91->90->89->88->87->86->85->84:steps=7
+f2.agents.result:r2:t17:abstract=84->77:repair=84->83->82->81->80->79->78->77:steps=7
+f2.agents.result:r2:t18:abstract=77->54:repair=77->78->54:steps=2
+f2.agents.result:r3:t1:abstract=91->84:repair=91->90->89->88->87->86->85->84:steps=7
+f2.agents.result:r3:t2:abstract=84->77:repair=84->83->82->81->80->79->78->77->76->77:steps=9
+f2.agents.result:r3:t3:abstract=77->73:repair=77->78->102->102->78->77->76->75->74->73:steps=9
+f2.agents.result:r3:t4:abstract=73->96:repair=73->49->49->48->72->96->120->96:steps=7
+f2.agents.result:r3:t5:abstract=96->73:repair=96->120->121->97->73:steps=4
+f2.agents.result:r3:t6:abstract=73->77:repair=73->74->75->76->77->101->101->101->101->77:steps=9
+f2.agents.result:r3:t7:abstract=77->84:repair=77->78->79->80->81->82->83->84:steps=7
+f2.agents.result:r3:t8:abstract=84->91:repair=84->85->86->87->88->89->90->91:steps=7
+f2.agents.result:r3:t9:abstract=91->68:repair=91->115->91->92->68->68->68->68:steps=7
+f2.agents.result:r3:t10:abstract=68->91:repair=68->68->92->91->91:steps=4
+f2.agents.result:r3:t11:abstract=91->84:repair=91->90->89->88->87->86->85->84:steps=7
+f2.agents.result:r3:t12:abstract=84->60:repair=84->60->60->60->60->60->60->60:steps=7
+f2.agents.result:r3:t13:abstract=60->60:repair=60->36->12->12->36->36->36->60:steps=7
+f2.agents.result:r3:t14:abstract=60->36:repair=60->36->36->36->36:steps=4
+f2.agents.result:r3:t15:abstract=36->12:repair=36->12->12->12->12->12->12->12->12->12:steps=9
+f2.agents.result:r3:t16:abstract=12->16:repair=12->36->12->13->14->15->16->16:steps=7
+f2.agents.result:r3:t17:abstract=16->40:repair=16->40->40->40->40->40->40->40:steps=7
+f2.agents.result:r3:t18:abstract=40->16:repair=40->16->16:steps=2
+f2.agents.result:r4:t1:abstract=16->12:repair=16->15->14->13->12->36->36->12:steps=7
+f2.agents.result:r4:t2:abstract=12->5:repair=12->11->10->9->8->7->6->5->29->5:steps=9
+f2.agents.result:r4:t3:abstract=5->96:repair=5->4->3->2->1->25->49->73->97->96:steps=9
+f2.agents.result:r4:t4:abstract=96->149:repair=96->120->144->145->146->147->148->149:steps=7
+f2.agents.result:r4:t5:abstract=149->149:repair=149->150->126->150->149:steps=4
+f2.agents.result:r4:t6:abstract=149->149:repair=149->125->125->125->125->125->125->125->125->149:steps=9
+f2.agents.result:r4:t7:abstract=149->96:repair=149->148->147->146->145->121->97->96:steps=7
+f2.agents.result:r4:t8:abstract=96->73:repair=96->120->120->96->72->48->49->73:steps=7
+f2.agents.result:r4:t9:abstract=73->77:repair=73->74->75->76->77->101->101->77:steps=7
+f2.agents.result:r4:t10:abstract=77->104:repair=77->78->79->80->104:steps=4
+f2.agents.result:r4:t11:abstract=104->104:repair=104->80->80->104->104->104->104->104:steps=7
+f2.agents.result:r4:t12:abstract=104->77:repair=104->80->104->104->80->79->78->77:steps=7
+f2.agents.result:r4:t13:abstract=77->73:repair=77->76->75->74->73->72->72->73:steps=7
+f2.agents.result:r4:t14:abstract=73->96:repair=73->97->121->120->96:steps=4
+f2.agents.result:r4:t15:abstract=96->5:repair=96->72->48->24->0->1->2->3->4->5:steps=9
+f2.agents.result:r4:t16:abstract=5->12:repair=5->6->7->8->9->10->11->12:steps=7
+f2.agents.result:r4:t17:abstract=12->16:repair=12->11->12->13->14->15->16->16:steps=7
+f2.agents.result:r4:t18:abstract=16->41:repair=16->17->41:steps=2","f1.agents.result: robot 1: time 0: abstract plan 5 -> 30; repair path 10->9->8->7->6->30->30; steps 6
+f1.agents.result: robot 1: time 1: abstract plan 30 -> 30; repair path 30->30->6->30->30->30->30->30->30->30; steps 9
+f1.agents.result: robot 1: time 2: abstract plan 30 -> 30; repair path 30->6->6->30->30->30->30->30; steps 7
+f1.agents.result: robot 1: time 3: abstract plan 30 -> 30; repair path 30->6->30->30->30; steps 4
+f1.agents.result: robot 1: time 4: abstract plan 30 -> 30; repair path 30->6->30->30->30->30->30->30; steps 7
+f1.agents.result: robot 1: time 5: abstract plan 30 -> 5; repair path 30->30->6->5->29->29->29->29->29->5; steps 9
+f1.agents.result: robot 1: time 6: abstract plan 5 -> 31; repair path 5->6->7->31->31; steps 4
+f1.agents.result: robot 1: time 7: abstract plan 31 -> 5; repair path 31->7->6->5->5; steps 4
+f1.agents.result: robot 1: time 8: abstract plan 5 -> 96; repair path 5->4->3->2->1->25->49->73->97->96; steps 9
+f1.agents.result: robot 1: time 9: abstract plan 96 -> 96; repair path 96->120->144->145->145->144->120->96; steps 7
+f1.agents.result: robot 1: time 10: abstract plan 96 -> 5; repair path 96->72->48->24->0->1->2->3->4->5; steps 9
+f1.agents.result: robot 1: time 11: abstract plan 5 -> 12; repair path 5->6->7->8->9->10->11->12->13->12; steps 9
+f1.agents.result: robot 1: time 12: abstract plan 12 -> 16; repair path 12->36->36->12->13->14->15->16; steps 7
+f1.agents.result: robot 1: time 13: abstract plan 16 -> 38; repair path 16->15->14->38->38->38; steps 5
+f1.agents.result: robot 1: time 14: abstract plan 38 -> 16; repair path 38->38->38->14->15->16; steps 5
+f1.agents.result: robot 1: time 15: abstract plan 16 -> 12; repair path 16->15->14->13->12; steps 4
+f1.agents.result: robot 1: time 16: abstract plan 12 -> 5; repair path 12->11->10->9->8->7->6->5; steps 7
+f1.agents.result: robot 1: time 17: abstract plan 5 -> 34; repair path 5->6->7->8->9->10->34->34; steps 7
+f1.agents.result: robot 2: time 0: abstract plan 71 -> 47; repair path 71->47->47->47->47->47->47; steps 6
+f1.agents.result: robot 2: time 1: abstract plan 47 -> 23; repair path 47->23->23->23->23->23->23->23->23->23; steps 9
+f1.agents.result: robot 2: time 2: abstract plan 23 -> 16; repair path 23->22->21->20->19->18->17->16; steps 7
+f1.agents.result: robot 2: time 3: abstract plan 16 -> 12; repair path 16->15->14->13->12; steps 4
+f1.agents.result: robot 2: time 4: abstract plan 12 -> 5; repair path 12->11->10->9->8->7->6->5; steps 7
+f1.agents.result: robot 2: time 5: abstract plan 5 -> 96; repair path 5->4->3->2->1->25->49->73->97->96; steps 9
+f1.agents.result: robot 2: time 6: abstract plan 96 -> 73; repair path 96->96->72->73->73; steps 4
+f1.agents.result: robot 2: time 7: abstract plan 73 -> 77; repair path 73->74->75->76->77; steps 4
+f1.agents.result: robot 2: time 8: abstract plan 77 -> 84; repair path 77->78->79->80->81->82->83->84->60->84; steps 9
+f1.agents.result: robot 2: time 9: abstract plan 84 -> 91; repair path 84->85->86->87->88->89->90->91; steps 7
+f1.agents.result: robot 2: time 10: abstract plan 91 -> 110; repair path 91->92->92->91->90->89->88->87->86->110; steps 9
+f1.agents.result: robot 2: time 11: abstract plan 110 -> 91; repair path 110->86->87->88->89->90->91->91->92->91; steps 9
+f1.agents.result: robot 2: time 12: abstract plan 91 -> 95; repair path 91->92->93->94->95->119->119->95; steps 7
+f1.agents.result: robot 2: time 13: abstract plan 95 -> 71; repair path 95->71->71->71->71->71; steps 5
+f1.agents.result: robot 2: time 14: abstract plan 71 -> 47; repair path 71->47->47->47->47->47; steps 5
+f1.agents.result: robot 2: time 15: abstract plan 47 -> 23; repair path 47->23->23->23->23; steps 4
+f1.agents.result: robot 2: time 16: abstract plan 23 -> 16; repair path 23->22->21->20->19->18->17->16; steps 7
+f1.agents.result: robot 2: time 17: abstract plan 16 -> 46; repair path 16->17->18->19->20->21->22->46; steps 7
+f1.agents.result: robot 3: time 0: abstract plan 34 -> 5; repair path 34->10->9->8->7->6->5; steps 6
+f1.agents.result: robot 3: time 1: abstract plan 5 -> 96; repair path 5->4->3->2->1->25->49->73->97->96; steps 9
+f1.agents.result: robot 3: time 2: abstract plan 96 -> 73; repair path 96->72->48->24->25->25->49->73; steps 7
+f1.agents.result: robot 3: time 3: abstract plan 73 -> 77; repair path 73->74->75->76->77; steps 4
+f1.agents.result: robot 3: time 4: abstract plan 77 -> 105; repair path 77->78->79->80->81->105->105->105; steps 7
+f1.agents.result: robot 3: time 5: abstract plan 105 -> 77; repair path 105->81->80->79->78->77->53->53->53->77; steps 9
+f1.agents.result: robot 3: time 6: abstract plan 77 -> 103; repair path 77->78->79->103->103; steps 4
+f1.agents.result: robot 3: time 7: abstract plan 103 -> 103; repair path 103->103->103->103->103; steps 4
+f1.agents.result: robot 3: time 8: abstract plan 103 -> 103; repair path 103->103->103->103->103->103->103->103->103->103; steps 9
+f1.agents.result: robot 3: time 9: abstract plan 103 -> 77; repair path 103->79->78->77->101->101->101->77; steps 7
+f1.agents.result: robot 3: time 10: abstract plan 77 -> 77; repair path 77->77->101->101->101->101->101->101->101->77; steps 9
+f1.agents.result: robot 3: time 11: abstract plan 77 -> 84; repair path 77->78->79->80->81->82->83->84->85->84; steps 9
+f1.agents.result: robot 3: time 12: abstract plan 84 -> 108; repair path 84->108->108->108->108->108->108->108; steps 7
+f1.agents.result: robot 3: time 13: abstract plan 108 -> 108; repair path 108->132->156->156->132->108; steps 5
+f1.agents.result: robot 3: time 14: abstract plan 108 -> 84; repair path 108->84->84->84->84->84; steps 5
+f1.agents.result: robot 3: time 15: abstract plan 84 -> 84; repair path 84->108->132->108->84; steps 4
+f1.agents.result: robot 3: time 16: abstract plan 84 -> 91; repair path 84->85->86->87->88->89->90->91; steps 7
+f1.agents.result: robot 3: time 17: abstract plan 91 -> 111; repair path 91->90->89->88->87->111->111->111; steps 7
+f1.agents.result: robot 4: time 0: abstract plan 160 -> 156; repair path 161->160->159->158->157->156->156; steps 6
+f1.agents.result: robot 4: time 1: abstract plan 156 -> 149; repair path 156->155->154->153->152->151->150->149->125->149; steps 9
+f1.agents.result: robot 4: time 2: abstract plan 149 -> 96; repair path 149->148->147->146->145->121->97->96; steps 7
+f1.agents.result: robot 4: time 3: abstract plan 96 -> 0; repair path 96->72->48->24->0; steps 4
+f1.agents.result: robot 4: time 4: abstract plan 0 -> 96; repair path 0->24->48->72->96->120->120->96; steps 7
+f1.agents.result: robot 4: time 5: abstract plan 96 -> 73; repair path 96->120->144->145->145->144->120->96->72->73; steps 9
+f1.agents.result: robot 4: time 6: abstract plan 73 -> 77; repair path 73->74->75->76->77; steps 4
+f1.agents.result: robot 4: time 7: abstract plan 77 -> 52; repair path 77->76->52->52->52; steps 4
+f1.agents.result: robot 4: time 8: abstract plan 52 -> 77; repair path 52->52->76->77->53->53->53->53->53->77; steps 9
+f1.agents.result: robot 4: time 9: abstract plan 77 -> 73; repair path 77->76->75->74->73->97->97->73; steps 7
+f1.agents.result: robot 4: time 10: abstract plan 73 -> 96; repair path 73->49->49->48->72->96->120->144->120->96; steps 9
+f1.agents.result: robot 4: time 11: abstract plan 96 -> 5; repair path 96->72->48->24->0->1->2->3->4->5; steps 9
+f1.agents.result: robot 4: time 12: abstract plan 5 -> 12; repair path 5->6->7->8->9->10->11->12; steps 7
+f1.agents.result: robot 4: time 13: abstract plan 12 -> 16; repair path 12->13->13->14->15->16; steps 5
+f1.agents.result: robot 4: time 14: abstract plan 16 -> 37; repair path 16->15->14->13->37->37; steps 5
+f1.agents.result: robot 4: time 15: abstract plan 37 -> 37; repair path 37->13->13->37->37; steps 4
+f1.agents.result: robot 4: time 16: abstract plan 37 -> 37; repair path 37->37->13->37->37->37->37->37; steps 7
+f1.agents.result: robot 4: time 17: abstract plan 37 -> 16; repair path 37->13->14->15->16->40->40->16; steps 7
+f2.agents.result: robot 1: time 1: abstract plan 34 -> 5; repair path 34->10->9->8->7->6->5->5; steps 7
+f2.agents.result: robot 1: time 2: abstract plan 5 -> 96; repair path 5->4->3->2->1->25->49->73->97->96; steps 9
+f2.agents.result: robot 1: time 3: abstract plan 96 -> 0; repair path 96->96->72->48->24->0->1->0->0->0; steps 9
+f2.agents.result: robot 1: time 4: abstract plan 0 -> 0; repair path 0->24->24->0->0->0->0->0; steps 7
+f2.agents.result: robot 1: time 5: abstract plan 0 -> 96; repair path 0->24->48->72->96; steps 4
+f2.agents.result: robot 1: time 6: abstract plan 96 -> 73; repair path 96->96->72->48->24->0->1->25->49->73; steps 9
+f2.agents.result: robot 1: time 7: abstract plan 73 -> 77; repair path 73->73->74->75->76->77->53->77; steps 7
+f2.agents.result: robot 1: time 8: abstract plan 77 -> 84; repair path 77->78->79->80->81->82->83->84; steps 7
+f2.agents.result: robot 1: time 9: abstract plan 84 -> 91; repair path 84->85->86->87->88->89->90->91; steps 7
+f2.agents.result: robot 1: time 10: abstract plan 91 -> 116; repair path 91->92->116->116->116; steps 4
+f2.agents.result: robot 1: time 11: abstract plan 116 -> 91; repair path 116->116->92->91->67->67->67->91; steps 7
+f2.agents.result: robot 1: time 12: abstract plan 91 -> 91; repair path 91->115->115->115->115->115->115->91; steps 7
+f2.agents.result: robot 1: time 13: abstract plan 91 -> 116; repair path 91->92->116->116->116->116->116->116; steps 7
+f2.agents.result: robot 1: time 14: abstract plan 116 -> 91; repair path 116->116->92->91->91; steps 4
+f2.agents.result: robot 1: time 15: abstract plan 91 -> 84; repair path 91->90->90->89->88->87->86->86->85->84; steps 9
+f2.agents.result: robot 1: time 16: abstract plan 84 -> 77; repair path 84->83->82->81->80->79->78->77; steps 7
+f2.agents.result: robot 1: time 17: abstract plan 77 -> 100; repair path 77->78->102->102->78->77->76->100; steps 7
+f2.agents.result: robot 1: time 18: abstract plan 100 -> 100; repair path 100->100->100; steps 2
+f2.agents.result: robot 2: time 1: abstract plan 46 -> 46; repair path 46->46->22->46->46->46->46->46; steps 7
+f2.agents.result: robot 2: time 2: abstract plan 46 -> 16; repair path 46->22->21->20->19->18->17->16->15->16; steps 9
+f2.agents.result: robot 2: time 3: abstract plan 16 -> 12; repair path 16->15->14->13->12->36->60->60->36->12; steps 9
+f2.agents.result: robot 2: time 4: abstract plan 12 -> 5; repair path 12->11->10->9->8->7->6->5; steps 7
+f2.agents.result: robot 2: time 5: abstract plan 5 -> 5; repair path 5->29->29->29->5; steps 4
+f2.agents.result: robot 2: time 6: abstract plan 5 -> 96; repair path 5->4->3->2->1->25->49->73->97->96; steps 9
+f2.agents.result: robot 2: time 7: abstract plan 96 -> 0; repair path 96->120->120->96->72->48->24->0; steps 7
+f2.agents.result: robot 2: time 8: abstract plan 0 -> 96; repair path 0->0->24->25->49->73->97->96; steps 7
+f2.agents.result: robot 2: time 9: abstract plan 96 -> 73; repair path 96->96->72->48->24->25->49->73; steps 7
+f2.agents.result: robot 2: time 10: abstract plan 73 -> 77; repair path 73->74->75->76->77; steps 4
+f2.agents.result: robot 2: time 11: abstract plan 77 -> 77; repair path 77->77->53->53->53->53->53->77; steps 7
+f2.agents.result: robot 2: time 12: abstract plan 77 -> 84; repair path 77->78->79->80->81->82->83->84; steps 7
+f2.agents.result: robot 2: time 13: abstract plan 84 -> 91; repair path 84->85->86->87->88->89->90->91; steps 7
+f2.agents.result: robot 2: time 14: abstract plan 91 -> 112; repair path 91->90->89->88->112; steps 4
+f2.agents.result: robot 2: time 15: abstract plan 112 -> 91; repair path 112->88->89->65->89->90->91->91->92->91; steps 9
+f2.agents.result: robot 2: time 16: abstract plan 91 -> 84; repair path 91->90->89->88->87->86->85->84; steps 7
+f2.agents.result: robot 2: time 17: abstract plan 84 -> 77; repair path 84->83->82->81->80->79->78->77; steps 7
+f2.agents.result: robot 2: time 18: abstract plan 77 -> 54; repair path 77->78->54; steps 2
+f2.agents.result: robot 3: time 1: abstract plan 91 -> 84; repair path 91->90->89->88->87->86->85->84; steps 7
+f2.agents.result: robot 3: time 2: abstract plan 84 -> 77; repair path 84->83->82->81->80->79->78->77->76->77; steps 9
+f2.agents.result: robot 3: time 3: abstract plan 77 -> 73; repair path 77->78->102->102->78->77->76->75->74->73; steps 9
+f2.agents.result: robot 3: time 4: abstract plan 73 -> 96; repair path 73->49->49->48->72->96->120->96; steps 7
+f2.agents.result: robot 3: time 5: abstract plan 96 -> 73; repair path 96->120->121->97->73; steps 4
+f2.agents.result: robot 3: time 6: abstract plan 73 -> 77; repair path 73->74->75->76->77->101->101->101->101->77; steps 9
+f2.agents.result: robot 3: time 7: abstract plan 77 -> 84; repair path 77->78->79->80->81->82->83->84; steps 7
+f2.agents.result: robot 3: time 8: abstract plan 84 -> 91; repair path 84->85->86->87->88->89->90->91; steps 7
+f2.agents.result: robot 3: time 9: abstract plan 91 -> 68; repair path 91->115->91->92->68->68->68->68; steps 7
+f2.agents.result: robot 3: time 10: abstract plan 68 -> 91; repair path 68->68->92->91->91; steps 4
+f2.agents.result: robot 3: time 11: abstract plan 91 -> 84; repair path 91->90->89->88->87->86->85->84; steps 7
+f2.agents.result: robot 3: time 12: abstract plan 84 -> 60; repair path 84->60->60->60->60->60->60->60; steps 7
+f2.agents.result: robot 3: time 13: abstract plan 60 -> 60; repair path 60->36->12->12->36->36->36->60; steps 7
+f2.agents.result: robot 3: time 14: abstract plan 60 -> 36; repair path 60->36->36->36->36; steps 4
+f2.agents.result: robot 3: time 15: abstract plan 36 -> 12; repair path 36->12->12->12->12->12->12->12->12->12; steps 9
+f2.agents.result: robot 3: time 16: abstract plan 12 -> 16; repair path 12->36->12->13->14->15->16->16; steps 7
+f2.agents.result: robot 3: time 17: abstract plan 16 -> 40; repair path 16->40->40->40->40->40->40->40; steps 7
+f2.agents.result: robot 3: time 18: abstract plan 40 -> 16; repair path 40->16->16; steps 2
+f2.agents.result: robot 4: time 1: abstract plan 16 -> 12; repair path 16->15->14->13->12->36->36->12; steps 7
+f2.agents.result: robot 4: time 2: abstract plan 12 -> 5; repair path 12->11->10->9->8->7->6->5->29->5; steps 9
+f2.agents.result: robot 4: time 3: abstract plan 5 -> 96; repair path 5->4->3->2->1->25->49->73->97->96; steps 9
+f2.agents.result: robot 4: time 4: abstract plan 96 -> 149; repair path 96->120->144->145->146->147->148->149; steps 7
+f2.agents.result: robot 4: time 5: abstract plan 149 -> 149; repair path 149->150->126->150->149; steps 4
+f2.agents.result: robot 4: time 6: abstract plan 149 -> 149; repair path 149->125->125->125->125->125->125->125->125->149; steps 9
+f2.agents.result: robot 4: time 7: abstract plan 149 -> 96; repair path 149->148->147->146->145->121->97->96; steps 7
+f2.agents.result: robot 4: time 8: abstract plan 96 -> 73; repair path 96->120->120->96->72->48->49->73; steps 7
+f2.agents.result: robot 4: time 9: abstract plan 73 -> 77; repair path 73->74->75->76->77->101->101->77; steps 7
+f2.agents.result: robot 4: time 10: abstract plan 77 -> 104; repair path 77->78->79->80->104; steps 4
+f2.agents.result: robot 4: time 11: abstract plan 104 -> 104; repair path 104->80->80->104->104->104->104->104; steps 7
+f2.agents.result: robot 4: time 12: abstract plan 104 -> 77; repair path 104->80->104->104->80->79->78->77; steps 7
+f2.agents.result: robot 4: time 13: abstract plan 77 -> 73; repair path 77->76->75->74->73->72->72->73; steps 7
+f2.agents.result: robot 4: time 14: abstract plan 73 -> 96; repair path 73->97->121->120->96; steps 4
+f2.agents.result: robot 4: time 15: abstract plan 96 -> 5; repair path 96->72->48->24->0->1->2->3->4->5; steps 9
+f2.agents.result: robot 4: time 16: abstract plan 5 -> 12; repair path 5->6->7->8->9->10->11->12; steps 7
+f2.agents.result: robot 4: time 17: abstract plan 12 -> 16; repair path 12->11->12->13->14->15->16->16; steps 7
+f2.agents.result: robot 4: time 18: abstract plan 16 -> 41; repair path 16->17->41; steps 2",9,f1.agents.result:r1:t1:abstract=30->30:repair=30->30->6->30->30->30->30->30->30->30:steps=9,"f1.agents.result: robot 1: time 0 move_to 30 -> time 5 move_to 5 -> time 6 move_to 31 -> time 7 move_to 5 -> time 8 move_to 96 -> time 10 move_to 5 -> time 11 move_to 12 -> time 12 move_to 16 -> time 13 move_to 38 -> time 14 move_to 16 -> time 15 move_to 12 -> time 16 move_to 5 -> time 17 move_to 34
+f1.agents.result: robot 2: time 0 move_to 47 -> time 1 move_to 23 -> time 2 move_to 16 -> time 3 move_to 12 -> time 4 move_to 5 -> time 5 move_to 96 -> time 6 move_to 73 -> time 7 move_to 77 -> time 8 move_to 84 -> time 9 move_to 91 -> time 10 move_to 110 -> time 11 move_to 91 -> time 12 move_to 95 -> time 13 move_to 71 -> time 14 move_to 47 -> time 15 move_to 23 -> time 16 move_to 16 -> time 17 move_to 46
+f1.agents.result: robot 3: time 0 move_to 5 -> time 1 move_to 96 -> time 2 move_to 73 -> time 3 move_to 77 -> time 4 move_to 105 -> time 5 move_to 77 -> time 6 move_to 103 -> time 9 move_to 77 -> time 11 move_to 84 -> time 12 move_to 108 -> time 14 move_to 84 -> time 16 move_to 91 -> time 17 move_to 111
+f1.agents.result: robot 4: time 0 move_to 156 -> time 1 move_to 149 -> time 2 move_to 96 -> time 3 move_to 0 -> time 4 move_to 96 -> time 5 move_to 73 -> time 6 move_to 77 -> time 7 move_to 52 -> time 8 move_to 77 -> time 9 move_to 73 -> time 10 move_to 96 -> time 11 move_to 5 -> time 12 move_to 12 -> time 13 move_to 16 -> time 14 move_to 37 -> time 17 move_to 16
+f2.agents.result: robot 1: time 1 move_to 5 -> time 2 move_to 96 -> time 3 move_to 0 -> time 5 move_to 96 -> time 6 move_to 73 -> time 7 move_to 77 -> time 8 move_to 84 -> time 9 move_to 91 -> time 10 move_to 116 -> time 11 move_to 91 -> time 13 move_to 116 -> time 14 move_to 91 -> time 15 move_to 84 -> time 16 move_to 77 -> time 17 move_to 100
+f2.agents.result: robot 2: time 2 move_to 16 -> time 3 move_to 12 -> time 4 move_to 5 -> time 6 move_to 96 -> time 7 move_to 0 -> time 8 move_to 96 -> time 9 move_to 73 -> time 10 move_to 77 -> time 12 move_to 84 -> time 13 move_to 91 -> time 14 move_to 112 -> time 15 move_to 91 -> time 16 move_to 84 -> time 17 move_to 77 -> time 18 move_to 54
+f2.agents.result: robot 3: time 0 move_to 91 -> time 1 move_to 84 -> time 2 move_to 77 -> time 3 move_to 73 -> time 4 move_to 96 -> time 5 move_to 73 -> time 6 move_to 77 -> time 7 move_to 84 -> time 8 move_to 91 -> time 9 move_to 68 -> time 10 move_to 91 -> time 11 move_to 84 -> time 12 move_to 60 -> time 14 move_to 36 -> time 15 move_to 12 -> time 16 move_to 16 -> time 17 move_to 40 -> time 18 move_to 16
+f2.agents.result: robot 4: time 1 move_to 12 -> time 2 move_to 5 -> time 3 move_to 96 -> time 4 move_to 149 -> time 7 move_to 96 -> time 8 move_to 73 -> time 9 move_to 77 -> time 10 move_to 104 -> time 12 move_to 77 -> time 13 move_to 73 -> time 14 move_to 96 -> time 15 move_to 5 -> time 16 move_to 12 -> time 17 move_to 16 -> time 18 move_to 41","f1.agents.result: robot 1: time 1 stay_at 30 -> time 2 stay_at 30 -> time 3 stay_at 30 -> time 4 stay_at 30 -> time 9 stay_at 96
+f1.agents.result: robot 3: time 7 stay_at 103 -> time 8 stay_at 103 -> time 10 stay_at 77 -> time 13 stay_at 108 -> time 15 stay_at 84
+f1.agents.result: robot 4: time 15 stay_at 37 -> time 16 stay_at 37
+f2.agents.result: robot 1: time 0 stay_at 34 -> time 4 stay_at 0 -> time 12 stay_at 91 -> time 18 stay_at 100
+f2.agents.result: robot 2: time 0 stay_at 46 -> time 1 stay_at 46 -> time 5 stay_at 5 -> time 11 stay_at 77
+f2.agents.result: robot 3: time 13 stay_at 60
+f2.agents.result: robot 4: time 0 stay_at 16 -> time 5 stay_at 149 -> time 6 stay_at 149 -> time 11 stay_at 104","f1.agents.result: robot 1: time 9 visited real 1 abstract 96 -> time 14 visited real 38 abstract 38 -> time 18 visited real 34 abstract 34
+f1.agents.result: robot 2: time 6 visited real 1 abstract 96 -> time 11 visited real 110 abstract 110 -> time 18 visited real 46 abstract 46
+f1.agents.result: robot 3: time 2 visited real 1 abstract 96 -> time 5 visited real 105 abstract 105 -> time 18 visited real 111 abstract 111
+f1.agents.result: robot 4: time 4 visited real 0 abstract 0 -> time 8 visited real 52 abstract 52 -> time 15 visited real 37 abstract 37
+f2.agents.result: robot 1: time 4 visited real 0 abstract 0 -> time 11 visited real 116 abstract 116 -> time 18 visited real 100 abstract 100
+f2.agents.result: robot 2: time 8 visited real 0 abstract 0 -> time 15 visited real 112 abstract 112 -> time 19 visited real 54 abstract 54
+f2.agents.result: robot 3: time 5 visited real 1 abstract 96 -> time 10 visited real 68 abstract 68 -> time 18 visited real 40 abstract 40
+f2.agents.result: robot 4: time 4 visited real 1 abstract 96 -> time 11 visited real 104 abstract 104 -> time 19 visited real 41 abstract 41"

@@ -1,0 +1,25 @@
+#!/bin/bash
+
+SCENARIO="${1:-22/0}"
+RESULT="${2:-f2.agents.result}"
+POD_VISUAL="${3:-}"
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+GEN_ARGS=()
+
+if [ -n "$POD_VISUAL" ] ; then
+    GEN_ARGS+=(--pod-visual "$POD_VISUAL")
+fi
+
+if [ "$RESULT" = "combined" ] ; then
+    VIZ_FILE="${ROOT}/${SCENARIO}/generated/asprilo/combined.asprilo.lp"
+    if [ ! -f "$VIZ_FILE" ] || [ -n "$POD_VISUAL" ] ; then
+        /usr/local/bin/python3.10 "${ROOT}/make_asprilo_visualization.py" --scenario "$SCENARIO" --combined "${GEN_ARGS[@]}"
+    fi
+else
+    VIZ_FILE="${ROOT}/${SCENARIO}/generated/asprilo/${RESULT%.result}.asprilo.lp"
+    if [ ! -f "$VIZ_FILE" ] || [ -n "$POD_VISUAL" ] ; then
+        /usr/local/bin/python3.10 "${ROOT}/make_asprilo_visualization.py" --scenario "$SCENARIO" --result "$RESULT" "${GEN_ARGS[@]}"
+    fi
+fi
+
+/usr/local/bin/python3.10 "${ROOT}/asprilo/visualizer/scripts/viz" -m gtapf -t "$VIZ_FILE"
