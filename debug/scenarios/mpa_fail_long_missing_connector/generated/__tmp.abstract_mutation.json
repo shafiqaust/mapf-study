@@ -1,0 +1,27 @@
+{
+  "abstract_bridge_cut_col": 59,
+  "abstract_mutation": "remove_abstract_bridge",
+  "abstract_removed_edge_count": 170,
+  "abstract_removed_edges_preview": [
+    "edge(858,1034).",
+    "edge(859,1034).",
+    "edge(860,1034).",
+    "edge(861,1034).",
+    "edge(862,1034).",
+    "edge(863,1034).",
+    "edge(864,1034).",
+    "edge(865,1034).",
+    "edge(866,1034).",
+    "edge(867,1034).",
+    "edge(868,1034).",
+    "edge(869,1034).",
+    "edge(870,1034).",
+    "edge(871,1034).",
+    "edge(872,1034).",
+    "edge(873,1034).",
+    "edge(874,1034).",
+    "edge(875,1034).",
+    "edge(876,1034).",
+    "edge(877,1034)."
+  ]
+}

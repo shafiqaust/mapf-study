@@ -1,0 +1,14 @@
+agent(1,411,a).
+agent(2,468,a).
+order(1,1).
+group(1,0).
+goal(1,2,492,1).
+active(1).
+goal(2,1,547,1).
+active(2).
+store(1,571).
+store(2,628).
+depot(1,628).
+depot(2,571).
+task(1,1,547,a).
+task(2,1,492,a).
