@@ -1,53 +1,70 @@
 #!/bin/bash
 
-PROBS="0 1 2"
-# PROBS="2"
-DDIR="22" 
-PDIR="../../"
+PROBS="${PROBS:-0 1 2}"
+PDIR="${PDIR:-../../}"
 
-for domain in $PROBS; do 
+for domain in $PROBS; do
 
    before="$(date +%s)"
-   if [ -f loc.tmp ] ; then 
-       rm loc.tmp
-   fi 
-   if [ -e __t* ] ; then     
-       rm __*
-   fi     
+   scenario_dir="${domain}"
+   generated_dir="${scenario_dir}/generated"
 
-   cd ${domain} 
+   if [ ! -d "$scenario_dir" ] ; then
+       echo "Missing scenario directory: $scenario_dir"
+       continue
+   fi
 
-   clingo ${PDIR}simplify2.lp ${domain}.map -q2
-   clingo ${PDIR}drive.lp ${domain}.agents __tmp.map  -q2
-   
-   while IFS='' read -r line || [[ -n "$line" ]]; do
-       echo "Text read from file: $line"
-       if [ -f loc.tmp ] ; then 
-           clingo ${PDIR}inc2g_kiva.lp $line __tmp.map loc.tmp -q2
-           mv __tmp.out "$line.out"
-           cp loc.tmp "$line.loc.tmp"
-           clingo ${PDIR}adjust.lp "$line.out" ${domain}.agents ${domain}.map -c first=0 -q2
-       else 
-           clingo ${PDIR}inc2g_kiva.lp $line __tmp.map  -q2
-           mv __tmp.out "$line.out"
-           cp loc.tmp "$line.loc.tmp"
-           clingo ${PDIR}adjust.lp "$line.out" ${domain}.agents ${domain}.map -c first=1 -q2
-       fi         
-       cp "$line.out" "$line.result"
-       while IFSZ='' read -r lineinsert || [[ -n "$lineinsert" ]]; do
-           echo "Text read from file: $lineinsert"
-           clingo ${PDIR}insert.lp $lineinsert ${domain}.map -q2 
-           cat __out.result  "$line.result" > __tmp
-           mv __tmp  "$line.result"
-       done < "__list_init"
-   done < "outs.txt"
+   rm -rf "$generated_dir"
+   mkdir -p "$generated_dir"
+
+   cd "$generated_dir" || exit 1
+
+   clingo ${PDIR}simplify2.lp ../${domain}.map -q2
+   clingo ${PDIR}drive.lp ../${domain}.agents __tmp.map -q2
+
+   if [ -f "outs.txt" ] ; then
+       while IFS='' read -r line || [[ -n "$line" ]]; do
+           if [ -z "$line" ] ; then
+               continue
+           fi
+           echo "Text read from file: $line"
+           if [ -f loc.tmp ] ; then
+               clingo ${PDIR}inc2g_kiva.lp "$line" __tmp.map loc.tmp -q2
+               mv __tmp.out "$line.out"
+               cp loc.tmp "$line.loc.tmp"
+               clingo ${PDIR}adjust.lp "$line.out" ../${domain}.agents ../${domain}.map -c first=0 -q2
+           else
+               clingo ${PDIR}inc2g_kiva.lp "$line" __tmp.map -q2
+               mv __tmp.out "$line.out"
+               cp loc.tmp "$line.loc.tmp"
+               clingo ${PDIR}adjust.lp "$line.out" ../${domain}.agents ../${domain}.map -c first=1 -q2
+           fi
+           cp "$line.out" "$line.result"
+           if [ -f "__list_init" ] ; then
+               while IFS='' read -r lineinsert || [[ -n "$lineinsert" ]]; do
+                   if [ -z "$lineinsert" ] ; then
+                       continue
+                   fi
+                   echo "Text read from file: $lineinsert"
+                   clingo ${PDIR}insert.lp "$lineinsert" ../${domain}.map -q2
+                   cat __out.result "$line.result" > __tmp
+                   mv __tmp "$line.result"
+               done < "__list_init"
+           else
+               echo "Missing __list_init for $line"
+           fi
+       done < "outs.txt"
+   else
+       echo "Missing outs.txt for scenario ${domain}"
+   fi
+
    after="$(date +%s)"
    echo "Time: $after and $before"
    total_time="$(expr $after - $before)"
-   echo "Time: $total_time" 
-   echo "Time: $total_time" > time_${domain}.txt 
-   cd .. 
-   
-done 
+   echo "Time: $total_time"
+   echo "Time: $total_time" > time_${domain}.txt
 
- 
+   cd ../..
+
+done
+
