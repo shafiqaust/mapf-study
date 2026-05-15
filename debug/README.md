@@ -264,6 +264,43 @@ Important proof columns:
 - `likely_failure_causes`
 - `failure_risk_score`
 
+### 3. Create Comparison Graphs
+
+After running `missing-path-all` and/or `long-proof-all`, create SVG graphs:
+
+```bash
+python3 debug/plot_debug_graphs.py
+```
+
+Outputs go here:
+
+```text
+debug/results/graphs/
+```
+
+Create only long-tunnel proof graphs:
+
+```bash
+python3 debug/plot_debug_graphs.py --mode long-proof
+```
+
+Create only missing-path abstraction graphs:
+
+```bash
+python3 debug/plot_debug_graphs.py --mode missing-path
+```
+
+The graph files include:
+
+- `long_proof_makespan.svg`
+- `long_proof_repair_gap.svg`
+- `long_proof_repair_overhead.svg`
+- `long_proof_compression_vertices.svg`
+- `long_proof_pressure_risk.svg`
+- `missing_path_binary_evidence.svg`
+- `missing_path_removed_edges.svg`
+- `missing_path_result_files.svg`
+
 ## Full Cause-By-Sweep Proof Matrix
 
 Use this when every failure cause must be tested on every debug sweep scenario.
