@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PROBS="${PROBS:-0 1 2}"
-PDIR="${PDIR:-../../}"
+PDIR="${PDIR:-../../../}"
 
 for domain in $PROBS; do
 
@@ -67,4 +67,3 @@ for domain in $PROBS; do
    cd ../..
 
 done
-
