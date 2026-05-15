@@ -47,6 +47,7 @@ TARGET_CAUSE_FLAGS = {
     "shared_store_depot_pressure": "shared_store_depot_risk",
     "duplicate_goal_pressure": "duplicate_goal_risk",
     "misleading_abstract_makespan": "misleading_abstract_makespan_risk",
+    "missing_path_abstraction": "path_abstraction_missing_risk",
 }
 
 
@@ -69,6 +70,10 @@ class ScenarioSpec:
     base_sweep_name: str = ""
     cause_case_name: str = ""
     cause_number: str = ""
+    proof_role: str = ""
+    expected_outcome: str = ""
+    expected_missing_abstraction: bool = False
+    graph_mutation: str = ""
 
 
 SCENARIOS: Dict[str, ScenarioSpec] = {
@@ -251,6 +256,63 @@ CAUSE_SCENARIOS: Dict[str, ScenarioSpec] = {
         description="Cause 10: abstract makespan may look small while repaired execution is large.",
         target_failure_cause="misleading_abstract_makespan",
         target_failure_hypothesis="Compare abstract_makespan with repair_makespan and observed_makespan.",
+    ),
+}
+
+
+PATH_ABSTRACTION_PROOF_SCENARIOS: Dict[str, ScenarioSpec] = {
+    "path_abs_success_control": ScenarioSpec(
+        name="path_abs_success_control",
+        grid_width=80,
+        grid_height=15,
+        tunnel_length=40,
+        tunnel_target_ratio=0.50,
+        agent_count=2,
+        corridor_case="short",
+        agent_case="low",
+        description="Success control: connected tunnel, low traffic, abstract path should exist.",
+        target_failure_cause="missing_path_abstraction",
+        target_failure_hypothesis="The connected control should produce abstract plan details and repair path details.",
+        debug_suite="path_abstraction_proof",
+        proof_role="success_control",
+        expected_outcome="success",
+        expected_missing_abstraction=False,
+    ),
+    "path_abs_fail_broken_long_low": ScenarioSpec(
+        name="path_abs_fail_broken_long_low",
+        grid_width=100,
+        grid_height=15,
+        tunnel_length=70,
+        tunnel_target_ratio=0.70,
+        agent_count=2,
+        corridor_case="long",
+        agent_case="low",
+        description="Fail case 1: the long tunnel has a middle gap, so no complete abstract path should be usable.",
+        target_failure_cause="missing_path_abstraction",
+        target_failure_hypothesis="Breaking the middle of the tunnel should remove the start-to-goal path evidence.",
+        debug_suite="path_abstraction_proof",
+        proof_role="fail_missing_abstraction_low_agents",
+        expected_outcome="fail",
+        expected_missing_abstraction=True,
+        graph_mutation="break_tunnel_middle",
+    ),
+    "path_abs_fail_broken_long_high": ScenarioSpec(
+        name="path_abs_fail_broken_long_high",
+        grid_width=100,
+        grid_height=15,
+        tunnel_length=70,
+        tunnel_target_ratio=0.70,
+        agent_count=20,
+        corridor_case="long",
+        agent_case="high",
+        description="Fail case 2: the same missing tunnel bridge with many agents.",
+        target_failure_cause="missing_path_abstraction",
+        target_failure_hypothesis="With many agents and a broken tunnel, the abstract path evidence should still be missing.",
+        debug_suite="path_abstraction_proof",
+        proof_role="fail_missing_abstraction_high_agents",
+        expected_outcome="fail",
+        expected_missing_abstraction=True,
+        graph_mutation="break_tunnel_middle",
     ),
 }
 
@@ -507,6 +569,11 @@ def tunnel_cells(spec: ScenarioSpec) -> Tuple[Set[Tuple[int, int]], Set[Tuple[in
             aisle_cells.add((row, column))
 
     pod_cells.difference_update(aisle_cells)
+    if spec.graph_mutation == "break_tunnel_middle":
+        gap_col = (start_col + end_col) // 2
+        for row in (tunnel_row - 1, tunnel_row, tunnel_row + 1):
+            aisle_cells.discard((row, gap_col))
+            pod_cells.discard((row, gap_col))
     return aisle_cells, pod_cells
 
 
@@ -547,6 +614,8 @@ def build_tunnel_graph(spec: ScenarioSpec) -> Tuple[Set[int], Set[Tuple[int, int
         "tunnel_width_ratio": round(tunnel_length / float(width), 6),
         "left_station": cell_id(tunnel_row, max(0, start_col - 1), width),
         "right_station": cell_id(tunnel_row, min(width - 1, end_col + 1), width),
+        "graph_mutation": spec.graph_mutation,
+        "tunnel_gap_col": (start_col + end_col) // 2 if spec.graph_mutation == "break_tunnel_middle" else "",
     }
     return vertices, edges, pods, metadata
 
@@ -834,7 +903,27 @@ def ratio_or_blank(numerator, denominator):
     return round(numerator_value / denominator_value, 6)
 
 
-def parse_agent_task_metrics(agents_file: Path, metadata: Dict[str, object]) -> Dict[str, object]:
+def is_reachable(graph: Dict[int, Set[int]], start: int, goal: int) -> bool:
+    if start not in graph or goal not in graph:
+        return False
+    seen = {start}
+    queue = deque([start])
+    while queue:
+        node = queue.popleft()
+        if node == goal:
+            return True
+        for neighbor in graph.get(node, set()):
+            if neighbor not in seen:
+                seen.add(neighbor)
+                queue.append(neighbor)
+    return False
+
+
+def parse_agent_task_metrics(
+    agents_file: Path,
+    metadata: Dict[str, object],
+    graph: Optional[Dict[int, Set[int]]] = None,
+) -> Dict[str, object]:
     agents: Dict[object, object] = {}
     tasks = []
     stores = {}
@@ -877,6 +966,17 @@ def parse_agent_task_metrics(agents_file: Path, metadata: Dict[str, object]) -> 
     start_counts = Counter(agents.values())
     store_counts = Counter(stores.values())
     depot_counts = Counter(depots.values())
+    unreachable_details = []
+    reachable_pairs = 0
+    unreachable_pairs = 0
+    if graph is not None:
+        for task_id, goal in tasks:
+            start = agents.get(task_id)
+            if isinstance(start, int) and isinstance(goal, int) and is_reachable(graph, start, goal):
+                reachable_pairs += 1
+            else:
+                unreachable_pairs += 1
+                unreachable_details.append(f"robot {task_id}: start {start} cannot reach goal {goal}")
 
     return {
         "left_agent_count": left_agents,
@@ -895,6 +995,10 @@ def parse_agent_task_metrics(agents_file: Path, metadata: Dict[str, object]) -> 
         "unique_depot_count": len(depot_counts),
         "max_agents_per_store": max(store_counts.values()) if store_counts else 0,
         "max_agents_per_depot": max(depot_counts.values()) if depot_counts else 0,
+        "start_goal_pair_count": len(tasks),
+        "start_goal_reachable_count": reachable_pairs,
+        "start_goal_unreachable_count": unreachable_pairs,
+        "start_goal_unreachable_details": DETAIL_SEPARATOR.join(unreachable_details),
     }
 
 
@@ -910,7 +1014,11 @@ def build_failure_evidence(row: Dict[str, object]) -> Dict[str, object]:
     total_waits = int(to_float(row.get("total_waits")) or 0)
     move_count = int(to_float(row.get("move_count")) or 0)
     stay_count = int(to_float(row.get("stay_count")) or 0)
+    at_count = int(to_float(row.get("at_count")) or 0)
+    path_count = int(to_float(row.get("path_count")) or 0)
     repair_segments = int(to_float(row.get("repair_segments")) or 0)
+    abstract_vertices = int(to_float(row.get("abstract_vertices")) or 0)
+    start_goal_unreachable = int(to_float(row.get("start_goal_unreachable_count")) or 0)
     longest_repair_steps = to_float(row.get("longest_repair_steps"))
     abstract_makespan = to_float(row.get("abstract_makespan"))
     repair_makespan = to_float(row.get("repair_makespan"))
@@ -949,6 +1057,8 @@ def build_failure_evidence(row: Dict[str, object]) -> Dict[str, object]:
         "longest_repair_to_tunnel_ratio": ratio_or_blank(longest_repair_steps, tunnel_length),
         "observed_makespan_per_agent": ratio_or_blank(observed_makespan, total_agents),
         "abstract_compression_risk_value": compression_ratio if compression_ratio is not None else "",
+        "abstract_plan_present": int(at_count > 0 and result_files > 0),
+        "repair_path_present": int(path_count > 0 and result_files > 0),
     }
 
     flags = {
@@ -968,10 +1078,19 @@ def build_failure_evidence(row: Dict[str, object]) -> Dict[str, object]:
         "misleading_abstract_makespan_risk": repair_makespan is not None
         and abstract_makespan is not None
         and repair_makespan > abstract_makespan,
+        "abstract_graph_missing_risk": solver_was_run and abstract_vertices == 0,
+        "missing_abstract_plan_risk": solver_was_run and (result_files == 0 or at_count == 0),
+        "missing_repair_path_risk": solver_was_run and (result_files == 0 or path_count == 0),
+        "concrete_start_goal_unreachable_risk": start_goal_unreachable > 0,
         "wait_congestion_risk": (to_float(wait_ratio) or 0) >= 0.30,
         "timeout_or_failed_risk": solver_status in {"timed_out", "failed"},
         "missing_result_risk": solver_was_run and result_files == 0,
     }
+    flags["path_abstraction_missing_risk"] = (
+        flags["abstract_graph_missing_risk"]
+        or flags["missing_abstract_plan_risk"]
+        or flags["concrete_start_goal_unreachable_risk"]
+    )
 
     causes = []
     if flags["long_tunnel_risk"]:
@@ -996,6 +1115,8 @@ def build_failure_evidence(row: Dict[str, object]) -> Dict[str, object]:
         causes.append("large_repair_overhead")
     if flags["misleading_abstract_makespan_risk"]:
         causes.append("misleading_abstract_makespan")
+    if flags["path_abstraction_missing_risk"]:
+        causes.append("missing_path_abstraction")
     if flags["wait_congestion_risk"]:
         causes.append("high_wait_congestion")
     if flags["timeout_or_failed_risk"]:
@@ -1268,6 +1389,9 @@ def collect_result_metrics(generated_dir: Path) -> Dict[str, object]:
         "repair_segments": len(repair_segments),
         "longest_repair_steps": longest_repair_steps,
         "longest_repair_detail": longest_repair_detail,
+        "abstract_plan_robot_count": len(abstract_plan_details),
+        "abstract_transition_count": len(abstract_transition_details),
+        "repair_path_detail_count": len(repair_path_details),
         "abstract_plan_details": DETAIL_SEPARATOR.join(abstract_plan_details),
         "abstract_transitions": DETAIL_SEPARATOR.join(abstract_transition_details),
         "repair_path_details": DETAIL_SEPARATOR.join(repair_path_details),
@@ -1317,7 +1441,7 @@ def collect_scenario(spec: ScenarioSpec) -> Dict[str, object]:
         runtime_seconds = match.group(1) if match else ""
 
     result_metrics = collect_result_metrics(generated_dir)
-    agent_task_metrics = parse_agent_task_metrics(agents_file, metadata)
+    agent_task_metrics = parse_agent_task_metrics(agents_file, metadata, graph)
     row: Dict[str, object] = {
         "scenario_name": spec.name,
         "scenario_path": str(path.relative_to(REPO_ROOT)),
@@ -1328,10 +1452,18 @@ def collect_scenario(spec: ScenarioSpec) -> Dict[str, object]:
         "base_sweep_name": metadata.get("base_sweep_name", spec.base_sweep_name),
         "cause_case_name": metadata.get("cause_case_name", spec.cause_case_name),
         "cause_number": metadata.get("cause_number", spec.cause_number),
+        "proof_role": metadata.get("proof_role", spec.proof_role),
+        "expected_outcome": metadata.get("expected_outcome", spec.expected_outcome),
+        "expected_missing_abstraction": metadata.get(
+            "expected_missing_abstraction",
+            int(spec.expected_missing_abstraction),
+        ),
         "target_failure_cause": metadata.get("target_failure_cause", spec.target_failure_cause),
         "target_failure_hypothesis": metadata.get("target_failure_hypothesis", spec.target_failure_hypothesis),
         "duplicate_goal_limit": metadata.get("duplicate_goal_limit", spec.duplicate_goal_limit),
         "force_shared_store_depot": metadata.get("force_shared_store_depot", int(spec.force_shared_store_depot)),
+        "graph_mutation": metadata.get("graph_mutation", spec.graph_mutation),
+        "tunnel_gap_col": metadata.get("tunnel_gap_col", ""),
         "grid_width": metadata.get("grid_width", spec.grid_width),
         "grid_height": metadata.get("grid_height", spec.grid_height),
         "tunnel_target_ratio": metadata.get("tunnel_target_ratio", spec.tunnel_target_ratio),
@@ -1421,6 +1553,10 @@ def collect_cause_scenarios(case_names: Sequence[str]) -> None:
     collect_specs({name: CAUSE_SCENARIOS[name] for name in case_names})
 
 
+def collect_path_abs_scenarios(case_names: Sequence[str]) -> None:
+    collect_specs({name: PATH_ABSTRACTION_PROOF_SCENARIOS[name] for name in case_names})
+
+
 def collect_specs(specs: Dict[str, ScenarioSpec]) -> None:
     DETAILS_ROOT.mkdir(parents=True, exist_ok=True)
     rows = []
@@ -1477,6 +1613,27 @@ def selected_cause_cases(values: Sequence[str]) -> List[str]:
     return deduped
 
 
+def selected_path_abs_cases(values: Sequence[str]) -> List[str]:
+    if not values:
+        return list(PATH_ABSTRACTION_PROOF_SCENARIOS)
+    names: List[str] = []
+    for value in values:
+        if value == "all":
+            names.extend(PATH_ABSTRACTION_PROOF_SCENARIOS)
+        elif value in PATH_ABSTRACTION_PROOF_SCENARIOS:
+            names.append(value)
+        else:
+            valid = ", ".join(PATH_ABSTRACTION_PROOF_SCENARIOS)
+            raise SystemExit(f"Unknown path abstraction scenario {value!r}. Valid cases: {valid}")
+    deduped = []
+    seen = set()
+    for name in names:
+        if name not in seen:
+            deduped.append(name)
+            seen.add(name)
+    return deduped
+
+
 def add_case_argument(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--cases",
@@ -1492,6 +1649,15 @@ def add_cause_argument(parser: argparse.ArgumentParser) -> None:
         nargs="*",
         default=["all"],
         help="Cause scenarios to use. Use all or one/more cause_XX names.",
+    )
+
+
+def add_path_abs_argument(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "--cases",
+        nargs="*",
+        default=["all"],
+        help="Path abstraction proof cases to use. Use all or one/more path_abs_* names.",
     )
 
 
@@ -1569,6 +1735,26 @@ def main() -> None:
     add_case_argument(all_parser)
     all_parser.add_argument("--timeout-seconds", type=int, default=0, help="Stop the solver after this many seconds; 0 means no timeout")
 
+    path_abs_list_parser = subparsers.add_parser("path-abs-list", help="List the one-success two-failure path abstraction proof cases")
+    add_path_abs_argument(path_abs_list_parser)
+
+    path_abs_generate_parser = subparsers.add_parser("path-abs-generate", help="Generate path abstraction proof scenarios")
+    add_path_abs_argument(path_abs_generate_parser)
+
+    path_abs_run_parser = subparsers.add_parser("path-abs-run", help="Run path abstraction proof scenarios one by one")
+    add_path_abs_argument(path_abs_run_parser)
+    path_abs_run_parser.add_argument("--timeout-seconds", type=int, default=0, help="Stop each scenario after this many seconds; 0 means no timeout")
+    path_abs_run_parser.add_argument("--keep-going", action="store_true", help="Continue to the next scenario if one fails or times out")
+    path_abs_run_parser.add_argument("--no-collect", action="store_true", help="Do not collect CSV metrics after running")
+
+    path_abs_collect_parser = subparsers.add_parser("path-abs-collect", help="Collect metrics from path abstraction proof scenarios")
+    add_path_abs_argument(path_abs_collect_parser)
+
+    path_abs_all_parser = subparsers.add_parser("path-abs-all", help="Generate, run, and collect path abstraction proof scenarios")
+    add_path_abs_argument(path_abs_all_parser)
+    path_abs_all_parser.add_argument("--timeout-seconds", type=int, default=0, help="Stop each scenario after this many seconds; 0 means no timeout")
+    path_abs_all_parser.add_argument("--keep-going", action="store_true", help="Continue to the next scenario if one fails or times out")
+
     cause_list_parser = subparsers.add_parser("cause-list", help="List the 10 targeted failure-cause scenarios")
     add_cause_argument(cause_list_parser)
 
@@ -1636,7 +1822,31 @@ def main() -> None:
             print(
                 f"{spec.name}: corridor={spec.corridor_case}({spec.tunnel_length}/{spec.grid_width}), "
                 f"agents={spec.agent_case}({spec.agent_count})"
-            )
+        )
+        return
+
+    if args.command.startswith("path-abs-"):
+        cases = selected_path_abs_cases(args.cases)
+        specs = {name: PATH_ABSTRACTION_PROOF_SCENARIOS[name] for name in cases}
+        if args.command == "path-abs-list":
+            for spec in specs.values():
+                print(
+                    f"{spec.name}: role={spec.proof_role}, expected={spec.expected_outcome}, "
+                    f"mutation={spec.graph_mutation or 'none'}, ratio={spec.tunnel_target_ratio:.2f}, "
+                    f"agents={spec.agent_count}"
+                )
+        elif args.command == "path-abs-generate":
+            generate_specs(specs)
+        elif args.command == "path-abs-run":
+            run_cases_individually(cases, timeout_seconds=args.timeout_seconds, keep_going=args.keep_going)
+            if not args.no_collect:
+                collect_path_abs_scenarios(cases)
+        elif args.command == "path-abs-collect":
+            collect_path_abs_scenarios(cases)
+        elif args.command == "path-abs-all":
+            generate_specs(specs)
+            run_cases_individually(cases, timeout_seconds=args.timeout_seconds, keep_going=args.keep_going)
+            collect_path_abs_scenarios(cases)
         return
 
     if args.command == "cause-sweep-list":

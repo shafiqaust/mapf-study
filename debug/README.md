@@ -142,6 +142,42 @@ If the solver already ran, rebuild the CSV without rerunning:
 python3 debug/debug_framework.py cause-collect
 ```
 
+## Small Path-Abstraction Proof Set
+
+Use this when you only need one success row and two failure rows.
+
+It creates exactly three scenarios:
+
+| Scenario | Expected | Purpose |
+| --- | --- | --- |
+| `path_abs_success_control` | success | connected short tunnel, low agents |
+| `path_abs_fail_broken_long_low` | fail | long tunnel with a middle gap, low agents |
+| `path_abs_fail_broken_long_high` | fail | long tunnel with a middle gap, high agents |
+
+Run all three:
+
+```bash
+python3 debug/debug_framework.py path-abs-all --timeout-seconds 1800 --keep-going
+```
+
+If you already generated/ran them and only need to rebuild the CSV:
+
+```bash
+python3 debug/debug_framework.py path-abs-collect
+```
+
+The proof columns to use in charts are:
+
+- `proof_role`
+- `expected_outcome`
+- `expected_missing_abstraction`
+- `graph_mutation`
+- `start_goal_unreachable_count`
+- `abstract_plan_present`
+- `repair_path_present`
+- `path_abstraction_missing_risk`
+- `target_failure_triggered`
+
 ## Full Cause-By-Sweep Proof Matrix
 
 Use this when every failure cause must be tested on every debug sweep scenario.
